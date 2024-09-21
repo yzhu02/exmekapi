@@ -1,0 +1,167 @@
+{
+    "data": [
+        {
+            "name": "Standard Stepper Motor",
+            "model": "MP020NA101",
+            "length": {
+                "value": 30.00,
+                "unit": "mm"
+            },
+            "weight": {
+                "value": 60.00,
+                "unit": "g"
+            },
+            "frameSize": {
+                "value": 20.00,
+                "unit": "mm",
+                "type": "□"
+            },
+            "nemaSize": 8,
+            "category": "STEPPER_STANDARD_TORQUE",
+            "series": "MP020NA",
+            "phaseCurrent": {
+                "value": 0.6000,
+                "unit": "A"
+            },
+            "phaseResistance": {
+                "value": 6.50,
+                "unit": "Ω"
+            },
+            "phaseInductance": {
+                "value": 1.70,
+                "unit": "mH"
+            },
+            "holdingTorque": {
+                "value": 1.8000,
+                "unit": "Ncm"
+            },
+            "detentTorque": {
+                "value": 0.2000,
+                "unit": "Ncm"
+            },
+            "stepAngle": {
+                "value": 1.80,
+                "unit": "°"
+            }
+        },
+        {
+            "name": "Standard Stepper Motor",
+            "model": "MP020NA102",
+            "length": {
+                "value": 30.00,
+                "unit": "mm"
+            },
+            "weight": {
+                "value": 60.00,
+                "unit": "g"
+            },
+            "frameSize": {
+                "value": 20.00,
+                "unit": "mm",
+                "type": "□"
+            },
+            "nemaSize": 8,
+            "category": "STEPPER_STANDARD_TORQUE",
+            "series": "MP020NA",
+            "phaseCurrent": {
+                "value": 0.6000,
+                "unit": "A"
+            },
+            "phaseResistance": {
+                "value": 6.50,
+                "unit": "Ω"
+            },
+            "phaseInductance": {
+                "value": 1.70,
+                "unit": "mH"
+            },
+            "holdingTorque": {
+                "value": 1.8000,
+                "unit": "Ncm"
+            },
+            "detentTorque": {
+                "value": 0.2000,
+                "unit": "Ncm"
+            },
+            "stepAngle": {
+                "value": 1.80,
+                "unit": "°"
+            }
+        },
+        {
+            "name": "Standard Stepper Motor",
+            "model": "MP020NA300",
+            "length": {
+                "value": 33.00,
+                "unit": "mm"
+            },
+            "weight": {
+                "value": 60.00,
+                "unit": "g"
+            },
+            "frameSize": {
+                "value": 20.00,
+                "unit": "mm",
+                "type": "□"
+            },
+            "nemaSize": 8,
+            "category": "STEPPER_STANDARD_TORQUE",
+            "series": "MP020NA",
+            "phaseCurrent": {
+                "value": 0.6000,
+                "unit": "A"
+            },
+            "phaseResistance": {
+                "value": 6.50,
+                "unit": "Ω"
+            },
+            "phaseInductance": {
+                "value": 0.80,
+                "unit": "mH"
+            },
+            "holdingTorque": {
+                "value": 2.0000,
+                "unit": "Ncm"
+            },
+            "detentTorque": {
+                "value": 0.2000,
+                "unit": "Ncm"
+            },
+            "stepAngle": {
+                "value": 1.80,
+                "unit": "°"
+            }
+        },
+        {
+            "name": "Flat Stepper Motor",
+            "model": "MPF028NB001",
+            "weight": {
+                "value": 28.00,
+                "unit": "g"
+            },
+            "frameSize": {
+                "value": 28.00,
+                "unit": "mm",
+                "type": "□"
+            },
+            "category": "STEPPER_FLAT",
+            "series": "MPF028NB",
+            "phaseCurrent": {
+                "value": 0.5000,
+                "unit": "A"
+            },
+            "phaseResistance": {
+                "value": 3.70,
+                "unit": "Ω"
+            },
+            "phaseInductance": {
+                "value": 0.88,
+                "unit": "mH"
+            },
+            "holdingTorque": {
+                "value": 0.9800,
+                "unit": "Ncm"
+            }
+        }
+    ]
+}

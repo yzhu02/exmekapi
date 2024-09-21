@@ -1,0 +1,9 @@
+curl --location 'http://localhost:8080/api/motors/stepper/STEPPER_STANDARD_TORQUE/MP028NB/search' \
+--header 'Content-Type: application/json' \
+--data '{
+    "conditions": [
+        "phaseCurrent >= 0.1",
+        "holdingTorque>=0.5",
+        "holdingTorque<=12.0"
+    ]
+}'

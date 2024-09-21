@@ -1,0 +1,94 @@
+SET @series := 'PL030GE';
+SET @model  := 'PL030GE30K-2S';
+
+INSERT INTO PLANETARY_GEARBOX (
+	SERIES,
+	MODEL,
+	NAME,
+	DESCRIPTION,
+
+	FRAME_SIZE,
+	FRAME_SIZE_UNIT,			-- mm, cm
+	FRAME_SIZE_TYPE,			-- DIAMETER (φ), SIDE (□)
+	NEMA_SIZE,
+	
+	LENGTH,
+	LENGTH_UNIT,				-- mm, cm
+	
+	WEIGHT,
+	WEIGHT_UNIT,				-- g
+
+	NUM_OF_STAGES,
+	
+	REDUCTION_RATIOS,
+		
+	EFFICIENCY,
+	EFFICIENCY_UNIT,				-- PERCENT (%)
+
+	RATED_CONTINUOUS_TORQUE,
+	RATED_CONTINUOUS_TORQUE_UNIT,	-- Nm
+	
+	MAX_MOMENTARY_TORQUE,
+	MAX_MOMENTARY_TORQUE_UNIT,		-- Nm
+	
+	MAX_RADIAL_LOAD,
+	MAX_RADIAL_LOAD_UNIT,			-- N
+	
+	MAX_AXIAL_LOAD,
+	MAX_AXIAL_LOAD_UNIT,			-- N
+	
+	MAX_SHAFT_PRESS,
+	MAX_SHAFT_PRESS_UNIT,			-- N
+	
+	MAX_BACKLASH_NOLOAD,
+	MAX_BACKLASH_NOLOAD_UNIT,		-- deg(°)
+	
+	OPERATING_TEMPERATURE,
+	RECOMMEND_INPUT_SPEED
+)
+VALUES (
+	@series,					-- SERIES,
+	@model,						-- MODEL,
+	'Planetary Gearbox',		-- NAME,
+	NULL,						-- DESCRIPTION,
+
+	30,							-- FRAME_SIZE,
+	'mm',						-- FRAME_SIZE_UNIT,			-- mm, cm
+	'φ',						-- FRAME_SIZE_TYPE,			-- DIAMETER (φ), SIDE (□)
+	NULL,						-- NEMA_SIZE,
+	
+	36.1,						-- LENGTH,
+	'mm',						-- LENGTH_UNIT,				-- mm, cm
+
+	80,							-- WEIGHT,
+	'g',						-- WEIGHT_UNIT,				-- g
+
+	2,							-- NUM_OF_STAGES,
+	
+	'1/14, 1/19,1/27, 1/35',			-- REDUCTION_RATIOS,
+		
+	81,							-- EFFICIENCY,
+	'%',						-- EFFICIENCY_UNIT,				-- PERCENT (%)
+
+	1.2,						-- RATED_CONTINUOUS_TORQUE,
+	'Nm',						-- RATED_CONTINUOUS_TORQUE_UNIT,	-- Nm
+	
+	3.5,						-- MAX_MOMENTARY_TORQUE,
+	'Nm',						-- MAX_MOMENTARY_TORQUE_UNIT,		-- Nm
+	
+	100,						-- MAX_RADIAL_LOAD,
+	'N',						-- MAX_RADIAL_LOAD_UNIT,			-- N
+	
+	50,							-- MAX_AXIAL_LOAD,
+	'N',						-- MAX_AXIAL_LOAD_UNIT,				-- N
+	
+	100,						-- MAX_SHAFT_PRESS,
+	'N',						-- MAX_SHAFT_PRESS_UNIT,			-- N
+	
+	2.5,						-- MAX_BACKLASH_NOLOAD,
+	'°',						-- MAX_BACKLASH_NOLOAD_UNIT,		-- deg(°)
+	
+	'-15°C ～ +80°C',			-- OPERATING_TEMPERATURE,
+	'＜ 8000rpm'					-- RECOMMEND_INPUT_SPEED,
+)
+;

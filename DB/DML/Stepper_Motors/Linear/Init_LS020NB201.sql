@@ -1,0 +1,93 @@
+set @series := 'LS020NB';
+SET @model  := 'LS020NB201';
+
+INSERT INTO STEPPER_MOTOR  (
+	CATEGORY,					-- STEPPER_STANDARD, STEPPER_FLAT, STEPPER_WITH_CONTROL
+	SERIES,
+	MODEL,						-- In case of STEPPER_LINEAR, it represents MODEL instead 
+	NAME,
+	DESCRIPTION, 
+	
+	FRAME_SIZE,
+	FRAME_SIZE_UNIT,			-- mm, cm
+	FRAME_SIZE_TYPE,			-- DIAMETER, SIDE
+	NEMA_SIZE,
+	
+	LENGTH,
+	LENGTH_UNIT,				-- mm, cm
+	
+	WEIGHT,
+	WEIGHT_UNIT,				-- g
+	
+	RATED_VOLTAGE,
+	RATED_VOLTAGE_UNIT,			-- V
+	
+	PHASE_CURRENT,
+	PHASE_CURRENT_UNIT,			-- A
+	
+	PHASE_RESISTANCE,
+	PHASE_RESISTANCE_UNIT,		-- ohm (Ω)
+	
+	PHASE_INDUCTANCE,
+	PHASE_INDUCTANCE_UNIT,		-- mH
+	
+	HOLDING_TORQUE,
+	HOLDING_TORQUE_UNIT,		-- Nm, Ncm
+	
+	DETENT_TORQUE,
+	DETENT_TORQUE_UNIT,			-- Nm, Ncm
+	
+	STEP_ANGLE,
+	STEP_ANGLE_UNIT,			-- DEG (°)
+	
+	MAX_THRUST,
+	MAX_THRUST_UNIT				-- N
+)
+VALUES (
+	'STEPPER_LINEAR',			-- CATEGORY						-- STEPPER_STANDARD, STEPPER_FLAT, STEPPER_WITH_CONTROL
+	@series,					-- SERIES
+	@model,						-- MODEL					-- In case of STEPPER_LINEAR, it represents MODEL instead 
+	'Linear Stepper Motor',		-- NAME
+	NULL,						-- DESCRIPTION 
+	
+	20,							-- FRAME_SIZE
+	'mm',						-- FRAME_SIZE_UNIT			-- mm, cm
+	'□',						-- FRAME_SIZE_TYPE			-- DIAMETER, SIDE
+	8,							-- NEMA_SIZE
+	
+	38.1,						-- LENGTH
+	'mm',						-- LENGTH_UNIT				-- mm, cm
+	
+	NULL,							-- WEIGHT
+	NULL,						-- WEIGHT_UNIT				-- g
+	
+	4.4,						-- RATED_VOLTAGE
+	'V',						-- RATED_VOLTAGE_UNIT		-- V
+	
+	0.5,							-- PHASE_CURRENT
+	'A',						-- PHASE_CURRENT_UNIT		-- A
+	
+	8.8,						-- PHASE_RESISTANCE
+	'Ω',						-- PHASE_RESISTANCE_UNIT	-- ohm (Ω)
+	
+	2.7,						-- PHASE_INDUCTANCE
+	'mH',						-- PHASE_INDUCTANCE_UNIT	-- mH
+	
+	NULL,						-- HOLDING_TORQUE
+	NULL,						-- HOLDING_TORQUE_UNIT		-- Nm, Ncm
+	
+	NULL,						-- DETENT_TORQUE
+	NULL,						-- DETENT_TORQUE_UNIT		-- Nm, Ncm
+	
+	NULL,						-- STEP_ANGLE
+	NULL,						-- STEP_ANGLE_UNIT			-- DEG (°)
+	
+	65,						-- MAX_THRUST
+	'N'						-- MAX_THRUST_UNIT			-- N
+);
+
+
+INSERT INTO LINEAR_STEPPER_MOTOR_LEAD (MOTOR_ID, LEAD_ID)
+SELECT sm.ID, ld.ID FROM STEPPER_MOTOR sm, LEAD_DEF ld 
+WHERE sm.MODEL = @model AND (ld.CODE = 'B0024' OR ld.CODE = 'B0048' OR ld.CODE = 'B0079' OR ld.CODE = 'B0157' OR ld.CODE = 'B0315')
+;

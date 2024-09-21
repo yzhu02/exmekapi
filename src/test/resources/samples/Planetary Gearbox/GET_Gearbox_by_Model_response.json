@@ -1,0 +1,52 @@
+{
+    "name": "Planetary Gearbox",
+    "series": "PL030GE",
+    "model": "PL030GE30K-1S",
+    "length": {
+        "value": 29.00,
+        "unit": "mm"
+    },
+    "weight": {
+        "value": 72.00,
+        "unit": "g"
+    },
+    "frameSize": {
+        "value": 30.00,
+        "unit": "mm",
+        "type": "φ"
+    },
+    "mechanicalImagePaths": [
+        "/images/gearboxes/mechanical/PL030GE30K-1S.jpg"
+    ],
+    "numOfStages": 1,
+    "reductionRatios": [
+        "1/3.7",
+        "1/5.2"
+    ],
+    "efficiency": {
+        "value": 90.00,
+        "unit": "%"
+    },
+    "ratedContinuousTorque": {
+        "value": 0.3000,
+        "unit": "Nm"
+    },
+    "maxMomentaryTorque": {
+        "value": 1.0000,
+        "unit": "Nm"
+    },
+    "maxRadialLoad": {
+        "value": 100.00,
+        "unit": "N"
+    },
+    "maxAxialLoad": {
+        "value": 50.00,
+        "unit": "N"
+    },
+    "maxShaftPress": {
+        "value": 100.00,
+        "unit": "N"
+    },
+    "operatingTemperature": "-15°C ～ +80°C",
+    "recommendInputSpeed": "＜ 10000rpm"
+}

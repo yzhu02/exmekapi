@@ -1,0 +1,184 @@
+{
+    "name": "Standard Stepper Motor",
+    "model": "MP028NB102",
+    "length": {
+        "value": 31.50,
+        "unit": "mm"
+    },
+    "weight": {
+        "value": 100.00,
+        "unit": "g"
+    },
+    "frameSize": {
+        "value": 28.00,
+        "unit": "mm",
+        "type": "□"
+    },
+    "nemaSize": 11,
+    "mechanicalImagePaths": [
+        "/images/motors/mechanical/MP028NB102.jpg"
+    ],
+    "category": "STEPPER_STANDARD_TORQUE",
+    "series": "MP028NB",
+    "allSpecs": [
+        {
+            "name": "Motor Length",
+            "unit": "mm",
+            "value": "31.50"
+        },
+        {
+            "name": "Motor Weight",
+            "unit": "g",
+            "value": "100.00"
+        },
+        {
+            "name": "Frame Size",
+            "unit": "mm",
+            "value": "28.00",
+            "symbol": "□"
+        },
+        {
+            "name": "NEMA",
+            "value": "11"
+        },
+        {
+            "name": "Phase Current",
+            "unit": "A",
+            "value": "0.4700"
+        },
+        {
+            "name": "Phase Resistance",
+            "unit": "Ω",
+            "value": "2.80"
+        },
+        {
+            "name": "Phase Inductance",
+            "unit": "mH",
+            "value": "1.00"
+        },
+        {
+            "name": "Holding Torque",
+            "unit": "Ncm",
+            "value": "4.0000"
+        },
+        {
+            "name": "Detent Torque",
+            "unit": "Ncm",
+            "value": "0.8000"
+        },
+        {
+            "name": "Step Angle",
+            "unit": "°",
+            "value": "1.80"
+        },
+        {
+            "name": "No. of Wires",
+            "value": "6"
+        },
+        {
+            "name": "Rotor Inertia",
+            "unit": "g.cm²",
+            "value": "9.5"
+        }
+    ],
+    "perfCurves": [
+        {
+            "title": "MP028NB102 Torque-Frequency Curve",
+            "curveLines": [
+                {
+                    "name": "18.9V 0.67A",
+                    "points": [
+                        {
+                            "x": 50,
+                            "y": 5.9
+                        },
+                        {
+                            "x": 100,
+                            "y": 5.9
+                        },
+                        {
+                            "x": 200,
+                            "y": 6.4
+                        },
+                        {
+                            "x": 300,
+                            "y": 6.6
+                        },
+                        {
+                            "x": 400,
+                            "y": 6.9
+                        },
+                        {
+                            "x": 500,
+                            "y": 7.1
+                        },
+                        {
+                            "x": 600,
+                            "y": 7.2
+                        },
+                        {
+                            "x": 700,
+                            "y": 7.2
+                        },
+                        {
+                            "x": 800,
+                            "y": 7.2
+                        },
+                        {
+                            "x": 900,
+                            "y": 7
+                        },
+                        {
+                            "x": 1000,
+                            "y": 6.8
+                        },
+                        {
+                            "x": 1100,
+                            "y": 6.7
+                        },
+                        {
+                            "x": 1200,
+                            "y": 6.6
+                        },
+                        {
+                            "x": 1300,
+                            "y": 6.4
+                        },
+                        {
+                            "x": 1500,
+                            "y": 6
+                        },
+                        {
+                            "x": 1700,
+                            "y": 6
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "phaseCurrent": {
+        "value": 0.4700,
+        "unit": "A"
+    },
+    "phaseResistance": {
+        "value": 2.80,
+        "unit": "Ω"
+    },
+    "phaseInductance": {
+        "value": 1.00,
+        "unit": "mH"
+    },
+    "holdingTorque": {
+        "value": 4.0000,
+        "unit": "Ncm"
+    },
+    "detentTorque": {
+        "value": 0.8000,
+        "unit": "Ncm"
+    },
+    "stepAngle": {
+        "value": 1.80,
+        "unit": "°"
+    }
+}

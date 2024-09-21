@@ -1,0 +1,10 @@
+curl --location 'http://localhost:8080/api/motors/DC/search?type=BLDC' \
+--header 'Content-Type: application/json' \
+--data '{
+    "conditions": [
+        "ratedVoltage=24",
+        "ratedTorque>=0.25",
+        "ratedTorque<=0.65",
+        "ratedRotatingSpeed BETWEEN 2000 AND 6000"
+    ]
+}'

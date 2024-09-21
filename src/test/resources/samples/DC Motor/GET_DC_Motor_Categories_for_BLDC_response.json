@@ -1,0 +1,37 @@
+[
+    {
+        "category": "BLDC_INTERNAL_ROTOR",
+        "displayName": "Internal Rotor BLDC motor",
+        "description": ""
+    },
+    {
+        "category": "BLDC_EXTERNAL_ROTOR",
+        "displayName": "External Rotor BLDC motor",
+        "description": ""
+    },
+    {
+        "category": "BLDC_FRAMELESS",
+        "displayName": "Frameless BLDC motor",
+        "description": ""
+    },
+    {
+        "category": "BLDC_CORELESS",
+        "displayName": "Coreless BLDC motor",
+        "description": ""
+    },
+    {
+        "category": "BLDC_SERVO",
+        "displayName": "BLDC Servo motor",
+        "description": ""
+    },
+    {
+        "category": "BLDC_WITH_GEARBOX",
+        "displayName": "BLDC motor with gearbox",
+        "description": ""
+    },
+    {
+        "category": "BLDC_DIRECT_DRIVE",
+        "displayName": "Direct-drive Brushless motor",
+        "description": ""
+    }
+]

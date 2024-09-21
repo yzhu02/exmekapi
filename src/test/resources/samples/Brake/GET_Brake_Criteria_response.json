@@ -1,0 +1,186 @@
+{
+    "domain": "Brake",
+    "fieldMetaCriteria": [
+        {
+            "type": "String",
+            "fieldName": "model",
+            "displayName": "Model",
+            "supportedOperators": [
+                "==",
+                ">=",
+                "<=",
+                ">",
+                "<",
+                "!=",
+                "CONTAINS",
+                "STARTWITH",
+                "ENDWITH",
+                "LIKE",
+                "BETWEEN"
+            ]
+        },
+        {
+            "type": "BigDecimal",
+            "fieldName": "frameSize",
+            "displayName": "Frame Size",
+            "unitFieldName": "frameSizeUnit",
+            "unit": "mm",
+            "isNumber": true,
+            "supportedOperators": [
+                "==",
+                ">=",
+                "<=",
+                ">",
+                "<",
+                "!=",
+                "BETWEEN"
+            ]
+        },
+        {
+            "type": "BigDecimal",
+            "fieldName": "nemaSize",
+            "displayName": "NEMA",
+            "unitFieldName": "frameSizeUnit",
+            "isNumber": true,
+            "supportedOperators": [
+                "==",
+                ">=",
+                "<=",
+                ">",
+                "<",
+                "!=",
+                "BETWEEN"
+            ]
+        },
+        {
+            "type": "BigDecimal",
+            "fieldName": "length",
+            "displayName": "Length",
+            "unitFieldName": "lengthUnit",
+            "unit": "mm",
+            "isNumber": true,
+            "supportedOperators": [
+                "==",
+                ">=",
+                "<=",
+                ">",
+                "<",
+                "!=",
+                "BETWEEN"
+            ]
+        },
+        {
+            "type": "BigDecimal",
+            "fieldName": "weight",
+            "displayName": "Weight",
+            "unitFieldName": "weightUnit",
+            "unit": "kg",
+            "isNumber": true,
+            "supportedOperators": [
+                "==",
+                ">=",
+                "<=",
+                ">",
+                "<",
+                "!=",
+                "BETWEEN"
+            ]
+        },
+        {
+            "type": "BigDecimal",
+            "fieldName": "ratedVoltage",
+            "displayName": "Rated Voltage",
+            "unitFieldName": "ratedVoltageUnit",
+            "unit": "V",
+            "supportedOperators": [
+                "==",
+                ">=",
+                "<=",
+                ">",
+                "<",
+                "!=",
+                "BETWEEN"
+            ]
+        },
+        {
+            "type": "BigDecimal",
+            "fieldName": "resistance",
+            "displayName": "Resistance",
+            "unitFieldName": "resistanceUnit",
+            "unit": "Ω",
+            "supportedOperators": [
+                "==",
+                ">=",
+                "<=",
+                ">",
+                "<",
+                "!=",
+                "BETWEEN"
+            ]
+        },
+        {
+            "type": "BigDecimal",
+            "fieldName": "current",
+            "displayName": "Current",
+            "unitFieldName": "currentUnit",
+            "unit": "A",
+            "supportedOperators": [
+                "==",
+                ">=",
+                "<=",
+                ">",
+                "<",
+                "!=",
+                "BETWEEN"
+            ]
+        },
+        {
+            "type": "BigDecimal",
+            "fieldName": "staticTorque",
+            "displayName": "Static Torque",
+            "unitFieldName": "staticTorqueUnit",
+            "unit": "Nm",
+            "supportedOperators": [
+                "==",
+                ">=",
+                "<=",
+                ">",
+                "<",
+                "!=",
+                "BETWEEN"
+            ]
+        },
+        {
+            "type": "BigDecimal",
+            "fieldName": "ratedPower",
+            "displayName": "Rated Power",
+            "unitFieldName": "ratedPowerUnit",
+            "unit": "W",
+            "supportedOperators": [
+                "==",
+                ">=",
+                "<=",
+                ">",
+                "<",
+                "!=",
+                "BETWEEN"
+            ]
+        },
+        {
+            "type": "BigDecimal",
+            "fieldName": "startVoltage",
+            "displayName": "Start Voltage",
+            "unitFieldName": "startVoltageUnit",
+            "unit": "V",
+            "supportedOperators": [
+                "==",
+                ">=",
+                "<=",
+                ">",
+                "<",
+                "!=",
+                "BETWEEN"
+            ]
+        }
+    ]
+}

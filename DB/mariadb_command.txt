@@ -1,0 +1,12 @@
+---- MariaDB ----
+brew reinstall mariadb
+
+brew services start mariadb
+
+brew services stop --all
+
+
+---- MySQL ----
+root password: _root123
+
+JDBC URL: jdbc:mysql://localhost:3306?useSSL=false&allowPublicKeyRetrieval=true

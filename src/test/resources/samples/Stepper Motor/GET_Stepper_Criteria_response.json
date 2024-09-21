@@ -1,0 +1,192 @@
+{
+    "domain": "StepperMotor",
+    "fieldMetaCriteria": [
+        {
+            "type": "String",
+            "fieldName": "model",
+            "displayName": "P/N",
+            "supportedOperators": [
+                "==",
+                ">=",
+                "<=",
+                ">",
+                "<",
+                "!=",
+                "CONTAINS",
+                "STARTWITH",
+                "ENDWITH",
+                "LIKE",
+                "BETWEEN"
+            ]
+        },
+        {
+            "type": "BigDecimal",
+            "fieldName": "frameSize",
+            "displayName": "Frame Size",
+            "unitFieldName": "frameSizeUnit",
+            "unit": "mm",
+            "isNumber": true,
+            "supportedOperators": [
+                "==",
+                ">=",
+                "<=",
+                ">",
+                "<",
+                "!=",
+                "BETWEEN"
+            ]
+        },
+        {
+            "type": "BigDecimal",
+            "fieldName": "nemaSize",
+            "displayName": "NEMA",
+            "unitFieldName": "frameSizeUnit",
+            "isNumber": true,
+            "supportedOperators": [
+                "==",
+                ">=",
+                "<=",
+                ">",
+                "<",
+                "!=",
+                "BETWEEN"
+            ]
+        },
+        {
+            "type": "BigDecimal",
+            "fieldName": "length",
+            "displayName": "Length",
+            "unitFieldName": "lengthUnit",
+            "unit": "mm",
+            "isNumber": true,
+            "supportedOperators": [
+                "==",
+                ">=",
+                "<=",
+                ">",
+                "<",
+                "!=",
+                "BETWEEN"
+            ]
+        },
+        {
+            "type": "BigDecimal",
+            "fieldName": "weight",
+            "displayName": "Weight",
+            "unitFieldName": "weightUnit",
+            "unit": "kg",
+            "isNumber": true,
+            "supportedOperators": [
+                "==",
+                ">=",
+                "<=",
+                ">",
+                "<",
+                "!=",
+                "BETWEEN"
+            ]
+        },
+        {
+            "type": "BigDecimal",
+            "fieldName": "ratedVoltage",
+            "displayName": "Rated Voltage",
+            "unitFieldName": "ratedVoltageUnit",
+            "unit": "V",
+            "isNumber": true,
+            "supportedOperators": [
+                "==",
+                ">=",
+                "<=",
+                ">",
+                "<",
+                "!=",
+                "BETWEEN"
+            ]
+        },
+        {
+            "type": "BigDecimal",
+            "fieldName": "phaseCurrent",
+            "displayName": "Phase Current",
+            "unitFieldName": "phaseCurrentUnit",
+            "unit": "A",
+            "isNumber": true,
+            "supportedOperators": [
+                "==",
+                ">=",
+                "<=",
+                ">",
+                "<",
+                "!=",
+                "BETWEEN"
+            ]
+        },
+        {
+            "type": "BigDecimal",
+            "fieldName": "holdingTorque",
+            "displayName": "Holding Torque",
+            "unitFieldName": "holdingTorqueUnit",
+            "unit": "Nm",
+            "isNumber": true,
+            "supportedOperators": [
+                "==",
+                ">=",
+                "<=",
+                ">",
+                "<",
+                "!=",
+                "BETWEEN"
+            ]
+        },
+        {
+            "type": "BigDecimal",
+            "fieldName": "detentTorque",
+            "displayName": "Detent Torque",
+            "unitFieldName": "detentTorqueUnit",
+            "unit": "Nm",
+            "isNumber": true,
+            "supportedOperators": [
+                "==",
+                ">=",
+                "<=",
+                ">",
+                "<",
+                "!=",
+                "BETWEEN"
+            ]
+        },
+        {
+            "type": "BigDecimal",
+            "fieldName": "stepAngle",
+            "displayName": "Step Angle",
+            "unitFieldName": "stepAngleUnit",
+            "unit": "°",
+            "isNumber": true,
+            "supportedOperators": [
+                "==",
+                ">=",
+                "<=",
+                ">",
+                "<",
+                "!=",
+                "BETWEEN"
+            ]
+        },
+        {
+            "type": "BigDecimal",
+            "fieldName": "maxThrust",
+            "displayName": "Max Thrust",
+            "unitFieldName": "maxThrustUnit",
+            "unit": "N",
+            "isNumber": true,
+            "supportedOperators": [
+                "==",
+                ">=",
+                "<=",
+                ">",
+                "<",
+                "!=",
+                "BETWEEN"
+            ]
+        }
+    ]
+}

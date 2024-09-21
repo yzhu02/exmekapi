@@ -1,0 +1,90 @@
+{
+    "data": [
+        {
+            "name": "Brake",
+            "series": "MPC024",
+            "model": "MPC024-24-001",
+            "length": {
+                "value": 62.00,
+                "unit": "mm"
+            },
+            "weight": {
+                "value": 540.00,
+                "unit": "g"
+            },
+            "frameSize": {
+                "value": 60.00,
+                "unit": "mm",
+                "type": "□"
+            },
+            "nemaSize": 24,
+            "ratedVoltage": {
+                "value": 24.00,
+                "unit": "V"
+            },
+            "resistance": {
+                "value": 53.00,
+                "unit": "Ω"
+            },
+            "current": {
+                "value": 0.4600,
+                "unit": "A"
+            },
+            "staticTorque": {
+                "value": 1.5000,
+                "unit": "Nm"
+            },
+            "ratedPower": {
+                "value": 11.00,
+                "unit": "W"
+            },
+            "startVoltage": {
+                "value": 22.00,
+                "unit": "V"
+            }
+        },
+        {
+            "name": "Brake",
+            "series": "MPC034",
+            "model": "MPC034-",
+            "length": {
+                "value": 63.00,
+                "unit": "mm"
+            },
+            "weight": {
+                "value": 500.00,
+                "unit": "g"
+            },
+            "frameSize": {
+                "value": 86.00,
+                "unit": "mm",
+                "type": "□"
+            },
+            "nemaSize": 34,
+            "ratedVoltage": {
+                "value": 24.00,
+                "unit": "V"
+            },
+            "resistance": {
+                "value": 58.00,
+                "unit": "Ω"
+            },
+            "current": {
+                "value": 0.4100,
+                "unit": "A"
+            },
+            "staticTorque": {
+                "value": 1.6800,
+                "unit": "Nm"
+            },
+            "ratedPower": {
+                "value": 9.80,
+                "unit": "W"
+            },
+            "startVoltage": {
+                "value": 15.00,
+                "unit": "V"
+            }
+        }
+    ]
+}

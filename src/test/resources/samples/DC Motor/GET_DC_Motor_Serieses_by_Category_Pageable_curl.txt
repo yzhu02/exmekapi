@@ -1,0 +1,1 @@
+curl --location 'http://localhost:8080/api/motors/DC/BLDC_INTERNAL_ROTOR/serieses?pageNumber=0&pageSize=8'

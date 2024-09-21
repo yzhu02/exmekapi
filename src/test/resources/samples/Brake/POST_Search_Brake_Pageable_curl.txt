@@ -1,0 +1,9 @@
+curl --location 'http://localhost:8080/api/brakes/search?pageNumber=0&pageSize=10' \
+--header 'Content-Type: application/json' \
+--data '{
+    "conditions": [
+        "ratedPower>6.5",
+        "staticTorque>0.5",
+        "staticTorque<2"
+    ]
+}'

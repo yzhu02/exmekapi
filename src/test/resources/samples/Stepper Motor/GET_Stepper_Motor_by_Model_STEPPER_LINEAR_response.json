@@ -1,0 +1,124 @@
+{
+    "name": "Linear Stepper Motor",
+    "model": "LS020NB101",
+    "length": {
+        "value": 27.20,
+        "unit": "mm"
+    },
+    "frameSize": {
+        "value": 20.00,
+        "unit": "mm",
+        "type": "□"
+    },
+    "nemaSize": 8,
+    "mechanicalImagePaths": [
+        "/images/motors/mechanical/LS020NB101.jpg"
+    ],
+    "category": "STEPPER_LINEAR",
+    "series": "LS020NB",
+    "ratedVoltage": {
+        "value": 2.50,
+        "unit": "V"
+    },
+    "allSpecs": [
+        {
+            "name": "Motor Length",
+            "unit": "mm",
+            "value": "27.20"
+        },
+        {
+            "name": "Frame Size",
+            "unit": "mm",
+            "value": "20.00",
+            "symbol": "□"
+        },
+        {
+            "name": "NEMA",
+            "value": "8"
+        },
+        {
+            "name": "Rated Voltage",
+            "unit": "V",
+            "value": "2.50"
+        },
+        {
+            "name": "Phase Current",
+            "unit": "A",
+            "value": "0.5000"
+        },
+        {
+            "name": "Phase Resistance",
+            "unit": "Ω",
+            "value": "5.10"
+        },
+        {
+            "name": "Phase Inductance",
+            "unit": "mH",
+            "value": "1.50"
+        },
+        {
+            "name": "Max Thrust",
+            "unit": "N",
+            "value": "65.00"
+        }
+    ],
+    "perfCurves": [],
+    "phaseCurrent": {
+        "value": 0.5000,
+        "unit": "A"
+    },
+    "phaseResistance": {
+        "value": 5.10,
+        "unit": "Ω"
+    },
+    "phaseInductance": {
+        "value": 1.50,
+        "unit": "mH"
+    },
+    "maxThrust": {
+        "value": 65.00,
+        "unit": "N"
+    },
+    "leads": [
+        {
+            "code": "B0024",
+            "screwDiameterInch": 0.1380,
+            "screwDiameterMM": 3.5050,
+            "leadInch": 0.0240,
+            "leadMM": 0.6096,
+            "threads": 1
+        },
+        {
+            "code": "B0048",
+            "screwDiameterInch": 0.1380,
+            "screwDiameterMM": 3.5050,
+            "leadInch": 0.0480,
+            "leadMM": 1.2192,
+            "threads": 1
+        },
+        {
+            "code": "B0079",
+            "screwDiameterInch": 0.1380,
+            "screwDiameterMM": 3.5050,
+            "leadInch": 0.0790,
+            "leadMM": 2.0000,
+            "threads": 2
+        },
+        {
+            "code": "B0157",
+            "screwDiameterInch": 0.1380,
+            "screwDiameterMM": 3.5050,
+            "leadInch": 0.1570,
+            "leadMM": 4.0000,
+            "threads": 4
+        },
+        {
+            "code": "B0315",
+            "screwDiameterInch": 0.1380,
+            "screwDiameterMM": 3.5050,
+            "leadInch": 0.3150,
+            "leadMM": 8.0000,
+            "threads": 8
+        }
+    ]
+}

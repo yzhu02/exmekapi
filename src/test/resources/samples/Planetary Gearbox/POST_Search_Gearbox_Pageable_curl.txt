@@ -1,0 +1,8 @@
+curl --location 'http://localhost:8080/api/gearboxes/search?pageNumber=0&pageSize=10' \
+--header 'Content-Type: application/json' \
+--data '{
+    "conditions": [
+        "efficiency>=70",
+        "ratedContinuousTorque>=0.5"
+    ]
+}'

@@ -1,0 +1,294 @@
+{
+    "name": "Internal Rotor BLDC Motor",
+    "model": "MB057GA200",
+    "length": {
+        "value": 74.00,
+        "unit": "mm"
+    },
+    "weight": {
+        "value": 0.75,
+        "unit": "kg"
+    },
+    "frameSize": {
+        "value": 57.00,
+        "unit": "mm",
+        "type": "φ"
+    },
+    "nemaSize": 23,
+    "mechanicalImagePaths": [
+        "/images/motors/mechanical/MB057GA200.jpg"
+    ],
+    "category": "BLDC_INTERNAL_ROTOR",
+    "series": "MB057GA",
+    "ratedVoltage": {
+        "value": 60.00,
+        "unit": "V"
+    },
+    "allSpecs": [
+        {
+            "name": "Motor Length",
+            "unit": "mm",
+            "value": "74.00"
+        },
+        {
+            "name": "Motor Weight",
+            "unit": "kg",
+            "value": "0.75"
+        },
+        {
+            "name": "Frame Size",
+            "unit": "mm",
+            "value": "57.00",
+            "symbol": "φ"
+        },
+        {
+            "name": "NEMA",
+            "value": "23"
+        },
+        {
+            "name": "Rated Voltage",
+            "unit": "V",
+            "value": "60.00"
+        },
+        {
+            "name": "Rated Current",
+            "unit": "A",
+            "value": "2.3000"
+        },
+        {
+            "name": "Rated Power",
+            "unit": "W",
+            "value": "105.00"
+        },
+        {
+            "name": "Rated Torque",
+            "unit": "Nm",
+            "value": "0.2000"
+        },
+        {
+            "name": "Rated Speed",
+            "unit": "rpm",
+            "value": "5000"
+        },
+        {
+            "name": "Peak Current",
+            "unit": "A",
+            "value": "6.9000"
+        },
+        {
+            "name": "Peak Torque",
+            "unit": "Nm",
+            "value": "0.6000"
+        },
+        {
+            "name": "Rotor Inertia",
+            "unit": "Kg.cm²",
+            "value": "0.169"
+        },
+        {
+            "name": "Line to Line Inductance",
+            "unit": "mH",
+            "value": "3.16"
+        },
+        {
+            "name": "Torque Constant",
+            "unit": "Nm/A",
+            "value": "0.084"
+        },
+        {
+            "name": "Ke(RMS)",
+            "unit": "V/krpm",
+            "value": "6.2"
+        },
+        {
+            "name": "Line to Line Resistance",
+            "unit": "Ω",
+            "value": "1.79"
+        }
+    ],
+    "perfCurves": [
+        {
+            "title": "MB057GA200 @ 60 Vdc",
+            "curveLines": [
+                {
+                    "name": "Tcont",
+                    "points": [
+                        {
+                            "x": 0,
+                            "y": 40.363
+                        },
+                        {
+                            "x": 0.5,
+                            "y": 39.895
+                        },
+                        {
+                            "x": 0.75,
+                            "y": 39.636
+                        },
+                        {
+                            "x": 1,
+                            "y": 39.360
+                        },
+                        {
+                            "x": 1.5,
+                            "y": 38.757
+                        },
+                        {
+                            "x": 1.75,
+                            "y": 38.428
+                        },
+                        {
+                            "x": 2,
+                            "y": 38.080
+                        },
+                        {
+                            "x": 2.25,
+                            "y": 37.714
+                        },
+                        {
+                            "x": 2.75,
+                            "y": 36.921
+                        },
+                        {
+                            "x": 3,
+                            "y": 36.494
+                        },
+                        {
+                            "x": 3.25,
+                            "y": 36.045
+                        },
+                        {
+                            "x": 3.5,
+                            "y": 35.573
+                        },
+                        {
+                            "x": 3.75,
+                            "y": 35.078
+                        },
+                        {
+                            "x": 4.25,
+                            "y": 34.014
+                        },
+                        {
+                            "x": 4.75,
+                            "y": 32.842
+                        },
+                        {
+                            "x": 5,
+                            "y": 28.753
+                        },
+                        {
+                            "x": 5.5,
+                            "y": 19.346
+                        },
+                        {
+                            "x": 6,
+                            "y": 11.239
+                        }
+                    ]
+                },
+                {
+                    "name": "Tpeak",
+                    "points": [
+                        {
+                            "x": 0,
+                            "y": 79.593
+                        },
+                        {
+                            "x": 0.5,
+                            "y": 78.455
+                        },
+                        {
+                            "x": 0.75,
+                            "y": 77.255
+                        },
+                        {
+                            "x": 1,
+                            "y": 75.938
+                        },
+                        {
+                            "x": 1.5,
+                            "y": 72.872
+                        },
+                        {
+                            "x": 1.75,
+                            "y": 71.073
+                        },
+                        {
+                            "x": 2,
+                            "y": 69.052
+                        },
+                        {
+                            "x": 2.25,
+                            "y": 66.764
+                        },
+                        {
+                            "x": 2.75,
+                            "y": 61.140
+                        },
+                        {
+                            "x": 3,
+                            "y": 57.626
+                        },
+                        {
+                            "x": 3.25,
+                            "y": 53.467
+                        },
+                        {
+                            "x": 3.5,
+                            "y": 48.459
+                        },
+                        {
+                            "x": 3.75,
+                            "y": 42.700
+                        },
+                        {
+                            "x": 4.25,
+                            "y": 32.529
+                        },
+                        {
+                            "x": 4.75,
+                            "y": 24.040
+                        },
+                        {
+                            "x": 5,
+                            "y": 20.304
+                        },
+                        {
+                            "x": 5.5,
+                            "y": 13.661
+                        },
+                        {
+                            "x": 6,
+                            "y": 7.936
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "ratedCurrent": {
+        "value": 2.3000,
+        "unit": "A"
+    },
+    "ratedPower": {
+        "value": 105.00,
+        "unit": "W"
+    },
+    "ratedTorque": {
+        "value": 0.2000,
+        "unit": "Nm"
+    },
+    "ratedRotatingSpeed": {
+        "value": 5000,
+        "unit": "rpm"
+    },
+    "peakCurrent": {
+        "value": 6.9000,
+        "unit": "A"
+    },
+    "peakTorque": {
+        "value": 0.6000,
+        "unit": "Nm"
+    }
+}

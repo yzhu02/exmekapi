@@ -1,0 +1,9 @@
+curl --location 'http://localhost:8080/api/motors/DC/BLDC_INTERNAL_ROTOR/search?pageNumber=0&pageSize=10' \
+--header 'Content-Type: application/json' \
+--data '{
+    "conditions": [
+        "ratedVoltage>=24",
+        "ratedRotatingSpeed>=2000",
+        "ratedRotatingSpeed<=6000"
+    ]
+}'

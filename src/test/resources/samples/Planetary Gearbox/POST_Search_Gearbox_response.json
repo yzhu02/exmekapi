@@ -1,0 +1,106 @@
+{
+    "data": [
+        {
+            "name": "Planetary Gearbox",
+            "series": "PL030GE",
+            "model": "PL030GE30K-2S",
+            "length": {
+                "value": 36.10,
+                "unit": "mm"
+            },
+            "weight": {
+                "value": 80.00,
+                "unit": "g"
+            },
+            "frameSize": {
+                "value": 30.00,
+                "unit": "mm",
+                "type": "φ"
+            },
+            "numOfStages": 2,
+            "reductionRatios": [
+                "1/14",
+                "1/19",
+                "1/27",
+                "1/35"
+            ],
+            "efficiency": {
+                "value": 81.00,
+                "unit": "%"
+            },
+            "ratedContinuousTorque": {
+                "value": 1.2000,
+                "unit": "Nm"
+            },
+            "maxMomentaryTorque": {
+                "value": 3.5000,
+                "unit": "Nm"
+            },
+            "maxRadialLoad": {
+                "value": 100.00,
+                "unit": "N"
+            },
+            "maxAxialLoad": {
+                "value": 50.00,
+                "unit": "N"
+            },
+            "maxShaftPress": {
+                "value": 100.00,
+                "unit": "N"
+            },
+            "operatingTemperature": "-15°C ～ +80°C",
+            "recommendInputSpeed": "＜ 10000rpm"
+        },
+        {
+            "name": "Planetary Gearbox",
+            "series": "PL030GE",
+            "model": "PL030GE30K-3S",
+            "length": {
+                "value": 43.00,
+                "unit": "mm"
+            },
+            "weight": {
+                "value": 108.00,
+                "unit": "g"
+            },
+            "frameSize": {
+                "value": 30.00,
+                "unit": "mm",
+                "type": "φ"
+            },
+            "numOfStages": 3,
+            "reductionRatios": [
+                "1/51",
+                "1/71",
+                "1/100",
+                "1/139"
+            ],
+            "efficiency": {
+                "value": 73.00,
+                "unit": "%"
+            },
+            "ratedContinuousTorque": {
+                "value": 2.5000,
+                "unit": "Nm"
+            },
+            "maxMomentaryTorque": {
+                "value": 7.5000,
+                "unit": "Nm"
+            },
+            "maxRadialLoad": {
+                "value": 100.00,
+                "unit": "N"
+            },
+            "maxAxialLoad": {
+                "value": 50.00,
+                "unit": "N"
+            },
+            "maxShaftPress": {
+                "value": 100.00,
+                "unit": "N"
+            },
+            "operatingTemperature": "-15°C ～ +80°C",
+            "recommendInputSpeed": "＜ 10000rpm"
+        }
+    ]
+}

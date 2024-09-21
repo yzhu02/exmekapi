@@ -1,0 +1,12 @@
+[
+    {
+        "category": "BRUSH_WITH_GEARBOX",
+        "displayName": "Brush motor with gearbox",
+        "description": ""
+    },
+    {
+        "category": "PERMANENT_MAGNET_BRUSH",
+        "displayName": "Permanent Magnet Brush motor",
+        "description": ""
+    }
+]

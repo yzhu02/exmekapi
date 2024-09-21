@@ -1,0 +1,136 @@
+{
+    "data": [
+        {
+            "series": "MP020NA",
+            "description": "NEMA 8\n2 Phase Hybrid stepper motor",
+            "technicalData": {
+                "Holding Torque": "1.8-2 Ncm",
+                "Detent Torque": "0.2 Ncm",
+                "Phase Current": "0.6 A",
+                "Step Angle": "1.8 °",
+                "Length": "30-60 mm"
+            },
+            "category": "STEPPER_STANDARD_TORQUE"
+        },
+        {
+            "series": "MP028NB",
+            "description": "NEMA 11\n2 Phase Hybrid stepper motor",
+            "technicalData": {
+                "Holding Torque": "4-9.5 Ncm",
+                "Detent Torque": "0.8-1.5 Ncm",
+                "Phase Current": "0.47-1.30 A",
+                "Step Angle": "1.8 °",
+                "Length": "31.5-50.5 mm"
+            },
+            "category": "STEPPER_STANDARD_TORQUE"
+        },
+        {
+            "series": "MP039NA",
+            "description": "NEMA 16\n2 Phase Hybrid stepper motor",
+            "technicalData": {
+                "Holding Torque": "4.6-30 Ncm",
+                "Detent Torque": "0.8-2.5 Ncm",
+                "Phase Current": "0.28-0.80 A",
+                "Step Angle": "1.8 °",
+                "Length": "20-53 mm"
+            },
+            "category": "STEPPER_STANDARD_TORQUE"
+        },
+        {
+            "series": "MP042NB",
+            "description": "NEMA 17\n2 Phase Hybrid stepper motor",
+            "technicalData": {
+                "Holding Torque": "12-80 Ncm",
+                "Detent Torque": "1.42-6 Ncm",
+                "Phase Current": "0.3-3.5 A",
+                "Step Angle": "1.8 °",
+                "Length": "24-60 mm"
+            },
+            "category": "STEPPER_STANDARD_TORQUE"
+        },
+        {
+            "series": "MP042SB",
+            "description": "NEMA 17\n2 Phase Hybrid stepper motor",
+            "technicalData": {
+                "Holding Torque": "14.5-49 Ncm",
+                "Detent Torque": "1.5-2.74 Ncm",
+                "Phase Current": "0.4-1.68 A",
+                "Step Angle": "0.9 °",
+                "Length": "22-68 mm"
+            },
+            "category": "STEPPER_STANDARD_TORQUE"
+        },
+        {
+            "series": "MP057NB",
+            "description": "NEMA 23\n2 Phase Hybrid stepper motor",
+            "technicalData": {
+                "Holding Torque": "41-300 Ncm",
+                "Detent Torque": "2.6-12 Ncm",
+                "Phase Current": "1-6 A",
+                "Step Angle": "1.8 °",
+                "Length": "41-115 mm"
+            },
+            "category": "STEPPER_STANDARD_TORQUE"
+        },
+        {
+            "series": "MP057SB",
+            "description": "NEMA 23\n2 Phase Hybrid stepper motor",
+            "technicalData": {
+                "Holding Torque": "19.6-250 Ncm",
+                "Detent Torque": "3.92-12 Ncm",
+                "Phase Current": "1.0-3.0 A",
+                "Step Angle": "0.9 °",
+                "Length": "41-115 mm"
+            },
+            "category": "STEPPER_STANDARD_TORQUE"
+        },
+        {
+            "series": "MP060NB",
+            "description": "NEMA 24\n2 Phase Hybrid stepper motor",
+            "technicalData": {
+                "Holding Torque": "110-310 Ncm",
+                "Detent Torque": "6-17 Ncm",
+                "Phase Current": "2.8 A",
+                "Step Angle": "1.8 °",
+                "Length": "45-86 mm"
+            },
+            "category": "STEPPER_STANDARD_TORQUE"
+        },
+        {
+            "series": "MP086NA",
+            "description": "NEMA 34, Round housing\n2 Phases Hybrid Stepper Motor",
+            "technicalData": {
+                "Holding Torque": "137.2-392 Ncm",
+                "Detent Torque": "7.84-24.5 Ncm",
+                "Phase Current": "1.7-7 A",
+                "Step Angle": "1.8 °",
+                "Length": "62-127 mm"
+            },
+            "category": "STEPPER_STANDARD_TORQUE"
+        },
+        {
+            "series": "MP086YG",
+            "description": "NEMA 34\n2 Phases Hybrid Stepper Motor",
+            "technicalData": {
+                "Holding Torque": "2.8-12.1 Nm",
+                "Detent Torque": "0.2-0.38 Nm",
+                "Phase Current": "6.1-10.0 A",
+                "Step Angle": "1.8 °",
+                "Length": "65-156.5 mm"
+            },
+            "category": "STEPPER_STANDARD_TORQUE"
+        },
+        {
+            "series": "MP110YG",
+            "description": "NEMA 43\n2 Phases Hybrid Stepper Motor",
+            "technicalData": {
+                "Holding Torque": "11.68-30.81 Nm",
+                "Detent Torque": "0.3-0.75 Nm",
+                "Phase Current": "10.7-15.8 A",
+                "Step Angle": "1.8 °",
+                "Length": "99-201 mm"
+            },
+            "category": "STEPPER_STANDARD_TORQUE"
+        }
+    ]
+}

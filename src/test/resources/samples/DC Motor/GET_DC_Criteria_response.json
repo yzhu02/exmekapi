@@ -1,0 +1,232 @@
+{
+    "fieldMetaCriteria": [
+        {
+            "type": "BigDecimal",
+            "fieldName": "ratedCurrent",
+            "displayName": "Rated Current",
+            "unitFieldName": "ratedCurrentUnit",
+            "unit": "A",
+            "isNumber": true,
+            "supportedOperators": [
+                "==",
+                ">=",
+                "<=",
+                ">",
+                "<",
+                "!=",
+                "BETWEEN"
+            ],
+            "minValue": 1.2000,
+            "maxValue": 12.2000
+        },
+        {
+            "type": "BigDecimal",
+            "fieldName": "ratedPower",
+            "displayName": "Rated Power",
+            "unitFieldName": "ratedPowerUnit",
+            "unit": "W",
+            "isNumber": true,
+            "supportedOperators": [
+                "==",
+                ">=",
+                "<=",
+                ">",
+                "<",
+                "!=",
+                "BETWEEN"
+            ],
+            "minValue": 55.00,
+            "maxValue": 314.00
+        },
+        {
+            "type": "BigDecimal",
+            "fieldName": "ratedTorque",
+            "displayName": "Rated Torque",
+            "unitFieldName": "ratedTorqueUnit",
+            "unit": "Nm",
+            "isNumber": true,
+            "supportedOperators": [
+                "==",
+                ">=",
+                "<=",
+                ">",
+                "<",
+                "!=",
+                "BETWEEN"
+            ],
+            "minValue": 0.2000,
+            "maxValue": 0.6000
+        },
+        {
+            "type": "Integer",
+            "fieldName": "ratedRotatingSpeed",
+            "displayName": "Rated Rotating Speed",
+            "unitFieldName": "ratedRotatingSpeedUnit",
+            "unit": "rpm",
+            "isNumber": true,
+            "supportedOperators": [
+                "==",
+                ">=",
+                "<=",
+                ">",
+                "<",
+                "!=",
+                "BETWEEN"
+            ],
+            "minValue": 3000,
+            "maxValue": 5000
+        },
+        {
+            "type": "BigDecimal",
+            "fieldName": "ratedLinearSpeed",
+            "displayName": "Rated Linear Speed",
+            "unitFieldName": "ratedLinearSpeedUnit",
+            "isNumber": true,
+            "supportedOperators": [
+                "==",
+                ">=",
+                "<=",
+                ">",
+                "<",
+                "!=",
+                "BETWEEN"
+            ]
+        },
+        {
+            "type": "BigDecimal",
+            "fieldName": "peakCurrent",
+            "displayName": "Peak Current",
+            "unitFieldName": "peakCurrentUnit",
+            "unit": "A",
+            "isNumber": true,
+            "supportedOperators": [
+                "==",
+                ">=",
+                "<=",
+                ">",
+                "<",
+                "!=",
+                "BETWEEN"
+            ],
+            "minValue": 3.6000,
+            "maxValue": 36.6000
+        },
+        {
+            "type": "BigDecimal",
+            "fieldName": "peakTorque",
+            "displayName": "Peak Torque",
+            "unitFieldName": "peakTorqueUnit",
+            "unit": "Nm",
+            "isNumber": true,
+            "supportedOperators": [
+                "==",
+                ">=",
+                "<=",
+                ">",
+                "<",
+                "!=",
+                "BETWEEN"
+            ],
+            "minValue": 0.3300,
+            "maxValue": 1.9100
+        },
+        {
+            "type": "BigDecimal",
+            "fieldName": "maxSortingWeight",
+            "displayName": "Max Sorting Weight",
+            "unitFieldName": "maxSortingWeightUnit",
+            "isNumber": true,
+            "supportedOperators": [
+                "==",
+                ">=",
+                "<=",
+                ">",
+                "<",
+                "!=",
+                "BETWEEN"
+            ]
+        },
+        {
+            "type": "BigDecimal",
+            "fieldName": "ratedVoltage",
+            "displayName": "Rated Voltage",
+            "unitFieldName": "ratedVoltageUnit",
+            "unit": "V",
+            "isNumber": true,
+            "supportedOperators": [
+                "==",
+                ">=",
+                "<=",
+                ">",
+                "<",
+                "!=",
+                "BETWEEN"
+            ],
+            "minValue": 24.00,
+            "maxValue": 170.00
+        },
+        {
+            "type": "String",
+            "fieldName": "model",
+            "displayName": "Model",
+            "isNumber": false
+        },
+        {
+            "type": "BigDecimal",
+            "fieldName": "length",
+            "displayName": "Length",
+            "unitFieldName": "lengthUnit",
+            "unit": "mm",
+            "isNumber": true,
+            "supportedOperators": [
+                "==",
+                ">=",
+                "<=",
+                ">",
+                "<",
+                "!=",
+                "BETWEEN"
+            ],
+            "minValue": 53.60,
+            "maxValue": 123.00
+        },
+        {
+            "type": "BigDecimal",
+            "fieldName": "weight",
+            "displayName": "Weight",
+            "unitFieldName": "weightUnit",
+            "unit": "kg",
+            "isNumber": true,
+            "supportedOperators": [
+                "==",
+                ">=",
+                "<=",
+                ">",
+                "<",
+                "!=",
+                "BETWEEN"
+            ],
+            "minValue": 0.50,
+            "maxValue": 1.60
+        },
+        {
+            "type": "BigDecimal",
+            "fieldName": "frameSize",
+            "displayName": "Frame Size",
+            "unitFieldName": "frameSizeUnit",
+            "unit": "mm",
+            "isNumber": true,
+            "supportedOperators": [
+                "==",
+                ">=",
+                "<=",
+                ">",
+                "<",
+                "!=",
+                "BETWEEN"
+            ],
+            "minValue": 57.00,
+            "maxValue": 82.00
+        }
+    ]
+}

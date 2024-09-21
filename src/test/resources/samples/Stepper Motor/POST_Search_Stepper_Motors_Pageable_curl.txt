@@ -1,0 +1,8 @@
+curl --location 'http://localhost:8080/api/motors/stepper/search?pageNumber=0&pageSize=10' \
+--header 'Content-Type: application/json' \
+--data '{
+    "conditions": [
+        "phaseCurrent >= 0.5",
+        "holdingTorque BETWEEN 0.5 AND 12.0"
+    ]
+}'

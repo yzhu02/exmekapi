@@ -1,0 +1,105 @@
+{
+    "pageNumber": 0,
+    "pageSize": 8,
+    "totalPages": 3,
+    "totalElementsOfAllPages": 22,
+    "totalElementsOfCurrPage": 8,
+    "data": [
+        {
+            "series": "MB057GA",
+            "description": "High Reliable\nBonded Neo Magnet\nNema 23 Flange Available",
+            "technicalData": {
+                "Rated Power": "55-209 W",
+                "Rated Voltage": "60 VDC",
+                "Rated Torque": "0.11-0.40 Nm",
+                "Rated Speed": "4750-5000 rpm",
+                "Length": "54-114 mm"
+            },
+            "category": "BLDC_INTERNAL_ROTOR"
+        },
+        {
+            "series": "MB059AH",
+            "description": "High Power Density\nNema 23 Mounting Available\nSintered Neo Magnet",
+            "technicalData": {
+                "Rated Power": "84-220 W",
+                "Rated Voltage": "24 VDC",
+                "Rated Torque": "0.23-0.60 Nm",
+                "Rated Speed": "3500 rpm",
+                "Length": "53.6-93.6 mm"
+            },
+            "category": "BLDC_INTERNAL_ROTOR"
+        },
+        {
+            "series": "MB070GA",
+            "description": "Low cogging\nSpecial Deisgn for Easy Production\nHigh Reliable",
+            "technicalData": {
+                "Rated Power": "85-110 W",
+                "Rated Voltage": "24 VDC",
+                "Rated Torque": "0.215-0.355 Nm",
+                "Rated Speed": "3000-3800 rpm",
+                "Length": "95-123 mm"
+            },
+            "category": "BLDC_INTERNAL_ROTOR"
+        },
+        {
+            "series": "MB082GA",
+            "description": "Low Cogging\nNEMA 34 Mounting Interface\nBonded Neo Magnet\nHigh Voltage Available",
+            "technicalData": {
+                "Rated Power": "314-838 W",
+                "Rated Voltage": "170 VDC",
+                "Rated Torque": "0.60-2.00 Nm",
+                "Rated Speed": "4000-6000 rpm",
+                "Length": "78-141 mm"
+            },
+            "category": "BLDC_INTERNAL_ROTOR"
+        },
+        {
+            "series": "MB120GA",
+            "description": "Economic Design with Bonded Neo\nVoltage Rating up to 325VDC\nOptional; NEMA 56 mounting",
+            "technicalData": {
+                "Rated Power": "1275-3194 W",
+                "Rated Voltage": "325 VDC",
+                "Rated Torque": "2.03-6.10 Nm",
+                "Rated Speed": "5000-6000 rpm",
+                "Length": "144.3-251 mm"
+            },
+            "category": "BLDC_INTERNAL_ROTOR"
+        },
+        {
+            "series": "MBH057GA",
+            "description": "",
+            "technicalData": {
+                "Rated Power": "250-520 W",
+                "Rated Voltage": "70 VDC",
+                "Rated Torque": "0.2-0.4 Nm",
+                "Rated Speed": "12500 rpm",
+                "Length": "54-94 mm"
+            },
+            "category": "BLDC_INTERNAL_ROTOR"
+        },
+        {
+            "series": "MDB56GS",
+            "description": "Low Cogging\nNEMA 23 Mounting Interface\nEconomic Design for High Power",
+            "technicalData": {
+                "Rated Power": "47-188 W",
+                "Rated Voltage": "36 VDC",
+                "Rated Torque": "0.15-0.60 Nm",
+                "Rated Speed": "3000 rpm",
+                "Length": "56-116 mm"
+            },
+            "category": "BLDC_INTERNAL_ROTOR"
+        },
+        {
+            "series": "ME036GA",
+            "description": "Long Life\nDirect Replacement of Toy Motor\nEconomic Design for Power Tool",
+            "technicalData": {
+                "Rated Power": "7.5-33 W",
+                "Rated Voltage": "24 VDC",
+                "Rated Torque": "0.015-0.07 Nm",
+                "Rated Speed": "4500-4800 rpm",
+                "Length": "30-57 mm"
+            },
+            "category": "BLDC_INTERNAL_ROTOR"
+        }
+    ]
+}

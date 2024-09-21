@@ -1,0 +1,124 @@
+{
+    "data": [
+        {
+            "series": "PL030GE",
+            "description": "",
+            "technicalData": {
+                "Efficiency": "66-90%",
+                "No. of Stages": "1-4",
+                "Ratio": "1/3.7-1/939",
+                "Continuous Torque": "0.3-3.0 Nm",
+                "Peak Torque": "1.0-9.0 Nm",
+                "Length": "29.0-49.9 mm"
+            }
+        },
+        {
+            "series": "PL032GE",
+            "description": "",
+            "technicalData": {
+                "Efficiency": "66-90%",
+                "No. of Stages": "1-4",
+                "Ratio": "1/3.7-1/939",
+                "Continuous Torque": "0.5-5.0 Nm",
+                "Peak Torque": "1.5-12.0 Nm",
+                "Length": "25.7-42.6 mm"
+            }
+        },
+        {
+            "series": "PL036GF",
+            "description": "",
+            "technicalData": {
+                "Efficiency": "66-90%",
+                "No. of Stages": "1-4",
+                "Ratio": "1/3.7-1/596",
+                "Continuous Torque": "0.5-5.0 Nm",
+                "Peak Torque": "1.5-12.0 Nm",
+                "Length": "29.0-53.0 mm"
+            }
+        },
+        {
+            "series": "PL042GF",
+            "description": "",
+            "technicalData": {
+                "Efficiency": "66-90%",
+                "No. of Stages": "1-4",
+                "Ratio": "1/3.7-1/596",
+                "Continuous Torque": "1.5-15.0 Nm",
+                "Peak Torque": "3.0-38.0 Nm",
+                "Length": "31.5-62.9 mm"
+            }
+        },
+        {
+            "series": "PL042GE",
+            "description": "",
+            "technicalData": {
+                "Efficiency": "66-90%",
+                "No. of Stages": "1-4",
+                "Ratio": "1/3.7-1/515",
+                "Continuous Torque": "2.0-20.0 Nm",
+                "Peak Torque": "6.0-60.0 Nm",
+                "Length": "37.5-68.6 mm"
+            }
+        },
+        {
+            "series": "PL045GE",
+            "description": "",
+            "technicalData": {
+                "Efficiency": "66-90%",
+                "No. of Stages": "1-4",
+                "Ratio": "1/3.7-1/721",
+                "Continuous Torque": "1.0-10.0 Nm",
+                "Peak Torque": "3.0-30.0 Nm",
+                "Length": "41.3-74.7 mm"
+            }
+        },
+        {
+            "series": "PL052GE",
+            "description": "",
+            "technicalData": {
+                "Efficiency": "66-90%",
+                "No. of Stages": "1-4",
+                "Ratio": "1/3.6-1/307",
+                "Continuous Torque": "2-20 Nm",
+                "Peak Torque": "6-60 Nm",
+                "Length": "45.7-79.8 mm"
+            }
+        },
+        {
+            "series": "PL056GE",
+            "description": "",
+            "technicalData": {
+                "Efficiency": "66-90%",
+                "No. of Stages": "1-4",
+                "Ratio": "1/3.6-1/400",
+                "Continuous Torque": "3-45 Nm",
+                "Peak Torque": "6-110 Nm",
+                "Length": "40.3-81.4 mm"
+            }
+        },
+        {
+            "series": "PL062GE",
+            "description": "",
+            "technicalData": {
+                "Efficiency": "66-90%",
+                "No. of Stages": "1-4",
+                "Ratio": "1/3.6-1/307",
+                "Continuous Torque": "4-45 Nm",
+                "Peak Torque": "12-110 Nm",
+                "Length": "42.3-82.8 mm"
+            }
+        },
+        {
+            "series": "PL080GE",
+            "description": "",
+            "technicalData": {
+                "Efficiency": "73-90%",
+                "No. of Stages": "1-4",
+                "Ratio": "1/3.55-1/138",
+                "Continuous Torque": "8-80 Nm",
+                "Peak Torque": "12-120 Nm",
+                "Length": "55.7-88.5 mm"
+            }
+        }
+    ]
+}

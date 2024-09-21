@@ -1,0 +1,22 @@
+[
+    {
+        "category": "STEPPER_FLAT",
+        "displayName": "Flat Stepper motor",
+        "description": ""
+    },
+    {
+        "category": "STEPPER_LINEAR",
+        "displayName": "Linear Stepper motor",
+        "description": ""
+    },
+    {
+        "category": "STEPPER_STANDARD_TORQUE",
+        "displayName": "Standard torque Stepper motor",
+        "description": ""
+    },
+    {
+        "category": "STEPPER_WITH_CONTROL",
+        "displayName": "Stepper motor with control",
+        "description": ""
+    }
+]

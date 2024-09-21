@@ -1,0 +1,61 @@
+{
+    "pageNumber": 0,
+    "pageSize": 8,
+    "totalPages": 1,
+    "totalElementsOfAllPages": 5,
+    "totalElementsOfCurrPage": 5,
+    "data": [
+        {
+            "series": "MAB23X",
+            "description": "",
+            "technicalData": {
+                "Rated Power": "11 W",
+                "Rated Voltage": "24 VDC",
+                "Start Voltage": "22 VDC",
+                "Static Torque": "2 Nm",
+                "Length": "52.5 mm"
+            }
+        },
+        {
+            "series": "MPC023",
+            "description": "",
+            "technicalData": {
+                "Rated Power": "6.2 W",
+                "Rated Voltage": "24 VDC",
+                "Start Voltage": "15 VDC",
+                "Static Torque": "0.5 Nm",
+                "Length": "48 mm"
+            }
+        },
+        {
+            "series": "MPC024",
+            "description": "",
+            "technicalData": {
+                "Rated Power": "11 W",
+                "Rated Voltage": "24 VDC",
+                "Start Voltage": "22 VDC",
+                "Static Torque": "1.5 Nm",
+                "Length": "62 mm"
+            }
+        },
+        {
+            "series": "MPC034",
+            "description": "",
+            "technicalData": {
+                "Rated Power": "9.8 W",
+                "Rated Voltage": "24 VDC",
+                "Start Voltage": "15 VDC",
+                "Static Torque": "1.68 Nm",
+                "Length": "63 mm"
+            }
+        },
+        {
+            "series": "MSRA061",
+            "description": "",
+            "technicalData": {
+                "Rated Voltage": "12-48 VDC",
+                "Static Torque": "2.26-3.95 Nm"
+            }
+        }
+    ]
+}

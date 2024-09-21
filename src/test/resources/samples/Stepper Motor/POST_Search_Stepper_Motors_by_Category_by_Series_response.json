@@ -1,0 +1,356 @@
+{
+    "data": [
+        {
+            "name": "Standard Stepper Motor",
+            "model": "MP028NB101",
+            "length": {
+                "value": 31.50,
+                "unit": "mm"
+            },
+            "weight": {
+                "value": 100.00,
+                "unit": "g"
+            },
+            "frameSize": {
+                "value": 28.00,
+                "unit": "mm",
+                "type": "□"
+            },
+            "nemaSize": 11,
+            "category": "STEPPER_STANDARD_TORQUE",
+            "series": "MP028NB",
+            "phaseCurrent": {
+                "value": 0.6700,
+                "unit": "A"
+            },
+            "phaseResistance": {
+                "value": 5.60,
+                "unit": "Ω"
+            },
+            "phaseInductance": {
+                "value": 4.20,
+                "unit": "mH"
+            },
+            "holdingTorque": {
+                "value": 6.0000,
+                "unit": "Ncm"
+            },
+            "detentTorque": {
+                "value": 0.8000,
+                "unit": "Ncm"
+            },
+            "stepAngle": {
+                "value": 1.80,
+                "unit": "°"
+            }
+        },
+        {
+            "name": "Standard Stepper Motor",
+            "model": "MP028NB102",
+            "length": {
+                "value": 31.50,
+                "unit": "mm"
+            },
+            "weight": {
+                "value": 100.00,
+                "unit": "g"
+            },
+            "frameSize": {
+                "value": 28.00,
+                "unit": "mm",
+                "type": "□"
+            },
+            "nemaSize": 11,
+            "category": "STEPPER_STANDARD_TORQUE",
+            "series": "MP028NB",
+            "phaseCurrent": {
+                "value": 0.4700,
+                "unit": "A"
+            },
+            "phaseResistance": {
+                "value": 2.80,
+                "unit": "Ω"
+            },
+            "phaseInductance": {
+                "value": 1.00,
+                "unit": "mH"
+            },
+            "holdingTorque": {
+                "value": 4.0000,
+                "unit": "Ncm"
+            },
+            "detentTorque": {
+                "value": 0.8000,
+                "unit": "Ncm"
+            },
+            "stepAngle": {
+                "value": 1.80,
+                "unit": "°"
+            }
+        },
+        {
+            "name": "Standard Stepper Motor",
+            "model": "MP028NB103",
+            "length": {
+                "value": 31.50,
+                "unit": "mm"
+            },
+            "weight": {
+                "value": 100.00,
+                "unit": "g"
+            },
+            "frameSize": {
+                "value": 28.00,
+                "unit": "mm",
+                "type": "□"
+            },
+            "nemaSize": 11,
+            "category": "STEPPER_STANDARD_TORQUE",
+            "series": "MP028NB",
+            "phaseCurrent": {
+                "value": 1.3000,
+                "unit": "A"
+            },
+            "phaseResistance": {
+                "value": 1.40,
+                "unit": "Ω"
+            },
+            "phaseInductance": {
+                "value": 1.10,
+                "unit": "mH"
+            },
+            "holdingTorque": {
+                "value": 6.5000,
+                "unit": "Ncm"
+            },
+            "detentTorque": {
+                "value": 0.8000,
+                "unit": "Ncm"
+            },
+            "stepAngle": {
+                "value": 1.80,
+                "unit": "°"
+            }
+        },
+        {
+            "name": "Standard Stepper Motor",
+            "model": "MP028NB201",
+            "length": {
+                "value": 44.50,
+                "unit": "mm"
+            },
+            "weight": {
+                "value": 180.00,
+                "unit": "g"
+            },
+            "frameSize": {
+                "value": 28.00,
+                "unit": "mm",
+                "type": "□"
+            },
+            "nemaSize": 11,
+            "category": "STEPPER_STANDARD_TORQUE",
+            "series": "MP028NB",
+            "phaseCurrent": {
+                "value": 0.6700,
+                "unit": "A"
+            },
+            "phaseResistance": {
+                "value": 6.80,
+                "unit": "Ω"
+            },
+            "phaseInductance": {
+                "value": 4.90,
+                "unit": "mH"
+            },
+            "holdingTorque": {
+                "value": 9.5000,
+                "unit": "Ncm"
+            },
+            "detentTorque": {
+                "value": 1.2000,
+                "unit": "Ncm"
+            },
+            "stepAngle": {
+                "value": 1.80,
+                "unit": "°"
+            }
+        },
+        {
+            "name": "Standard Stepper Motor",
+            "model": "MP028NB202",
+            "length": {
+                "value": 44.50,
+                "unit": "mm"
+            },
+            "weight": {
+                "value": 180.00,
+                "unit": "g"
+            },
+            "frameSize": {
+                "value": 28.00,
+                "unit": "mm",
+                "type": "□"
+            },
+            "nemaSize": 11,
+            "category": "STEPPER_STANDARD_TORQUE",
+            "series": "MP028NB",
+            "phaseCurrent": {
+                "value": 1.0000,
+                "unit": "A"
+            },
+            "phaseResistance": {
+                "value": 3.40,
+                "unit": "Ω"
+            },
+            "phaseInductance": {
+                "value": 1.20,
+                "unit": "mH"
+            },
+            "holdingTorque": {
+                "value": 7.5000,
+                "unit": "Ncm"
+            },
+            "detentTorque": {
+                "value": 1.2000,
+                "unit": "Ncm"
+            },
+            "stepAngle": {
+                "value": 1.80,
+                "unit": "°"
+            }
+        },
+        {
+            "name": "Standard Stepper Motor",
+            "model": "MP028NB301",
+            "length": {
+                "value": 50.50,
+                "unit": "mm"
+            },
+            "weight": {
+                "value": 210.00,
+                "unit": "g"
+            },
+            "frameSize": {
+                "value": 28.00,
+                "unit": "mm",
+                "type": "□"
+            },
+            "nemaSize": 11,
+            "category": "STEPPER_STANDARD_TORQUE",
+            "series": "MP028NB",
+            "phaseCurrent": {
+                "value": 0.6700,
+                "unit": "A"
+            },
+            "phaseResistance": {
+                "value": 9.20,
+                "unit": "Ω"
+            },
+            "phaseInductance": {
+                "value": 5.70,
+                "unit": "mH"
+            },
+            "holdingTorque": {
+                "value": 12.0000,
+                "unit": "Ncm"
+            },
+            "detentTorque": {
+                "value": 1.5000,
+                "unit": "Ncm"
+            },
+            "stepAngle": {
+                "value": 1.80,
+                "unit": "°"
+            }
+        },
+        {
+            "name": "Standard Stepper Motor",
+            "model": "MP028NB302",
+            "length": {
+                "value": 50.50,
+                "unit": "mm"
+            },
+            "weight": {
+                "value": 210.00,
+                "unit": "g"
+            },
+            "frameSize": {
+                "value": 28.00,
+                "unit": "mm",
+                "type": "□"
+            },
+            "nemaSize": 11,
+            "category": "STEPPER_STANDARD_TORQUE",
+            "series": "MP028NB",
+            "phaseCurrent": {
+                "value": 0.9600,
+                "unit": "A"
+            },
+            "phaseResistance": {
+                "value": 4.60,
+                "unit": "Ω"
+            },
+            "phaseInductance": {
+                "value": 1.80,
+                "unit": "mH"
+            },
+            "holdingTorque": {
+                "value": 9.0000,
+                "unit": "Ncm"
+            },
+            "detentTorque": {
+                "value": 1.5000,
+                "unit": "Ncm"
+            },
+            "stepAngle": {
+                "value": 1.80,
+                "unit": "°"
+            }
+        },
+        {
+            "name": "Standard Stepper Motor",
+            "model": "MP028NB303",
+            "length": {
+                "value": 50.50,
+                "unit": "mm"
+            },
+            "weight": {
+                "value": 210.00,
+                "unit": "g"
+            },
+            "frameSize": {
+                "value": 28.00,
+                "unit": "mm",
+                "type": "□"
+            },
+            "nemaSize": 11,
+            "category": "STEPPER_STANDARD_TORQUE",
+            "series": "MP028NB",
+            "phaseCurrent": {
+                "value": 1.0000,
+                "unit": "A"
+            },
+            "phaseResistance": {
+                "value": 4.30,
+                "unit": "Ω"
+            },
+            "phaseInductance": {
+                "value": 2.00,
+                "unit": "mH"
+            },
+            "holdingTorque": {
+                "value": 9.5000,
+                "unit": "Ncm"
+            },
+            "detentTorque": {
+                "value": 1.5000,
+                "unit": "Ncm"
+            },
+            "stepAngle": {
+                "value": 1.80,
+                "unit": "°"
+            }
+        }
+    ]
+}

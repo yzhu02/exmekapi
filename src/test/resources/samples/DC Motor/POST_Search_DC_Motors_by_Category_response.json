@@ -1,0 +1,333 @@
+{
+    "data": [
+        {
+            "name": "Internal Rotor BLDC Motor",
+            "model": "MB059AH100",
+            "length": {
+                "value": 53.60,
+                "unit": "mm"
+            },
+            "weight": {
+                "value": 0.52,
+                "unit": "kg"
+            },
+            "frameSize": {
+                "value": 59.00,
+                "unit": "mm",
+                "type": "φ"
+            },
+            "category": "BLDC_INTERNAL_ROTOR",
+            "series": "MB059AH",
+            "ratedVoltage": {
+                "value": 24.00,
+                "unit": "V"
+            },
+            "ratedCurrent": {
+                "value": 4.7000,
+                "unit": "A"
+            },
+            "ratedPower": {
+                "value": 84.00,
+                "unit": "W"
+            },
+            "ratedTorque": {
+                "value": 0.2300,
+                "unit": "Nm"
+            },
+            "ratedRotatingSpeed": {
+                "value": 3500,
+                "unit": "rpm"
+            },
+            "peakCurrent": {
+                "value": 14.1000,
+                "unit": "A"
+            },
+            "peakTorque": {
+                "value": 0.6900,
+                "unit": "Nm"
+            }
+        },
+        {
+            "name": "Internal Rotor BLDC Motor",
+            "model": "MB059AH200",
+            "length": {
+                "value": 68.60,
+                "unit": "mm"
+            },
+            "weight": {
+                "value": 0.65,
+                "unit": "kg"
+            },
+            "frameSize": {
+                "value": 59.00,
+                "unit": "mm",
+                "type": "φ"
+            },
+            "category": "BLDC_INTERNAL_ROTOR",
+            "series": "MB059AH",
+            "ratedVoltage": {
+                "value": 24.00,
+                "unit": "V"
+            },
+            "ratedCurrent": {
+                "value": 7.5000,
+                "unit": "A"
+            },
+            "ratedPower": {
+                "value": 136.00,
+                "unit": "W"
+            },
+            "ratedTorque": {
+                "value": 0.3700,
+                "unit": "Nm"
+            },
+            "ratedRotatingSpeed": {
+                "value": 3500,
+                "unit": "rpm"
+            },
+            "peakCurrent": {
+                "value": 22.5000,
+                "unit": "A"
+            },
+            "peakTorque": {
+                "value": 1.1100,
+                "unit": "Nm"
+            }
+        },
+        {
+            "name": "Internal Rotor BLDC Motor",
+            "model": "MB059AH300",
+            "length": {
+                "value": 73.60,
+                "unit": "mm"
+            },
+            "weight": {
+                "value": 0.72,
+                "unit": "kg"
+            },
+            "frameSize": {
+                "value": 59.00,
+                "unit": "mm",
+                "type": "φ"
+            },
+            "category": "BLDC_INTERNAL_ROTOR",
+            "series": "MB059AH",
+            "ratedVoltage": {
+                "value": 24.00,
+                "unit": "V"
+            },
+            "ratedCurrent": {
+                "value": 9.6000,
+                "unit": "A"
+            },
+            "ratedPower": {
+                "value": 172.00,
+                "unit": "W"
+            },
+            "ratedTorque": {
+                "value": 0.4700,
+                "unit": "Nm"
+            },
+            "ratedRotatingSpeed": {
+                "value": 3500,
+                "unit": "rpm"
+            },
+            "peakCurrent": {
+                "value": 28.8000,
+                "unit": "A"
+            },
+            "peakTorque": {
+                "value": 1.4100,
+                "unit": "Nm"
+            }
+        },
+        {
+            "name": "Internal Rotor BLDC Motor",
+            "model": "MB059AH400",
+            "length": {
+                "value": 93.60,
+                "unit": "mm"
+            },
+            "weight": {
+                "value": 0.95,
+                "unit": "kg"
+            },
+            "frameSize": {
+                "value": 59.00,
+                "unit": "mm",
+                "type": "φ"
+            },
+            "category": "BLDC_INTERNAL_ROTOR",
+            "series": "MB059AH",
+            "ratedVoltage": {
+                "value": 24.00,
+                "unit": "V"
+            },
+            "ratedCurrent": {
+                "value": 12.2000,
+                "unit": "A"
+            },
+            "ratedPower": {
+                "value": 220.00,
+                "unit": "W"
+            },
+            "ratedTorque": {
+                "value": 0.6000,
+                "unit": "Nm"
+            },
+            "ratedRotatingSpeed": {
+                "value": 3500,
+                "unit": "rpm"
+            },
+            "peakCurrent": {
+                "value": 36.6000,
+                "unit": "A"
+            },
+            "peakTorque": {
+                "value": 1.8000,
+                "unit": "Nm"
+            }
+        },
+        {
+            "name": "Internal Rotor BLDC Motor",
+            "model": "MB070GA100",
+            "length": {
+                "value": 95.00,
+                "unit": "mm"
+            },
+            "weight": {
+                "value": 1.00,
+                "unit": "kg"
+            },
+            "frameSize": {
+                "value": 70.00,
+                "unit": "mm",
+                "type": "φ"
+            },
+            "category": "BLDC_INTERNAL_ROTOR",
+            "series": "MB070GA",
+            "ratedVoltage": {
+                "value": 24.00,
+                "unit": "V"
+            },
+            "ratedCurrent": {
+                "value": 4.3000,
+                "unit": "A"
+            },
+            "ratedPower": {
+                "value": 85.00,
+                "unit": "W"
+            },
+            "ratedTorque": {
+                "value": 0.2150,
+                "unit": "Nm"
+            },
+            "ratedRotatingSpeed": {
+                "value": 3800,
+                "unit": "rpm"
+            },
+            "noloadCurrent": {
+                "value": 0.7500,
+                "unit": "A"
+            },
+            "noloadRotatingSpeed": {
+                "value": 4760,
+                "unit": "rpm"
+            }
+        },
+        {
+            "name": "Internal Rotor BLDC Motor",
+            "model": "MB070GA200",
+            "length": {
+                "value": 106.00,
+                "unit": "mm"
+            },
+            "weight": {
+                "value": 1.30,
+                "unit": "kg"
+            },
+            "frameSize": {
+                "value": 70.00,
+                "unit": "mm",
+                "type": "φ"
+            },
+            "category": "BLDC_INTERNAL_ROTOR",
+            "series": "MB070GA",
+            "ratedVoltage": {
+                "value": 24.00,
+                "unit": "V"
+            },
+            "ratedCurrent": {
+                "value": 5.0000,
+                "unit": "A"
+            },
+            "ratedPower": {
+                "value": 95.00,
+                "unit": "W"
+            },
+            "ratedTorque": {
+                "value": 0.2850,
+                "unit": "Nm"
+            },
+            "ratedRotatingSpeed": {
+                "value": 3200,
+                "unit": "rpm"
+            },
+            "noloadCurrent": {
+                "value": 0.6800,
+                "unit": "A"
+            },
+            "noloadRotatingSpeed": {
+                "value": 3920,
+                "unit": "rpm"
+            }
+        },
+        {
+            "name": "Internal Rotor BLDC Motor",
+            "model": "MB070GA300",
+            "length": {
+                "value": 123.00,
+                "unit": "mm"
+            },
+            "weight": {
+                "value": 1.60,
+                "unit": "kg"
+            },
+            "frameSize": {
+                "value": 70.00,
+                "unit": "mm",
+                "type": "φ"
+            },
+            "category": "BLDC_INTERNAL_ROTOR",
+            "series": "MB070GA",
+            "ratedVoltage": {
+                "value": 24.00,
+                "unit": "V"
+            },
+            "ratedCurrent": {
+                "value": 5.5000,
+                "unit": "A"
+            },
+            "ratedPower": {
+                "value": 110.00,
+                "unit": "W"
+            },
+            "ratedTorque": {
+                "value": 0.3550,
+                "unit": "Nm"
+            },
+            "ratedRotatingSpeed": {
+                "value": 3000,
+                "unit": "rpm"
+            },
+            "noloadCurrent": {
+                "value": 0.6900,
+                "unit": "A"
+            },
+            "noloadRotatingSpeed": {
+                "value": 3580,
+                "unit": "rpm"
+            }
+        }
+    ]
+}
