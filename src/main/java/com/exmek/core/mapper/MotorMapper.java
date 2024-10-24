@@ -1,6 +1,5 @@
 package com.exmek.core.mapper;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -10,21 +9,14 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.util.CollectionUtils;
 
-import com.exmek.core.commons.model.CurveLine;
 import com.exmek.core.commons.model.MeasuredValue;
-import com.exmek.core.commons.model.Point;
-import com.exmek.core.config.Configuration;
-import com.exmek.core.config.CurveCoordinate;
 import com.exmek.core.model.DCMotor;
 import com.exmek.core.model.LeadDef;
 import com.exmek.core.model.LinearStepperMotor;
-import com.exmek.core.model.MotorPerfCurve;
 import com.exmek.core.model.MotorSpec;
 import com.exmek.core.model.StepperMotor;
 import com.exmek.core.persistence.entity.AbstractMotorEntity;
-import com.exmek.core.persistence.entity.AbstractMotorPerfMeasurementEntity;
 import com.exmek.core.persistence.entity.AbstractMotorSpecEntity;
 import com.exmek.core.persistence.entity.DCMotorEntity;
 import com.exmek.core.persistence.entity.LeadDefEntity;
@@ -37,7 +29,7 @@ import commons.utils.ReflectionUtils;
 public class MotorMapper extends AbstractProductMapper {
 
 	@Autowired
-	private Configuration configuration;
+	private MotorPerfCurveMapper motorPerfCurveMapper;
 	
 	public DCMotor mapDCMotorToModel(DCMotorEntity entity) {
 		return mapDCMotorToModel(entity, true);
@@ -63,7 +55,7 @@ public class MotorMapper extends AbstractProductMapper {
 		
 		if (comprehensiveMapping) {
 			motor.setAllSpecs(mapAllCombinedSpecsToModels(entity));
-			motor.setPerfCurves(mapPerfMeasurementsToCurveModels(entity.getPerfMeasurements(), entity.getModel()));
+			motor.setPerfCurves(motorPerfCurveMapper.mapToPerfCurveModels(entity.getPerfMeasurements(), entity.getModel()));
 		}
 		
 		return motor;
@@ -163,54 +155,6 @@ public class MotorMapper extends AbstractProductMapper {
 		}
 	}
 
-	private <E extends AbstractMotorPerfMeasurementEntity> List<MotorPerfCurve> mapPerfMeasurementsToCurveModels(Set<E> entities, String model) {
-		if (entities == null) {
-			return null;
-		}
-		List<MotorPerfCurve> models = new ArrayList<>();
-		for (E entity : entities) {
-			MotorPerfCurve perfCurve = mapPerfMeasurementToCurveModel(entity, model);
-			if (perfCurve != null) {
-				models.add(perfCurve);
-			}
-		}
-		return models;
-	}
-
-	private MotorPerfCurve mapPerfMeasurementToCurveModel(AbstractMotorPerfMeasurementEntity entity, String model) {
-		if (entity == null) {
-			return null;
-		}
-		MotorPerfCurve perfCurve = new MotorPerfCurve();
-		perfCurve.setTitle(entity.getTitle());
-		List<CurveCoordinate> dcMotorCurveCoordinates = configuration.getMotorCurveCoordinates(model);
-		if (!CollectionUtils.isEmpty(dcMotorCurveCoordinates)) {
-			String[] columnNames = CommonUtils.split(entity.getVariables(), ",");
-			String[] mConditions = CommonUtils.split(entity.getConditions(), ",");
-			BigDecimal[][] mValues = CommonUtils.parseCSVLikeValues(entity.getValues(),
-					rows -> new BigDecimal[rows][], cells -> new BigDecimal[cells], s -> new BigDecimal(s));
-			List<CurveLine> curveLines = new ArrayList<>();
-			for (int i = 0; i < dcMotorCurveCoordinates.size(); i++) {
-				CurveCoordinate cc = dcMotorCurveCoordinates.get(i);
-				CurveLine cLine = new CurveLine();
-				if (mConditions != null && mConditions.length >= i) {
-					cLine.setName(mConditions[i]);
-				} else {
-					cLine.setName(cc.getName());
-				}
-				int xColInx = CommonUtils.findIndex(columnNames, cc.getX());
-				int yColInx = CommonUtils.findIndex(columnNames, cc.getY());
-				if (xColInx >= 0 && yColInx >= 0) {
-					for (int r = 0; r < mValues.length; r++) {
-						cLine.addPoint(Point.of(mValues[r][xColInx], mValues[r][yColInx]));
-					}
-				}
-				curveLines.add(cLine);
-			}
-			perfCurve.setCurveLines(curveLines);
-		}
-		return perfCurve;
-	}
 
 	public StepperMotor mapStepperMotorToModel(StepperMotorEntity entity) {
 		return mapStepperMotorToModel(entity, true);
@@ -233,7 +177,6 @@ public class MotorMapper extends AbstractProductMapper {
 			}
 		});
 		motor.setCategory(entity.getCategory());
-		motor.setSeries(entity.getSeries());
 		motor.setRatedVoltage(MeasuredValue.of(entity.getRatedVoltage(), entity.getRatedVoltageUnit()));
 		motor.setPhaseCurrent(MeasuredValue.of(entity.getPhaseCurrent(), entity.getPhaseCurrentUnit()));
 		motor.setPhaseResistance(MeasuredValue.of(entity.getPhaseResistance(), entity.getPhaseResistanceUnit()));
@@ -245,12 +188,16 @@ public class MotorMapper extends AbstractProductMapper {
 		
 		if (comprehensiveMapping) {
 			motor.setAllSpecs(mapAllCombinedSpecsToModels(entity));
-			motor.setPerfCurves(mapPerfMeasurementsToCurveModels(entity.getPerfMeasurements(), entity.getModel()));
+			if (motor instanceof LinearStepperMotor) {
+				motor.setPerfCurves(motorPerfCurveMapper.mapToLinearStepperMotorPerfCurveModels(entity.getPerfMeasurements(), entity.getModel()));
+			} else {
+				motor.setPerfCurves(motorPerfCurveMapper.mapToPerfCurveModels(entity.getPerfMeasurements(), entity.getModel()));
+			}
 		}
 
 		return motor;
 	}
-
+	
 	private List<LeadDef> mapLeadsToModels(Set<LeadDefEntity> leadDefEntities) {
 		if (leadDefEntities == null) {
 			return null;

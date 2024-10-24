@@ -21,6 +21,6 @@ public abstract class AbstractMotor extends AbstractProduct {
 	
 	private List<MotorSpec> allSpecs;
 
-	private List<MotorPerfCurve> perfCurves;
+	private List<? extends MotorPerfCurve> perfCurves;
 
 }
