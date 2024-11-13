@@ -12,7 +12,7 @@ import com.exmek.core.persistence.entity.PlanetaryGearboxEntity;
 @Component
 public class PlanetaryGearboxMapper extends AbstractProductMapper {
 
-	public PlanetaryGearbox mapPlanetaryGearboxToModel(PlanetaryGearboxEntity entity) {
+	public PlanetaryGearbox mapPlanetaryGearboxToModel(PlanetaryGearboxEntity entity, boolean comprehensiveMapping) {
 		if (entity == null) {
 			return null;
 		}
@@ -27,6 +27,13 @@ public class PlanetaryGearboxMapper extends AbstractProductMapper {
 		model.setMaxShaftPress(MeasuredValue.of(entity.getMaxShaftPress(), entity.getMaxShaftPressUnit()));
 		model.setOperatingTemperature(entity.getOperatingTemperature());
 		model.setRecommendInputSpeed(entity.getRecommendInputSpeed());
+		
+		if (comprehensiveMapping) {
+			model.setMechanicalImagePaths(resourceContext.getGearboxMechanicalImagePaths(entity.getModel()));
+			model.setThreeDDrawingPaths(resourceContext.getGearbox3DDrawingPaths(entity.getModel()));
+			model.setTechDocPaths(resourceContext.getGearboxTechDocPaths(entity.getModel()));
+		}
+		
 		return model;
 	}
 

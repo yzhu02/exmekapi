@@ -61,7 +61,7 @@ public class PlanetaryGearboxRestController extends BaseProductRestController<Pl
 
 	@Override
 	protected PlanetaryGearbox mapEntityToModel(PlanetaryGearboxEntity entity, boolean comprehensiveMapping) {
-		return planetaryGearboxMapper.mapPlanetaryGearboxToModel(entity);
+		return planetaryGearboxMapper.mapPlanetaryGearboxToModel(entity, comprehensiveMapping);
 	}
 
 	@GetMapping("/serieses")
@@ -100,9 +100,7 @@ public class PlanetaryGearboxRestController extends BaseProductRestController<Pl
 	
 	@GetMapping("/{idOrModel}")
 	public PlanetaryGearbox getPlanetaryGearbox(@NotNull @PathVariable("idOrModel") String idOrModel) {
-		PlanetaryGearbox gearbox = super.getProduct(idOrModel);
-		gearbox.setMechanicalImagePaths(resourceContext.getGearboxMechanicalImagePaths(gearbox.getModel()));
-		return gearbox;
+		return super.getProduct(idOrModel);
 	}
 
 	@PostMapping("/search")

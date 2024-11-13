@@ -62,7 +62,7 @@ public class BrakeRestController extends BaseProductRestController<BrakeEntity, 
 
 	@Override
 	protected Brake mapEntityToModel(BrakeEntity entity, boolean comprehensiveMapping) {
-		return brakeMapper.mapBrakeToModel(entity);
+		return brakeMapper.mapBrakeToModel(entity, comprehensiveMapping);
 	}
 
 	@GetMapping("/serieses")
@@ -101,9 +101,7 @@ public class BrakeRestController extends BaseProductRestController<BrakeEntity, 
 	
 	@GetMapping("/{idOrModel}")
 	public Brake getBrake(@NotNull @PathVariable("idOrModel") String idOrModel) {
-		Brake brake = super.getProduct(idOrModel);
-		brake.setMechanicalImagePaths(resourceContext.getBrakeMechanicalImagePaths(brake.getModel()));
-		return brake;
+		return super.getProduct(idOrModel);
 	}
 	
 	@PostMapping("/search")

@@ -51,11 +51,7 @@ public class StepperMotorRestController extends BaseMotorRestController<StepperM
 
 	@Override
 	protected StepperMotor mapEntityToModel(StepperMotorEntity entity, boolean comprehensiveMapping) {
-		StepperMotor motor = motorMapper.mapStepperMotorToModel(entity, comprehensiveMapping);
-		if (comprehensiveMapping) {
-			motor.setMechanicalImagePaths(resourceContext.getMotorMechanicalImagePaths(motor.getModel()));
-		}
-		return motor;
+		return motorMapper.mapStepperMotorToModel(entity, comprehensiveMapping);
 	}
 
 	@GetMapping("/stepper/categories")

@@ -32,4 +32,8 @@ public abstract class AbstractProduct extends AbstractModel.Namable {
 	private BigDecimal nemaSize;
 
 	private List<String> mechanicalImagePaths;
+	
+	private List<String> threeDDrawingPaths;
+	
+	private List<String> techDocPaths;
 }

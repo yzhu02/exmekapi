@@ -27,7 +27,7 @@ import commons.utils.ReflectionUtils;
 
 @Component
 public class MotorMapper extends AbstractProductMapper {
-
+	
 	@Autowired
 	private MotorPerfCurveMapper motorPerfCurveMapper;
 	
@@ -56,6 +56,12 @@ public class MotorMapper extends AbstractProductMapper {
 		if (comprehensiveMapping) {
 			motor.setAllSpecs(mapAllCombinedSpecsToModels(entity));
 			motor.setPerfCurves(motorPerfCurveMapper.mapToPerfCurveModels(entity.getPerfMeasurements(), entity.getModel()));
+		}
+		
+		if (comprehensiveMapping) {
+			motor.setMechanicalImagePaths(resourceContext.getMotorMechanicalImagePaths(entity.getModel()));
+			motor.setThreeDDrawingPaths(resourceContext.getMotor3DDrawingPaths(entity.getModel()));
+			motor.setTechDocPaths(resourceContext.getMotorTechDocPaths(entity.getModel()));
 		}
 		
 		return motor;
@@ -193,6 +199,12 @@ public class MotorMapper extends AbstractProductMapper {
 			} else {
 				motor.setPerfCurves(motorPerfCurveMapper.mapToPerfCurveModels(entity.getPerfMeasurements(), entity.getModel()));
 			}
+		}
+		
+		if (comprehensiveMapping) {
+			motor.setMechanicalImagePaths(resourceContext.getMotorMechanicalImagePaths(entity.getModel()));
+			motor.setThreeDDrawingPaths(resourceContext.getMotor3DDrawingPaths(entity.getModel()));
+			motor.setTechDocPaths(resourceContext.getMotorTechDocPaths(entity.getModel()));
 		}
 
 		return motor;

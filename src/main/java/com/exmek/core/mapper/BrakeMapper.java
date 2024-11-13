@@ -9,7 +9,7 @@ import com.exmek.core.persistence.entity.BrakeEntity;
 @Component
 public class BrakeMapper extends AbstractProductMapper {
 
-	public Brake mapBrakeToModel(BrakeEntity entity) {
+	public Brake mapBrakeToModel(BrakeEntity entity, boolean comprehensiveMapping) {
 		if (entity == null) {
 			return null;
 		}
@@ -20,6 +20,13 @@ public class BrakeMapper extends AbstractProductMapper {
 		model.setStaticTorque(MeasuredValue.of(entity.getStaticTorque(), entity.getStaticTorqueUnit()));
 		model.setRatedPower(MeasuredValue.of(entity.getRatedPower(), entity.getRatedPowerUnit()));
 		model.setStartVoltage(MeasuredValue.of(entity.getStartVoltage(), entity.getStartVoltageUnit()));
+		
+		if (comprehensiveMapping) {
+			model.setMechanicalImagePaths(resourceContext.getBrakeMechanicalImagePaths(entity.getModel()));
+			model.setThreeDDrawingPaths(resourceContext.getBrake3DDrawingPaths(entity.getModel()));
+			model.setTechDocPaths(resourceContext.getBrakeTechDocPaths(entity.getModel()));
+		}
+		
 		return model;
 	}
 

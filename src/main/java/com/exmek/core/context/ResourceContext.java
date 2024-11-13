@@ -24,19 +24,39 @@ import jakarta.annotation.PostConstruct;
 @Component
 public class ResourceContext {
 	
-	public static final String DIR_NAME_STATIC						= "static";
-	public static final String DIR_NAME_IMAGES						= "images";
-	public static final String DIR_NAME_MOTOR						= "motor";
-	public static final String DIR_NAME_GEARBOX						= "gearbox";
-	public static final String DIR_NAME_BRAKE						= "brake";
-	public static final String DIR_NAME_MICHANICAL					= "mechanical";
+	////Directory names BEGIN
+	private static final String DIR_NAME_STATIC			= "static";
+
+	private static final String DIR_NAME_IMAGES				= "images";
+
+	private static final String DIR_NAME_MOTOR					= "motor";
+	private static final String DIR_NAME_GEARBOX					= "gearbox";
+	private static final String DIR_NAME_BRAKE					= "brake";
+	private static final String DIR_NAME_MICHANICAL					= "mechanical";
+
+	private static final String DIR_NAME_MATERIALS			= "materials";
+	private static final String DIR_NAME_3D							= "3d";
+	private static final String DIR_NAME_TECHDOC					= "techdoc";
 	
 	private static final String IMAGES_PATH_PREFIX					= "/" + DIR_NAME_IMAGES + "/";
+	private static final String MATERIALS_PATH_PREFIX				= "/" + DIR_NAME_MATERIALS + "/";
+	////Directory names END
 	
+	////Exposed relative paths BEGIN
 	public static final String IMAGES_MOTOR_MECHANICAL_REL_PATH		= IMAGES_PATH_PREFIX + DIR_NAME_MOTOR + "/" + DIR_NAME_MICHANICAL;
 	public static final String IMAGES_GEARBOX_MECHANICAL_REL_PATH	= IMAGES_PATH_PREFIX + DIR_NAME_GEARBOX + "/" + DIR_NAME_MICHANICAL;
 	public static final String IMAGES_BRAKE_MECHANICAL_REL_PATH		= IMAGES_PATH_PREFIX + DIR_NAME_BRAKE + "/" + DIR_NAME_MICHANICAL;
 
+	public static final String MATERIALS_MOTOR_3D_REL_PATH			= MATERIALS_PATH_PREFIX + DIR_NAME_MOTOR + "/" + DIR_NAME_3D;
+	public static final String MATERIALS_GEARBOX_3D_REL_PATH		= MATERIALS_PATH_PREFIX + DIR_NAME_GEARBOX + "/" + DIR_NAME_3D;
+	public static final String MATERIALS_BRAKE_3D_REL_PATH			= MATERIALS_PATH_PREFIX + DIR_NAME_BRAKE + "/" + DIR_NAME_3D;
+	
+	public static final String MATERIALS_MOTOR_TECHDOC_REL_PATH		= MATERIALS_PATH_PREFIX + DIR_NAME_MOTOR + "/" + DIR_NAME_TECHDOC;
+	public static final String MATERIALS_GEARBOX_TECHDOC_REL_PATH	= MATERIALS_PATH_PREFIX + DIR_NAME_GEARBOX + "/" + DIR_NAME_TECHDOC;
+	public static final String MATERIALS_BRAKE_TECHDOC_REL_PATH		= MATERIALS_PATH_PREFIX + DIR_NAME_BRAKE + "/" + DIR_NAME_TECHDOC;
+	////Exposed relative paths END
+	
+	////Internal directory locations BEGIN
 	private static final String IMAGES_MOTOR_MECHANICAL_FULL_LOCATION =
 			ResourcePatternResolver.CLASSPATH_ALL_URL_PREFIX + "/" + DIR_NAME_STATIC + IMAGES_MOTOR_MECHANICAL_REL_PATH;
 
@@ -46,6 +66,27 @@ public class ResourceContext {
 	private static final String IMAGES_BRAKE_MECHANICAL_FULL_LOCATION =
 			ResourcePatternResolver.CLASSPATH_ALL_URL_PREFIX + "/" + DIR_NAME_STATIC + IMAGES_BRAKE_MECHANICAL_REL_PATH;
 	
+
+	private static final String MATERIALS_MOTOR_3D_FULL_LOCATION =
+			ResourcePatternResolver.CLASSPATH_ALL_URL_PREFIX + "/" + DIR_NAME_STATIC + MATERIALS_MOTOR_3D_REL_PATH;
+	
+	private static final String MATERIALS_GEARBOX_3D_FULL_LOCATION =
+			ResourcePatternResolver.CLASSPATH_ALL_URL_PREFIX + "/" + DIR_NAME_STATIC + MATERIALS_GEARBOX_3D_REL_PATH;
+	
+	private static final String MATERIALS_BRAKE_3D_FULL_LOCATION =
+			ResourcePatternResolver.CLASSPATH_ALL_URL_PREFIX + "/" + DIR_NAME_STATIC + MATERIALS_BRAKE_3D_REL_PATH;
+	
+	
+	private static final String MATERIALS_MOTOR_TECHDOC_FULL_LOCATION =
+			ResourcePatternResolver.CLASSPATH_ALL_URL_PREFIX + "/" + DIR_NAME_STATIC + MATERIALS_MOTOR_TECHDOC_REL_PATH;
+	
+	private static final String MATERIALS_GEARBOX_TECHDOC_FULL_LOCATION =
+			ResourcePatternResolver.CLASSPATH_ALL_URL_PREFIX + "/" + DIR_NAME_STATIC + MATERIALS_GEARBOX_TECHDOC_REL_PATH;
+	
+	private static final String MATERIALS_BRAKE_TECHDOC_FULL_LOCATION =
+			ResourcePatternResolver.CLASSPATH_ALL_URL_PREFIX + "/" + DIR_NAME_STATIC + MATERIALS_BRAKE_TECHDOC_REL_PATH;
+	////Internal directory locations END
+	
 	private static final String IMAGE_FILENAME_REGEX = "(\\w+)(\\[(\\d+)\\])*";
 
 	private static final Logger logger = LoggerFactory.getLogger(ResourceContext.class);
@@ -53,42 +94,75 @@ public class ResourceContext {
 	@Autowired
 	private ApplicationContext applicationContext;
 
-	private Map<String, List<String>> motorMechanicalImagesMap = new HashMap<>();
+	private Map<String, List<String>> motorMechanicalImagePathsMap = new HashMap<>();
+	private Map<String, List<String>> gearboxMechanicalImagePathsMap = new HashMap<>();
+	private Map<String, List<String>> brakeMechanicalImagePathsMap = new HashMap<>();
 	
-	private Map<String, List<String>> gearboxMechanicalImagesMap = new HashMap<>();
+	private Map<String, List<String>> motor3DDrawingPathsMap = new HashMap<>();
+	private Map<String, List<String>> gearbox3DDrawingPathsMap = new HashMap<>();
+	private Map<String, List<String>> brake3DDrawingPathsMap = new HashMap<>();
 	
-	private Map<String, List<String>> brakeMechanicalImagesMap = new HashMap<>();
+	private Map<String, List<String>> motorTechDocPathsMap = new HashMap<>();
+	private Map<String, List<String>> gearboxTechDocPathsMap = new HashMap<>();
+	private Map<String, List<String>> brakeTechDocPathsMap = new HashMap<>();
 
 	@PostConstruct
 	protected void initialize() {
-		String imgFileMatch = "*.*";
-		initImagesResource(this.motorMechanicalImagesMap, IMAGES_MOTOR_MECHANICAL_FULL_LOCATION + "/" + imgFileMatch, IMAGES_MOTOR_MECHANICAL_REL_PATH);
-		initImagesResource(this.gearboxMechanicalImagesMap, IMAGES_GEARBOX_MECHANICAL_FULL_LOCATION + "/" + imgFileMatch, IMAGES_GEARBOX_MECHANICAL_REL_PATH);
-		initImagesResource(this.brakeMechanicalImagesMap, IMAGES_BRAKE_MECHANICAL_FULL_LOCATION + "/" + imgFileMatch, IMAGES_BRAKE_MECHANICAL_REL_PATH);
+		String resFileMatch = "*.*";
+		
+		initResourcePathMap(this.motorMechanicalImagePathsMap,
+				IMAGES_MOTOR_MECHANICAL_FULL_LOCATION + "/" + resFileMatch,
+				IMAGES_MOTOR_MECHANICAL_REL_PATH);
+		initResourcePathMap(this.gearboxMechanicalImagePathsMap,
+				IMAGES_GEARBOX_MECHANICAL_FULL_LOCATION + "/" + resFileMatch,
+				IMAGES_GEARBOX_MECHANICAL_REL_PATH);
+		initResourcePathMap(this.brakeMechanicalImagePathsMap,
+				IMAGES_BRAKE_MECHANICAL_FULL_LOCATION + "/" + resFileMatch,
+				IMAGES_BRAKE_MECHANICAL_REL_PATH);
+		
+		initResourcePathMap(this.motor3DDrawingPathsMap,
+				MATERIALS_MOTOR_3D_FULL_LOCATION + "/" + resFileMatch,
+				MATERIALS_MOTOR_3D_REL_PATH);
+		initResourcePathMap(this.gearbox3DDrawingPathsMap,
+				MATERIALS_GEARBOX_3D_FULL_LOCATION + "/" + resFileMatch,
+				MATERIALS_GEARBOX_3D_REL_PATH);
+		initResourcePathMap(this.brake3DDrawingPathsMap,
+				MATERIALS_BRAKE_3D_FULL_LOCATION + "/" + resFileMatch,
+				MATERIALS_BRAKE_3D_REL_PATH);
+		
+		initResourcePathMap(this.motorTechDocPathsMap,
+				MATERIALS_MOTOR_TECHDOC_FULL_LOCATION + "/" + resFileMatch,
+				MATERIALS_MOTOR_TECHDOC_REL_PATH);
+		initResourcePathMap(this.gearboxTechDocPathsMap,
+				MATERIALS_GEARBOX_TECHDOC_FULL_LOCATION + "/" + resFileMatch,
+				MATERIALS_GEARBOX_TECHDOC_REL_PATH);
+		initResourcePathMap(this.brakeTechDocPathsMap,
+				MATERIALS_BRAKE_TECHDOC_FULL_LOCATION + "/" + resFileMatch,
+				MATERIALS_BRAKE_TECHDOC_REL_PATH);
 	}
 
-	private void initImagesResource(Map<String, List<String>> imagesMap, String imagesFullLocation, String imagesRelPath) {
+	private void initResourcePathMap(Map<String, List<String>> resourceMap, String resourceFullLocation, String resourceRelPath) {
 		Resource[] resources = null;
 		try {
-			resources = ResourcePatternUtils.getResourcePatternResolver(applicationContext).getResources(imagesFullLocation);
+			resources = ResourcePatternUtils.getResourcePatternResolver(applicationContext).getResources(resourceFullLocation);
 			if (resources == null || resources.length == 0) {
-				logger.info("No images loaded from {} ", imagesFullLocation);
+				logger.info("No resource loaded from {} ", resourceFullLocation);
 			} else {
-				logger.info("Images are loaded from {} successfully. ", imagesFullLocation);
+				logger.info("Resources are loaded from {} successfully. ", resourceFullLocation);
 			}
 		} catch (IOException ex) {
-			logger.error("Failed to load images from {} ", imagesFullLocation, ex);
+			logger.error("Failed to load resources from {} ", resourceFullLocation, ex);
 		}
 		if (resources == null || resources.length == 0) {
 			return;
 		}
-		BiConsumer<String, String> putImageCallback = (imageName, filename) -> {
-			List<String> imagePaths = imagesMap.get(imageName);
-			if (imagePaths == null) {
-				imagePaths = new ArrayList<>();
-				imagesMap.put(imageName, imagePaths);
+		BiConsumer<String, String> putResourceCallback = (resName, filename) -> {
+			List<String> resourcePaths = resourceMap.get(resName);
+			if (resourcePaths == null) {
+				resourcePaths = new ArrayList<>();
+				resourceMap.put(resName, resourcePaths);
 			}
-			imagePaths.add(imagesRelPath + "/" + filename);
+			resourcePaths.add(resourceRelPath + "/" + filename);
 		};
 		if (resources.length > 1) {
 			Arrays.sort(resources, (r1, r2) -> {
@@ -97,61 +171,86 @@ public class ResourceContext {
 		}
 		for (Resource res : resources) {
 			String filename = res.getFilename();
-			String imageName = filename;
+			String resName = filename;
 			int dotInx = filename.lastIndexOf('.');
 			if (dotInx > 0) {
-				imageName = filename.substring(0, dotInx);
+				resName = filename.substring(0, dotInx);
 				Pattern p = Pattern.compile(IMAGE_FILENAME_REGEX);
-				Matcher m = p.matcher(imageName);
+				Matcher m = p.matcher(resName);
 				if (m.matches()) {
-					imageName = m.group(1);
+					resName = m.group(1);
 				}
 			}
-			putImageCallback.accept(imageName, filename);
+			putResourceCallback.accept(resName, filename);
 		}
-		logger.info("images are initialized successfully images path {} with size {} ", imagesRelPath, imagesMap.size());
+		logger.info("Resources are initialized successfully for parent path {} with size {} ", resourceRelPath, resourceMap.size());
 	}
 	
-	private List<String> getMechanicalImagePaths(String model, String productDirName, Map<String, List<String>> defaultImagesMap) {
-		String relModelImgPath = IMAGES_PATH_PREFIX + productDirName + "/" + model + "/" + DIR_NAME_MICHANICAL;
-		String imgFileMatch = "*.*";
-		String imgMechanicalLocation = ResourcePatternResolver.CLASSPATH_ALL_URL_PREFIX + "/" + DIR_NAME_STATIC + relModelImgPath + "/" + imgFileMatch;
+	private List<String> getResourcePaths(
+			String model, String pathPrefix, String productDirName, String resourceDirName, Map<String, List<String>> defaultResourceMap) {
+		String relModelResPath = pathPrefix + productDirName + "/" + model + "/" + resourceDirName;
+		String resFileMatch = "*.*";
+		String resLocation = ResourcePatternResolver.CLASSPATH_ALL_URL_PREFIX + "/" + DIR_NAME_STATIC + relModelResPath + "/" + resFileMatch;
 		Resource[] resources = null;
 		try {
-			resources = ResourcePatternUtils.getResourcePatternResolver(applicationContext).getResources(imgMechanicalLocation);
+			resources = ResourcePatternUtils.getResourcePatternResolver(applicationContext).getResources(resLocation);
 			if (resources == null || resources.length == 0) {
-				logger.info("No mechanical image loaded from {} for product {}. ", imgMechanicalLocation, model);
+				logger.info("No resource loaded from {} for product {}. ", resLocation, model);
 			} else {
-				logger.info("Mechanical image are loaded from {} successfully for product {}. ", imgMechanicalLocation, model);
+				logger.info("Resources are loaded from {} successfully for product {}. ", resLocation, model);
 			}
 		} catch (IOException ex) {
-			logger.warn("Failed to load mechanical image from {} for product {}. ", imgMechanicalLocation, model, ex);
+			logger.warn("Failed to load resource from {} for product {}. ", resLocation, model, ex);
 		}
 		if (resources == null || resources.length == 0) {
-			return defaultImagesMap.get(model);
+			return defaultResourceMap.get(model);
 		}
-		List<String> imagePaths = new ArrayList<>();
+		List<String> resPaths = new ArrayList<>();
 		if (resources.length > 1) {
 			Arrays.sort(resources, (r1, r2) -> {
 				return r1.getFilename().compareTo(r2.getFilename());
 			});
 		}
 		for (Resource res : resources) {
-			imagePaths.add(relModelImgPath + "/" + res.getFilename());
+			resPaths.add(relModelResPath + "/" + res.getFilename());
 		}
-		return imagePaths;
+		return resPaths;
 	}
 
 	public List<String> getMotorMechanicalImagePaths(String model) {
-		return getMechanicalImagePaths(model, DIR_NAME_MOTOR, this.motorMechanicalImagesMap);
+		return getResourcePaths(model, IMAGES_PATH_PREFIX, DIR_NAME_MOTOR, DIR_NAME_MICHANICAL, this.motorMechanicalImagePathsMap);
 	}
 
 	public List<String> getGearboxMechanicalImagePaths(String model) {
-		return getMechanicalImagePaths(model, DIR_NAME_GEARBOX, this.gearboxMechanicalImagesMap);
+		return getResourcePaths(model, IMAGES_PATH_PREFIX, DIR_NAME_GEARBOX, DIR_NAME_MICHANICAL, this.gearboxMechanicalImagePathsMap);
 	}
 
 	public List<String> getBrakeMechanicalImagePaths(String model) {
-		return getMechanicalImagePaths(model, DIR_NAME_BRAKE, this.brakeMechanicalImagesMap);
+		return getResourcePaths(model, IMAGES_PATH_PREFIX, DIR_NAME_BRAKE, DIR_NAME_MICHANICAL, this.brakeMechanicalImagePathsMap);
+	}
+
+	public List<String> getMotor3DDrawingPaths(String model) {
+		return getResourcePaths(model, MATERIALS_PATH_PREFIX, DIR_NAME_MOTOR, DIR_NAME_3D, this.motor3DDrawingPathsMap);
+	}
+	
+	public List<String> getGearbox3DDrawingPaths(String model) {
+		return getResourcePaths(model, MATERIALS_PATH_PREFIX, DIR_NAME_GEARBOX, DIR_NAME_3D, this.gearbox3DDrawingPathsMap);
+	}
+	
+	public List<String> getBrake3DDrawingPaths(String model) {
+		return getResourcePaths(model, MATERIALS_PATH_PREFIX, DIR_NAME_BRAKE, DIR_NAME_3D, this.brake3DDrawingPathsMap);
+	}
+
+	public List<String> getMotorTechDocPaths(String model) {
+		return getResourcePaths(model, MATERIALS_PATH_PREFIX, DIR_NAME_MOTOR, DIR_NAME_TECHDOC, this.motorTechDocPathsMap);
+	}
+	
+	public List<String> getGearboxTechDocPaths(String model) {
+		return getResourcePaths(model, MATERIALS_PATH_PREFIX, DIR_NAME_GEARBOX, DIR_NAME_TECHDOC, this.gearboxTechDocPathsMap);
+	}
+	
+	public List<String> getBrakeTechDocPaths(String model) {
+		return getResourcePaths(model, MATERIALS_PATH_PREFIX, DIR_NAME_BRAKE, DIR_NAME_TECHDOC, this.brakeTechDocPathsMap);
 	}
 }
 

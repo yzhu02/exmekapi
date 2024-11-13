@@ -2,11 +2,17 @@ package com.exmek.core.mapper;
 
 import java.util.function.Supplier;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.exmek.core.commons.model.MeasuredValue;
+import com.exmek.core.context.ResourceContext;
 import com.exmek.core.model.AbstractProduct;
 import com.exmek.core.persistence.entity.AbstractProductEntity;
 
 public abstract class AbstractProductMapper {
+
+	@Autowired
+	protected ResourceContext resourceContext;
 
 	protected <T extends AbstractProduct, E extends AbstractProductEntity> T mapProduct(E entity, Supplier<T> modelCreator) {
 		T model = modelCreator.get();

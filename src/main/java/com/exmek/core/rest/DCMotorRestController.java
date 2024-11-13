@@ -56,11 +56,7 @@ public class DCMotorRestController extends BaseMotorRestController<DCMotorEntity
 
 	@Override
 	protected DCMotor mapEntityToModel(DCMotorEntity entity, boolean comprehensiveMapping) {
-		DCMotor motor = motorMapper.mapDCMotorToModel(entity, comprehensiveMapping);
-		if (comprehensiveMapping) {
-			motor.setMechanicalImagePaths(resourceContext.getMotorMechanicalImagePaths(motor.getModel()));
-		}
-		return motor;
+		return motorMapper.mapDCMotorToModel(entity, comprehensiveMapping);
 	}
 
 	@GetMapping("/DC/categories")
