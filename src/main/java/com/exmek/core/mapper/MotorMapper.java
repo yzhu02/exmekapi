@@ -10,6 +10,8 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.exmek.commons.utils.MiscUtils;
+import com.exmek.commons.utils.ReflectionUtils;
 import com.exmek.core.commons.model.MeasuredValue;
 import com.exmek.core.model.DCMotor;
 import com.exmek.core.model.LeadDef;
@@ -21,9 +23,6 @@ import com.exmek.core.persistence.entity.AbstractMotorSpecEntity;
 import com.exmek.core.persistence.entity.DCMotorEntity;
 import com.exmek.core.persistence.entity.LeadDefEntity;
 import com.exmek.core.persistence.entity.StepperMotorEntity;
-
-import commons.utils.CommonUtils;
-import commons.utils.ReflectionUtils;
 
 @Component
 public class MotorMapper extends AbstractProductMapper {
@@ -75,17 +74,17 @@ public class MotorMapper extends AbstractProductMapper {
 		
 		addProductPropertiesAsSpecs(models, motorEntity);
 		
-		CommonUtils.addNonNullToList(models, () -> createMotorSpec("Rated Voltage", motorEntity.getRatedVoltageUnit(), motorEntity.getRatedVoltage()));
-		CommonUtils.addNonNullToList(models, () -> createMotorSpec("Rated Current", motorEntity.getRatedCurrentUnit(), motorEntity.getRatedCurrent()));
-		CommonUtils.addNonNullToList(models, () -> createMotorSpec("Rated Power", motorEntity.getRatedPowerUnit(), motorEntity.getRatedPower()));
-		CommonUtils.addNonNullToList(models, () -> createMotorSpec("Rated Torque", motorEntity.getRatedTorqueUnit(), motorEntity.getRatedTorque()));
-		CommonUtils.addNonNullToList(models, () -> createMotorSpec("Rated Speed", motorEntity.getRatedRotatingSpeedUnit(), motorEntity.getRatedRotatingSpeed()));
-		CommonUtils.addNonNullToList(models, () -> createMotorSpec("Rated Linear Speed", motorEntity.getRatedLinearSpeedUnit(), motorEntity.getRatedLinearSpeed()));
-		CommonUtils.addNonNullToList(models, () -> createMotorSpec("Peak Current", motorEntity.getPeakCurrentUnit(), motorEntity.getPeakCurrent()));
-		CommonUtils.addNonNullToList(models, () -> createMotorSpec("Peak Torque", motorEntity.getPeakTorqueUnit(), motorEntity.getPeakTorque()));
-		CommonUtils.addNonNullToList(models, () -> createMotorSpec("Max Sorting Weight", motorEntity.getMaxSortingWeightUnit(), motorEntity.getMaxSortingWeight()));
-		CommonUtils.addNonNullToList(models, () -> createMotorSpec("No Load Current", motorEntity.getNoloadCurrentUnit(), motorEntity.getNoloadCurrent()));
-		CommonUtils.addNonNullToList(models, () -> createMotorSpec("No Load Speed", motorEntity.getNoloadRotatingSpeedUnit(), motorEntity.getNoloadRotatingSpeed()));
+		MiscUtils.addNonNullToList(models, () -> createMotorSpec("Rated Voltage", motorEntity.getRatedVoltageUnit(), motorEntity.getRatedVoltage()));
+		MiscUtils.addNonNullToList(models, () -> createMotorSpec("Rated Current", motorEntity.getRatedCurrentUnit(), motorEntity.getRatedCurrent()));
+		MiscUtils.addNonNullToList(models, () -> createMotorSpec("Rated Power", motorEntity.getRatedPowerUnit(), motorEntity.getRatedPower()));
+		MiscUtils.addNonNullToList(models, () -> createMotorSpec("Rated Torque", motorEntity.getRatedTorqueUnit(), motorEntity.getRatedTorque()));
+		MiscUtils.addNonNullToList(models, () -> createMotorSpec("Rated Speed", motorEntity.getRatedRotatingSpeedUnit(), motorEntity.getRatedRotatingSpeed()));
+		MiscUtils.addNonNullToList(models, () -> createMotorSpec("Rated Linear Speed", motorEntity.getRatedLinearSpeedUnit(), motorEntity.getRatedLinearSpeed()));
+		MiscUtils.addNonNullToList(models, () -> createMotorSpec("Peak Current", motorEntity.getPeakCurrentUnit(), motorEntity.getPeakCurrent()));
+		MiscUtils.addNonNullToList(models, () -> createMotorSpec("Peak Torque", motorEntity.getPeakTorqueUnit(), motorEntity.getPeakTorque()));
+		MiscUtils.addNonNullToList(models, () -> createMotorSpec("Max Sorting Weight", motorEntity.getMaxSortingWeightUnit(), motorEntity.getMaxSortingWeight()));
+		MiscUtils.addNonNullToList(models, () -> createMotorSpec("No Load Current", motorEntity.getNoloadCurrentUnit(), motorEntity.getNoloadCurrent()));
+		MiscUtils.addNonNullToList(models, () -> createMotorSpec("No Load Speed", motorEntity.getNoloadRotatingSpeedUnit(), motorEntity.getNoloadRotatingSpeed()));
 
 		addAllSpecsIfNameNotExist(models, mapSpecsToModels(motorEntity.getSpecs()));
 		
@@ -93,11 +92,11 @@ public class MotorMapper extends AbstractProductMapper {
 	}
 	
 	private void addProductPropertiesAsSpecs(List<MotorSpec> models, AbstractMotorEntity motorEntity) {
-		CommonUtils.addNonNullToList(models, () -> createMotorSpec("Motor Length", motorEntity.getLengthUnit(), motorEntity.getLength()));
-		CommonUtils.addNonNullToList(models, () -> createMotorSpec("Motor Weight", motorEntity.getWeightUnit(), motorEntity.getWeight()));
-		CommonUtils.addNonNullToList(models, () -> createMotorSpec("Frame Size", motorEntity.getFrameSizeUnit(), motorEntity.getFrameSize(),
+		MiscUtils.addNonNullToList(models, () -> createMotorSpec("Motor Length", motorEntity.getLengthUnit(), motorEntity.getLength()));
+		MiscUtils.addNonNullToList(models, () -> createMotorSpec("Motor Weight", motorEntity.getWeightUnit(), motorEntity.getWeight()));
+		MiscUtils.addNonNullToList(models, () -> createMotorSpec("Frame Size", motorEntity.getFrameSizeUnit(), motorEntity.getFrameSize(),
 				Optional.ofNullable(motorEntity.getFrameSizeType()).map(f -> f.getSymbol()).orElse(null)));
-		CommonUtils.addNonNullToList(models, () -> createMotorSpec("NEMA", null, motorEntity.getNemaSize()));
+		MiscUtils.addNonNullToList(models, () -> createMotorSpec("NEMA", null, motorEntity.getNemaSize()));
 
 	}
 
@@ -243,14 +242,14 @@ public class MotorMapper extends AbstractProductMapper {
 		
 		addProductPropertiesAsSpecs(models, motorEntity);
 		
-		CommonUtils.addNonNullToList(models, () -> createMotorSpec("Rated Voltage", motorEntity.getRatedVoltageUnit(), motorEntity.getRatedVoltage()));
-		CommonUtils.addNonNullToList(models, () -> createMotorSpec("Phase Current", motorEntity.getPhaseCurrentUnit(), motorEntity.getPhaseCurrent()));
-		CommonUtils.addNonNullToList(models, () -> createMotorSpec("Phase Resistance", motorEntity.getPhaseResistanceUnit(), motorEntity.getPhaseResistance()));
-		CommonUtils.addNonNullToList(models, () -> createMotorSpec("Phase Inductance", motorEntity.getPhaseInductanceUnit(), motorEntity.getPhaseInductance()));
-		CommonUtils.addNonNullToList(models, () -> createMotorSpec("Holding Torque", motorEntity.getHoldingTorqueUnit(), motorEntity.getHoldingTorque()));
-		CommonUtils.addNonNullToList(models, () -> createMotorSpec("Detent Torque", motorEntity.getDetentTorqueUnit(), motorEntity.getDetentTorque()));
-		CommonUtils.addNonNullToList(models, () -> createMotorSpec("Step Angle", motorEntity.getStepAngleUnit(), motorEntity.getStepAngle()));
-		CommonUtils.addNonNullToList(models, () -> createMotorSpec("Max Thrust", motorEntity.getMaxThrustUnit(), motorEntity.getMaxThrust()));
+		MiscUtils.addNonNullToList(models, () -> createMotorSpec("Rated Voltage", motorEntity.getRatedVoltageUnit(), motorEntity.getRatedVoltage()));
+		MiscUtils.addNonNullToList(models, () -> createMotorSpec("Phase Current", motorEntity.getPhaseCurrentUnit(), motorEntity.getPhaseCurrent()));
+		MiscUtils.addNonNullToList(models, () -> createMotorSpec("Phase Resistance", motorEntity.getPhaseResistanceUnit(), motorEntity.getPhaseResistance()));
+		MiscUtils.addNonNullToList(models, () -> createMotorSpec("Phase Inductance", motorEntity.getPhaseInductanceUnit(), motorEntity.getPhaseInductance()));
+		MiscUtils.addNonNullToList(models, () -> createMotorSpec("Holding Torque", motorEntity.getHoldingTorqueUnit(), motorEntity.getHoldingTorque()));
+		MiscUtils.addNonNullToList(models, () -> createMotorSpec("Detent Torque", motorEntity.getDetentTorqueUnit(), motorEntity.getDetentTorque()));
+		MiscUtils.addNonNullToList(models, () -> createMotorSpec("Step Angle", motorEntity.getStepAngleUnit(), motorEntity.getStepAngle()));
+		MiscUtils.addNonNullToList(models, () -> createMotorSpec("Max Thrust", motorEntity.getMaxThrustUnit(), motorEntity.getMaxThrust()));
 
 		addAllSpecsIfNameNotExist(models, mapSpecsToModels(motorEntity.getSpecs()));
 		

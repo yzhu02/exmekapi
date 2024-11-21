@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>Product Inquiry</title>
+		<style>
+		body {
+			padding: 20px;
+			font-size: 12px;
+		}
+		body div {
+			padding-left: 2px;
+			padding-top: 16px;
+			padding-bottom: 16px;
+		}
+		table {
+		    font-family: Tahoma, Geneva, sans-serif;
+		    border-spacing: 2px;
+		}
+		table td {
+			padding: 15px;
+		}
+		#t_vertical_head {
+			background-color: #e2e5e5;
+			color: #3f3f3f;
+			font-weight: bold;
+			font-size: 13px;
+		}
+		table tbody td {
+			color: #636363;
+		}
+		table tbody tr {
+			background-color: #f2f3f4;
+		}
+		table tbody tr:nth-child(odd) {
+			background-color: #fdfefe;
+		}
+		</style>
+	</head>
+	<body>
+		<div><p th:inline="text">You have received an inquiry message from [[${inquiry.refLink}]] as following:</p>	
+		<table>
+			<tbody>
+				<tr>
+					<td id="t_vertical_head">Contact Name</td>
+					<td th:text="${inquiry.contactName}">Contact Name</td>
+				</tr>
+				<tr>
+					<td id="t_vertical_head">Contact Email</td>
+					<td th:text="${inquiry.contactEmail}">Contact Email</td>
+				</tr>
+				<tr>
+					<td id="t_vertical_head">Contact Phone</td>
+					<td th:text="${inquiry.contactPhone}">Contact Phone</td>
+				</tr>
+				<tr>
+					<td id="t_vertical_head">Product Model</td>
+					<td th:text="${inquiry.refModel}">Inquired Product Model</td>
+				</tr>
+				<tr>
+					<td id="t_vertical_head">Content</td>
+					<td th:text="${inquiry.content}">Inquiry Content</td>
+				</tr>
+				<tr>
+					<td id="t_vertical_head">IP</td>
+					<td th:text="${inquiry.clientIpAddress}">Client IP Address</td>
+				</tr>
+				<tr>
+					<td id="t_vertical_head">IP Country/Region</td>
+					<td th:text="${inquiry.clientCountryOrRegion}">Client IP Address Country/Region</td>
+				</tr>
+			</tbody>
+		</table>	
+		</div>
+	</body>
+</html>

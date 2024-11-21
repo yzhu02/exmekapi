@@ -4,11 +4,10 @@ import java.util.Map;
 
 import org.springframework.stereotype.Component;
 
+import com.exmek.commons.utils.JsonMapperUtils;
 import com.exmek.core.model.MotorCategory;
 import com.exmek.core.persistence.entity.MotorCategoryEntity;
 import com.fasterxml.jackson.core.type.TypeReference;
-
-import commons.utils.JsonMapperUtils;
 
 @Component
 public class MotorCategoryMapper {

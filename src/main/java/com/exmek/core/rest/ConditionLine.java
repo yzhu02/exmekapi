@@ -3,7 +3,8 @@ package com.exmek.core.rest;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import commons.expr.RelationalOperator;
+import com.exmek.commons.expr.RelationalOperator;
+
 import lombok.Data;
 
 @Data

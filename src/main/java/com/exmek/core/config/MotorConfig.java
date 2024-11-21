@@ -3,46 +3,32 @@ package com.exmek.core.config;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.exmek.core.model.Company;
-import com.exmek.core.persistence.entity.ConfigEntity;
-import com.exmek.core.persistence.repository.ConfigRepository;
+import com.exmek.commons.utils.JsonMapperUtils;
 import com.exmek.core.persistence.repository.MotorConfigRepository;
 import com.fasterxml.jackson.core.type.TypeReference;
 
-import commons.utils.JsonMapperUtils;
 import jakarta.annotation.PostConstruct;
 
 @Component
-public class Configuration {
+public class MotorConfig {
 
-	private static final Logger logger = LoggerFactory.getLogger(Configuration.class);
+	private static final Logger logger = LoggerFactory.getLogger(MotorConfig.class);
 
-	public static final String CONFIG_NAME_COMPANY_EXMEK			= "company.exmek";
 	public static final String CONFIG_NAME_MOTOR_CURVE_COORDINATES	= "curve.coordinates";
 
 	@Autowired
-	private ConfigRepository configRepository;
-
-	@Autowired
 	private MotorConfigRepository motorConfigRepository;
-
-	private Map<String, String> configMap = new HashMap<>();
 	
 	private Map<String, Map<String, String>> perMotorConfigMap = new HashMap<>();
 
 	@PostConstruct
 	protected void init() {
-		List<ConfigEntity> configEntities = this.configRepository.findAll();
-		this.configMap = configEntities.stream()
-				.collect(Collectors.toMap(ConfigEntity::getName, ConfigEntity::getValue));
-
 		this.perMotorConfigMap = new HashMap<>();
 		this.motorConfigRepository.findAll().stream().forEach(motorConfigEntity -> {
 			String modelRef = motorConfigEntity.getModelRef();
@@ -54,20 +40,7 @@ public class Configuration {
 			mConfigMap.put(motorConfigEntity.getConfigName(), motorConfigEntity.getConfigValue());
 		});
 	}
-
-	public String getConfigValue(String configName) {
-		if (configMap == null) {
-			logger.error("Unable to getConfigValue for name '{}' as the 'configMap' is null. ", configName);
-			return null;
-		}
-		return configMap.get(configName);
-	}
-	
-	public Company getExmekCompany() {
-		String exmekStr = getConfigValue(CONFIG_NAME_COMPANY_EXMEK);
-		return JsonMapperUtils.readValue(exmekStr, new TypeReference<Company>() {});
-	}
-	
+		
 	public List<CurveCoordinate> getMotorCurveCoordinates(String model) {
 		if (model == null) {
 			return null;

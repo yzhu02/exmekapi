@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import commons.expr.RelationalOperator;
+import com.exmek.commons.expr.RelationalOperator;
 
 public class RelationalOperatorUtils {
 

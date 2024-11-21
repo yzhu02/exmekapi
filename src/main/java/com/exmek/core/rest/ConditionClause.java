@@ -2,7 +2,8 @@ package com.exmek.core.rest;
 
 import java.util.List;
 
-import commons.expr.LogicalOperator;
+import com.exmek.commons.expr.LogicalOperator;
+
 import lombok.Data;
 
 @Data

@@ -7,11 +7,11 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.exmek.commons.expr.LogicalOperator;
+import com.exmek.commons.expr.RelationalOperator;
 import com.exmek.core.rest.ConditionClause;
 import com.exmek.core.rest.ConditionLine;
 
-import commons.expr.LogicalOperator;
-import commons.expr.RelationalOperator;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.Path;
 import jakarta.persistence.criteria.Predicate;

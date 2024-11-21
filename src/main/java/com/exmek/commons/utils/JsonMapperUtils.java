@@ -1,4 +1,4 @@
-package commons.utils;
+package com.exmek.commons.utils;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

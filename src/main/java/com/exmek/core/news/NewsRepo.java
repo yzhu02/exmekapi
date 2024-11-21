@@ -19,10 +19,9 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Component;
 
+import com.exmek.commons.utils.JsonMapperUtils;
 import com.exmek.core.model.News;
 import com.fasterxml.jackson.core.type.TypeReference;
-
-import commons.utils.JsonMapperUtils;
 
 @Component
 public class NewsRepo {

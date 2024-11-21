@@ -21,6 +21,8 @@ import org.springframework.data.util.Pair;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 
+import com.exmek.commons.expr.LogicalOperator;
+import com.exmek.commons.utils.ReflectionUtils;
 import com.exmek.core.annotation.Searchable;
 import com.exmek.core.context.ResourceContext;
 import com.exmek.core.model.AbstractProduct;
@@ -31,8 +33,6 @@ import com.exmek.core.service.ProductService;
 import com.exmek.core.utils.ExmekUtils;
 import com.exmek.core.utils.RelationalOperatorUtils;
 
-import commons.expr.LogicalOperator;
-import commons.utils.ReflectionUtils;
 import jakarta.annotation.PostConstruct;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.Predicate;

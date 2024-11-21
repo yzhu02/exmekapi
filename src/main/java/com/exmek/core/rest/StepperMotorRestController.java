@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.exmek.commons.expr.LogicalOperator;
 import com.exmek.core.mapper.MotorMapper;
 import com.exmek.core.model.MotorCategory;
 import com.exmek.core.model.MotorSeries;
@@ -25,7 +26,6 @@ import com.exmek.core.persistence.repository.BaseProductRepository;
 import com.exmek.core.persistence.repository.StepperMotorRepository;
 import com.exmek.core.service.ProductService;
 
-import commons.expr.LogicalOperator;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.validation.constraints.NotNull;
 

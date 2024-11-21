@@ -1,4 +1,4 @@
-package commons.utils;
+package com.exmek.commons.utils;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
@@ -78,6 +78,7 @@ public class ReflectionUtils {
 			if (method != null) {
 				Object value = method.invoke(fromObject);
 				if (value instanceof Optional) {
+					@SuppressWarnings("unchecked")
 					Optional<Object> op = (Optional<Object>) value;
 					if (op.isPresent()) {
 						return op.get();

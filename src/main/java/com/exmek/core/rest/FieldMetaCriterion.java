@@ -3,10 +3,10 @@ package com.exmek.core.rest;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.exmek.commons.expr.RelationalOperator;
 import com.exmek.core.commons.model.MeasuredOptionsValue;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
-import commons.expr.RelationalOperator;
 import lombok.Data;
 
 @Data

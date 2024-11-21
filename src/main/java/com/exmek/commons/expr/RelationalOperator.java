@@ -1,4 +1,4 @@
-package commons.expr;
+package com.exmek.commons.expr;
 
 import com.fasterxml.jackson.annotation.JsonValue;
 

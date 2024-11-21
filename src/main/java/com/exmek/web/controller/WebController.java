@@ -19,7 +19,7 @@ import com.exmek.core.model.MotorSeries;
 import com.exmek.core.model.News;
 import com.exmek.core.model.PlanetaryGearbox;
 import com.exmek.core.model.StepperMotor;
-import com.exmek.core.rest.BasicInfoRestController;
+import com.exmek.core.rest.GeneralRestController;
 import com.exmek.core.rest.BrakeRestController;
 import com.exmek.core.rest.DCMotorRestController;
 import com.exmek.core.rest.PageableListDataResponse;
@@ -134,12 +134,12 @@ public class WebController {
 	private BrakeRestController brakeRestController;
 	
 	@Autowired
-	private BasicInfoRestController basicInfoRestController;
+	private GeneralRestController generalRestController;
 
 	////////// Home Page //////////
 	@GetMapping("/home")
 	public String landHome(Model model) {
-		Company exmekCompany = basicInfoRestController.getExmekCompany();
+		Company exmekCompany = generalRestController.getExmekCompany();
 		model.addAttribute(PAGEMODEL_NAME_EXMEK_COMPANY, exmekCompany);
 		return VIEW_NAME_HOME;
 	}
@@ -156,7 +156,7 @@ public class WebController {
 	@GetMapping("/products/dc_motors")
 	public String landDCMotorsByType(@RequestParam(name = QRY_PARAM_NAME_TYPE, required = false) String type, Model model) {
 
-		Company exmekCompany = basicInfoRestController.getExmekCompany();
+		Company exmekCompany = generalRestController.getExmekCompany();
 		SearchMetaCriteriaResponse searchMetaCriteria = dcMotorRestController.getSearchMetaCriteria(type);
 		List<MotorCategory> motorCategories = dcMotorRestController.getMotorCategories(type);
 		model.addAttribute(PAGEMODEL_NAME_EXMEK_COMPANY, exmekCompany);
@@ -169,7 +169,7 @@ public class WebController {
 	@GetMapping("/products/dc_motors/categories/{" + PATH_PARAM_CATEGORY + "}")
 	public String landDCMotorsByCategory(@PathVariable(PATH_PARAM_CATEGORY) MotorCategory.Category category, Model model) {
 
-		Company exmekCompany = basicInfoRestController.getExmekCompany();
+		Company exmekCompany = generalRestController.getExmekCompany();
 		SearchMetaCriteriaResponse searchMetaCriteria = dcMotorRestController.getSearchMetaCriteriaByCategory(category);
 		MotorCategory motorCategory = dcMotorRestController.getMotorCategory(category);
 		PageableListDataResponse<MotorSeries> motorSeriesesPage = dcMotorRestController.getMotorSeriesesByCategory(category, null, null);
@@ -183,7 +183,7 @@ public class WebController {
 	@GetMapping("/products/dc_motors/serieses/{" + PATH_PARAM_SERIES + "}")
 	public String landDCMotorsBySeries(@PathVariable(PATH_PARAM_SERIES) String series, Model model) {
 
-		Company exmekCompany = basicInfoRestController.getExmekCompany();
+		Company exmekCompany = generalRestController.getExmekCompany();
 		MotorSeries motorSeries = dcMotorRestController.getMotorSeries(series);
 		SearchMetaCriteriaResponse searchMetaCriteria = dcMotorRestController.getSearchMetaCriteriaByCategoryBySeries(motorSeries.getCategory(), series);
 		model.addAttribute(PAGEMODEL_NAME_EXMEK_COMPANY, exmekCompany);
@@ -195,7 +195,7 @@ public class WebController {
 	@GetMapping("/products/dc_motors/{" + PATH_PARAM_MODEL + "}")
 	public String landDCMotorDetail(@PathVariable(PATH_PARAM_MODEL) String motorModel, Model model) {
 
-		Company exmekCompany = basicInfoRestController.getExmekCompany();
+		Company exmekCompany = generalRestController.getExmekCompany();
 		DCMotor motor = dcMotorRestController.getByModel(motorModel);
 		model.addAttribute(PAGEMODEL_NAME_EXMEK_COMPANY, exmekCompany);
 		model.addAttribute(PAGEMODEL_NAME_MOTOR, motor);
@@ -209,7 +209,7 @@ public class WebController {
 	@GetMapping("/products/stepper_motors")
 	public String landStepperMotorsByType(Model model) {
 
-		Company exmekCompany = basicInfoRestController.getExmekCompany();
+		Company exmekCompany = generalRestController.getExmekCompany();
 		SearchMetaCriteriaResponse searchMetaCriteria = stepperMotorRestController.getSearchMetaCriteria();
 		List<MotorCategory> motorCategories = stepperMotorRestController.getMotorCategories();
 		model.addAttribute(PAGEMODEL_NAME_EXMEK_COMPANY, exmekCompany);
@@ -221,7 +221,7 @@ public class WebController {
 	@GetMapping("/products/stepper_motors/categories/{" + PATH_PARAM_CATEGORY + "}")
 	public String landStepperMotorsByCategory(@PathVariable(PATH_PARAM_CATEGORY) MotorCategory.Category category, Model model) {
 
-		Company exmekCompany = basicInfoRestController.getExmekCompany();
+		Company exmekCompany = generalRestController.getExmekCompany();
 		SearchMetaCriteriaResponse searchMetaCriteria = stepperMotorRestController.getSearchMetaCriteriaByCategory(category);
 		MotorCategory motorCategory = stepperMotorRestController.getMotorCategory(category);
 		PageableListDataResponse<MotorSeries> motorSeriesesPage = stepperMotorRestController.getMotorSeriesesByCategory(category, null, null);
@@ -235,7 +235,7 @@ public class WebController {
 	@GetMapping("/products/stepper_motors/serieses/{" + PATH_PARAM_SERIES + "}")
 	public String landStepperMotorsBySeries(@PathVariable(PATH_PARAM_SERIES) String series, Model model) {
 
-		Company exmekCompany = basicInfoRestController.getExmekCompany();
+		Company exmekCompany = generalRestController.getExmekCompany();
 		MotorSeries motorSeries = stepperMotorRestController.getMotorSeries(series);
 		SearchMetaCriteriaResponse searchMetaCriteria = stepperMotorRestController.getSearchMetaCriteriaByCategoryBySeries(motorSeries.getCategory(), series);
 		model.addAttribute(PAGEMODEL_NAME_EXMEK_COMPANY, exmekCompany);
@@ -247,7 +247,7 @@ public class WebController {
 	@GetMapping("/products/stepper_motors/{" + PATH_PARAM_MODEL + "}")
 	public String landStepperMotorDetail(@PathVariable(PATH_PARAM_MODEL) String motorModel, Model model) {
 
-		Company exmekCompany = basicInfoRestController.getExmekCompany();
+		Company exmekCompany = generalRestController.getExmekCompany();
 		StepperMotor motor = stepperMotorRestController.getByModel(motorModel);
 		model.addAttribute(PAGEMODEL_NAME_EXMEK_COMPANY, exmekCompany);
 		model.addAttribute(PAGEMODEL_NAME_MOTOR, motor);
@@ -260,7 +260,7 @@ public class WebController {
 	@GetMapping("/products/planetary_gearboxes")
 	public String landPlanetaryGearboxes(Model model) {
 
-		Company exmekCompany = basicInfoRestController.getExmekCompany();
+		Company exmekCompany = generalRestController.getExmekCompany();
 		SearchMetaCriteriaResponse searchMetaCriteria = planetaryGearboxRestController.getSearchMetaCriteria();
 		PageableListDataResponse<GearboxSeries> gearboxSeriesesPage = planetaryGearboxRestController.getGearboxSerieses(null, null);
 		model.addAttribute(PAGEMODEL_NAME_EXMEK_COMPANY, exmekCompany);
@@ -272,7 +272,7 @@ public class WebController {
 	@GetMapping("/products/planetary_gearboxes/serieses/{" + PATH_PARAM_SERIES + "}")
 	public String landPlanetaryGearboxesBySeries(@PathVariable(PATH_PARAM_SERIES) String series, Model model) {
 
-		Company exmekCompany = basicInfoRestController.getExmekCompany();
+		Company exmekCompany = generalRestController.getExmekCompany();
 		GearboxSeries gearboxSeries = planetaryGearboxRestController.getGearboxSeries(series);
 		SearchMetaCriteriaResponse searchMetaCriteria = planetaryGearboxRestController.getSearchMetaCriteriaBySeries(series);
 		model.addAttribute(PAGEMODEL_NAME_EXMEK_COMPANY, exmekCompany);
@@ -284,7 +284,7 @@ public class WebController {
 	@GetMapping("/products/planetary_gearboxes/{" + PATH_PARAM_MODEL + "}")
 	public String landPlanetaryGearboxDetail(@PathVariable(PATH_PARAM_MODEL) String gearboxModel, Model model) {
 
-		Company exmekCompany = basicInfoRestController.getExmekCompany();
+		Company exmekCompany = generalRestController.getExmekCompany();
 		PlanetaryGearbox planetaryGearbox = planetaryGearboxRestController.getByModel(gearboxModel);
 		model.addAttribute(PAGEMODEL_NAME_EXMEK_COMPANY, exmekCompany);
 		model.addAttribute(PAGEMODEL_NAME_PLANETARY_GEARBOX, planetaryGearbox);
@@ -297,7 +297,7 @@ public class WebController {
 	@GetMapping("/products/brakes")
 	public String landBrakes(Model model) {
 
-		Company exmekCompany = basicInfoRestController.getExmekCompany();
+		Company exmekCompany = generalRestController.getExmekCompany();
 		SearchMetaCriteriaResponse searchMetaCriteria = brakeRestController.getSearchMetaCriteria();
 		PageableListDataResponse<BrakeSeries> brakeSeriesesPage = brakeRestController.getBrakeSerieses(null, null);
 		model.addAttribute(PAGEMODEL_NAME_EXMEK_COMPANY, exmekCompany);
@@ -309,7 +309,7 @@ public class WebController {
 	@GetMapping("/products/brakes/serieses/{" + PATH_PARAM_SERIES + "}")
 	public String landBrakesBySeries(@PathVariable(PATH_PARAM_SERIES) String series, Model model) {
 
-		Company exmekCompany = basicInfoRestController.getExmekCompany();
+		Company exmekCompany = generalRestController.getExmekCompany();
 		BrakeSeries brakeSeries = brakeRestController.getBrakeSeries(series);
 		SearchMetaCriteriaResponse searchMetaCriteria = brakeRestController.getSearchMetaCriteriaBySeries(series);
 		model.addAttribute(PAGEMODEL_NAME_EXMEK_COMPANY, exmekCompany);
@@ -321,7 +321,7 @@ public class WebController {
 	@GetMapping("/products/brakes/{" + PATH_PARAM_MODEL + "}")
 	public String landBrakeDetail(@PathVariable(PATH_PARAM_MODEL) String brakeModel, Model model) {
 
-		Company exmekCompany = basicInfoRestController.getExmekCompany();
+		Company exmekCompany = generalRestController.getExmekCompany();
 		Brake brake = brakeRestController.getByModel(brakeModel);
 		model.addAttribute(PAGEMODEL_NAME_EXMEK_COMPANY, exmekCompany);
 		model.addAttribute(PAGEMODEL_NAME_BRAKE, brake);
@@ -333,8 +333,8 @@ public class WebController {
 	////////// News Page //////////
 	@GetMapping("/news")
 	public String landNewsList(Model model) {
-		Company exmekCompany = basicInfoRestController.getExmekCompany();
-		List<News> newsList = basicInfoRestController.getAllNews();
+		Company exmekCompany = generalRestController.getExmekCompany();
+		List<News> newsList = generalRestController.getAllNews();
 		model.addAttribute(PAGEMODEL_NAME_EXMEK_COMPANY, exmekCompany);
 		model.addAttribute(PAGEMODEL_NAME_NEWS_LIST, newsList);
 		return VIEW_NAME_NEWS_LANDING;
@@ -342,8 +342,8 @@ public class WebController {
 	
 	@GetMapping("/news/{" + PATH_PARAM_ID_OR_NAME + "}")
 	public String landNewsDetail(@PathVariable(PATH_PARAM_ID_OR_NAME) String idOrTitle, Model model) {
-		Company exmekCompany = basicInfoRestController.getExmekCompany();
-		News news = basicInfoRestController.getNews(idOrTitle);
+		Company exmekCompany = generalRestController.getExmekCompany();
+		News news = generalRestController.getNews(idOrTitle);
 		model.addAttribute(PAGEMODEL_NAME_EXMEK_COMPANY, exmekCompany);
 		model.addAttribute(PAGEMODEL_NAME_NEWS, news);
 		return VIEW_NAME_NEWS_DETAIL;

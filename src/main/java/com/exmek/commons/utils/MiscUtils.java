@@ -1,17 +1,21 @@
-package commons.utils;
+package com.exmek.commons.utils;
 
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
-public class CommonUtils {
+import org.springframework.util.CollectionUtils;
+import org.springframework.util.ObjectUtils;
+
+public class MiscUtils {
 	
-	private CommonUtils() {
+	private MiscUtils() {
 	}
 
     public static boolean isNumeric(final CharSequence cs) {
-        if (isEmpty(cs)) {
+        if (cs == null || cs.isEmpty()) {
             return false;
         }
         final int sz = cs.length();
@@ -21,10 +25,6 @@ public class CommonUtils {
             }
         }
         return true;
-    }
-
-    public static boolean isEmpty(final CharSequence cs) {
-        return cs == null || cs.length() == 0;
     }
 
 	public static <T> void addNonNullToList(List<T> resultList, Supplier<T> creator) {
@@ -77,4 +77,38 @@ public class CommonUtils {
 		return -1;
 	}
 
+	public static void requireNonEmpty(String s, String message) {
+		if (ObjectUtils.isEmpty(s)) {
+			throw new NullPointerException(message);
+		}
+	}
+
+	public static void requireAllNonEmpty(String[] ss, String message) {
+		if (ObjectUtils.isEmpty(ss)) {
+			throw new NullPointerException(message);
+		}
+		for (String s : ss) {
+			if (ObjectUtils.isEmpty(s)) {
+				throw new NullPointerException(message);
+			}
+		}
+	}
+
+	public static String joinAsStr(List<?> objs, String delimiter, String quote) {
+		if (objs == null) {
+			return null;
+		}
+		if (CollectionUtils.isEmpty(objs)) {
+			return "";
+		}
+		return objs.stream()
+				.filter(obj -> obj != null)
+				.map(obj -> toStrQuoted(obj, quote))
+				.collect(Collectors.joining(delimiter));
+	}
+
+	private static String toStrQuoted(Object obj, String quote) {
+		String s = obj.toString();
+		return quote != null ? quote + s + quote : s;
+	}
 }

@@ -1,0 +1,80 @@
+package com.exmek.core.config;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import com.exmek.commons.utils.JsonMapperUtils;
+import com.exmek.core.model.Company;
+import com.exmek.core.persistence.entity.ConfigEntity;
+import com.exmek.core.persistence.repository.ConfigRepository;
+import com.fasterxml.jackson.core.type.TypeReference;
+
+import jakarta.annotation.PostConstruct;
+
+@Component
+public class Config {
+
+	private static final Logger logger = LoggerFactory.getLogger(Config.class);
+
+	public static final String CONFIG_NAME_COMPANY_EXMEK			= "company.exmek";
+	
+	public static final String CONFIG_NAME_SMTP_EXMEKSYS			= "smtp.exmeksys";
+	
+	public static final String CONFIG_NAME_EMAIL_INQUIRY_RECEIVERS	= "email.inquiry_receivers";
+	
+	public static final String CONFIG_NAME_EXTERNAL_LOOKUP_COUNTRY	= "external.lookup_country";
+
+	private static final String DEFAULT_VALUE_SMTP_EXMEKSYS_			= "{\"host\": \"smtp.gmail.com\", \"port\": 587, \"user\": \"exmeksys@gmail.com\", \"password\": \"mzuhdzrzhyeostbe\", \"properties\": {\"mail.transport.protocol\": \"smtp\", \"mail.smtp.auth\": \"true\", \"mail.smtp.starttls.enable\": \"true\"}}";
+	private static final String DEFAULT_VALUE_EXTERNAL_LOOKUP_COUNTRY	= "{\"baseEndpoint\": \"https://api.country.is/\", \"countryPropertyName\": \"country\"}";
+
+	@Autowired
+	private ConfigRepository configRepository;
+
+	private Map<String, String> configMap = new HashMap<>();
+
+	@PostConstruct
+	protected void init() {
+		List<ConfigEntity> configEntities = this.configRepository.findAll();
+		this.configMap = configEntities.stream()
+				.collect(Collectors.toMap(ConfigEntity::getName, ConfigEntity::getValue));
+	}
+
+	public String getConfigValue(String configName, String defaultValue) {
+		if (configMap == null) {
+			logger.error("Unable to get config for name '{}' as the 'configMap' is null. ", configName);
+			return defaultValue;
+		}
+		String value = configMap.get(configName);
+		if (value == null) {
+			return defaultValue;
+		}
+		return value;
+	}
+	
+	public Company getExmekCompany() {
+		String exmekStr = getConfigValue(CONFIG_NAME_COMPANY_EXMEK, null);
+		return JsonMapperUtils.readValue(exmekStr, new TypeReference<Company>() {});
+	}
+
+	public SmtpConf getSmtpExmekSysConf() {
+		String confStr = getConfigValue(CONFIG_NAME_SMTP_EXMEKSYS, DEFAULT_VALUE_SMTP_EXMEKSYS_);
+		return JsonMapperUtils.readValue(confStr, new TypeReference<SmtpConf>() {});
+	}
+
+	public ReceiverEmailConf getInquiryReceiverEmailConf() {
+		String confStr = getConfigValue(CONFIG_NAME_EMAIL_INQUIRY_RECEIVERS, null);
+		return JsonMapperUtils.readValue(confStr, new TypeReference<ReceiverEmailConf>() {});
+	}
+
+	public ExternalLookupCountryConf getExternalLookupCountryConf() {
+		String confStr = getConfigValue(CONFIG_NAME_EXTERNAL_LOOKUP_COUNTRY, DEFAULT_VALUE_EXTERNAL_LOOKUP_COUNTRY);
+		return JsonMapperUtils.readValue(confStr, new TypeReference<ExternalLookupCountryConf>() {});
+	}
+}

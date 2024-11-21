@@ -13,22 +13,21 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 
+import com.exmek.commons.utils.MiscUtils;
 import com.exmek.core.commons.model.CurveLine;
 import com.exmek.core.commons.model.Point;
-import com.exmek.core.config.Configuration;
 import com.exmek.core.config.CurveCoordinate;
+import com.exmek.core.config.MotorConfig;
 import com.exmek.core.model.LinearStepperMotorPerfCurve;
 import com.exmek.core.model.LinearStepperMotorPerfCurve.SpeedMeasure;
 import com.exmek.core.model.MotorPerfCurve;
 import com.exmek.core.persistence.entity.AbstractMotorPerfMeasurementEntity;
 
-import commons.utils.CommonUtils;
-
 @Component
 public class MotorPerfCurveMapper {
 	
 	@Autowired
-	private Configuration configuration;
+	private MotorConfig motorConfig;
 
 	public <E extends AbstractMotorPerfMeasurementEntity> List<MotorPerfCurve> mapToPerfCurveModels(Set<E> entities, String model) {
 		if (entities == null) {
@@ -50,11 +49,11 @@ public class MotorPerfCurveMapper {
 		}
 		MotorPerfCurve perfCurve = new MotorPerfCurve();
 		perfCurve.setTitle(entity.getTitle());
-		List<CurveCoordinate> dcMotorCurveCoordinates = configuration.getMotorCurveCoordinates(model);
+		List<CurveCoordinate> dcMotorCurveCoordinates = motorConfig.getMotorCurveCoordinates(model);
 		if (!CollectionUtils.isEmpty(dcMotorCurveCoordinates)) {
-			String[] columnNames = CommonUtils.split(entity.getVariables(), ",");
-			String[] mConditions = CommonUtils.split(entity.getConditions(), ",");
-			BigDecimal[][] mValues = CommonUtils.parseCSVLikeValues(entity.getValues(),
+			String[] columnNames = MiscUtils.split(entity.getVariables(), ",");
+			String[] mConditions = MiscUtils.split(entity.getConditions(), ",");
+			BigDecimal[][] mValues = MiscUtils.parseCSVLikeValues(entity.getValues(),
 					rows -> new BigDecimal[rows][], cells -> new BigDecimal[cells], s -> new BigDecimal(s));
 			List<CurveLine> curveLines = new ArrayList<>();
 			for (int i = 0; i < dcMotorCurveCoordinates.size(); i++) {
@@ -67,8 +66,8 @@ public class MotorPerfCurveMapper {
 				}
 				cLine.setXAxisName(cc.getX());
 				cLine.setYAxisName(cc.getY());
-				int xColInx = CommonUtils.findIndex(columnNames, cc.getX());
-				int yColInx = CommonUtils.findIndex(columnNames, cc.getY());
+				int xColInx = MiscUtils.findIndex(columnNames, cc.getX());
+				int yColInx = MiscUtils.findIndex(columnNames, cc.getY());
 				if (xColInx >= 0 && yColInx >= 0) {
 					for (int r = 0; r < mValues.length; r++) {
 						cLine.addPoint(Point.of(mValues[r][xColInx], mValues[r][yColInx]));
@@ -170,7 +169,7 @@ public class MotorPerfCurveMapper {
 			}
 		}
 		
-		BigDecimal[][] mValues = CommonUtils.parseCSVLikeValues(entity.getValues(),
+		BigDecimal[][] mValues = MiscUtils.parseCSVLikeValues(entity.getValues(),
 				rows -> new BigDecimal[rows][], cells -> new BigDecimal[cells], s -> new BigDecimal(s));
 		List<CurveLine> curveLines = new ArrayList<>();
 		for (Map.Entry<String, Integer> entry : thrustColIndexMap.entrySet()) {

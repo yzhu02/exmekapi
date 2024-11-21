@@ -5,7 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertSame;
 
 import org.junit.jupiter.api.Test;
 
-import commons.expr.RelationalOperator;
+import com.exmek.commons.expr.RelationalOperator;
 
 
 class ConditionLineTest {
