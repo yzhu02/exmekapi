@@ -10,7 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
-import com.exmek.core.config.Config;
+import com.exmek.core.config.AppConfig;
 import com.exmek.core.config.ExternalLookupCountryConf;
 
 @Component
@@ -19,7 +19,7 @@ public class CountryLookupService {
 	private static final Logger logger = LoggerFactory.getLogger(CountryLookupService.class);
 	
 	@Autowired
-	private Config config;
+	private AppConfig appConfig;
 
 	@Autowired
 	private RestTemplate restTemplate;
@@ -28,7 +28,7 @@ public class CountryLookupService {
 		// Example of public API to lookup country by IP (both support IPv4 and IPv6):
 		// 		http://ip-api.com/json/156.93.246.30
 		// 		https://api.country.is/2001:0000:130F:0000:0000:09C0:876A:130B
-		ExternalLookupCountryConf lookupCountryConf = config.getExternalLookupCountryConf();
+		ExternalLookupCountryConf lookupCountryConf = appConfig.getExternalLookupCountryConf();
 		String url = lookupCountryConf.getBaseEndpoint();
 		if (!url.endsWith("/")) {
 			url = url + "/";

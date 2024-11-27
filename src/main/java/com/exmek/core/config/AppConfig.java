@@ -19,9 +19,9 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import jakarta.annotation.PostConstruct;
 
 @Component
-public class Config {
+public class AppConfig {
 
-	private static final Logger logger = LoggerFactory.getLogger(Config.class);
+	private static final Logger logger = LoggerFactory.getLogger(AppConfig.class);
 
 	public static final String CONFIG_NAME_COMPANY_EXMEK			= "company.exmek";
 	
@@ -30,6 +30,8 @@ public class Config {
 	public static final String CONFIG_NAME_EMAIL_INQUIRY_RECEIVERS	= "email.inquiry_receivers";
 	
 	public static final String CONFIG_NAME_EXTERNAL_LOOKUP_COUNTRY	= "external.lookup_country";
+	
+	public static final String CONFIG_NAME_CONSUMERS					= "consumers";
 
 	private static final String DEFAULT_VALUE_SMTP_EXMEKSYS_			= "{\"host\": \"smtp.gmail.com\", \"port\": 587, \"user\": \"exmeksys@gmail.com\", \"password\": \"mzuhdzrzhyeostbe\", \"properties\": {\"mail.transport.protocol\": \"smtp\", \"mail.smtp.auth\": \"true\", \"mail.smtp.starttls.enable\": \"true\"}}";
 	private static final String DEFAULT_VALUE_EXTERNAL_LOOKUP_COUNTRY	= "{\"baseEndpoint\": \"https://api.country.is/\", \"countryPropertyName\": \"country\"}";
@@ -40,7 +42,7 @@ public class Config {
 	private Map<String, String> configMap = new HashMap<>();
 
 	@PostConstruct
-	protected void init() {
+	protected void initialize() {
 		List<ConfigEntity> configEntities = this.configRepository.findAll();
 		this.configMap = configEntities.stream()
 				.collect(Collectors.toMap(ConfigEntity::getName, ConfigEntity::getValue));
@@ -77,4 +79,9 @@ public class Config {
 		String confStr = getConfigValue(CONFIG_NAME_EXTERNAL_LOOKUP_COUNTRY, DEFAULT_VALUE_EXTERNAL_LOOKUP_COUNTRY);
 		return JsonMapperUtils.readValue(confStr, new TypeReference<ExternalLookupCountryConf>() {});
 	}
+
+	public List<Consumer> getConsumers() {
+		String confStr = getConfigValue(CONFIG_NAME_CONSUMERS, null);
+		return JsonMapperUtils.readValue(confStr, new TypeReference<List<Consumer>>() {});
+	} 
 }

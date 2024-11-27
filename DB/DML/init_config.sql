@@ -12,6 +12,9 @@ VALUES
 ),
 (
 	'external.lookup_country', '{"baseEndpoint": "https://api.country.is/", "countryPropertyName": "country"}' 
+),
+(
+	'consumers', '[{"id": "exmekweb@2411"}, {"id": "exmektest@2411"}]' 
 )
 ;
 
