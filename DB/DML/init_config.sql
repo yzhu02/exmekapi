@@ -8,13 +8,16 @@ VALUES
 	'smtp.exmeksys', '{"host": "smtp.gmail.com", "port": 587, "user": "exmeksys@gmail.com", "password": "mzuhdzrzhyeostbe", "properties": {"mail.transport.protocol": "smtp", "mail.smtp.auth": "true", "mail.smtp.starttls.enable": "true", "mail.debug": "true"}}'
 ),
 (
-	'email.inquiry_receivers', '{"to": ["lydia@junhongmotor.com"], "cc": ["grace.zhang@junhongmotor.com"], "bcc": []}' 
+	'email.inquiryReceivers', '{"to": ["lydia@junhongmotor.com"], "cc": ["grace.zhang@junhongmotor.com"], "bcc": []}' 
 ),
 (
-	'external.lookup_country', '{"baseEndpoint": "https://api.country.is/", "countryPropertyName": "country"}' 
+	'external.lookupCountryService', '{"baseEndpoint": "https://api.country.is/", "countryPropertyName": "country"}' 
 ),
 (
 	'consumers', '[{"id": "exmekweb@2411"}, {"id": "exmektest@2411"}]' 
+),
+(
+	'cors.allowedOrigins', '["http://localhost:3000", "http://localhost:80", "https://localhost:443"]' 
 )
 ;
 
