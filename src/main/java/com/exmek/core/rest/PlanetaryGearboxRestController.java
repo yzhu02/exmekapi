@@ -64,6 +64,11 @@ public class PlanetaryGearboxRestController extends BaseProductRestController<Pl
 		return planetaryGearboxMapper.mapPlanetaryGearboxToModel(entity, comprehensiveMapping);
 	}
 
+	@Override
+	protected List<String> getSearchMetaCriteriaFields() {
+		return appConfig.getSearchPlanetaryGearboxMetaCriteriaFields();
+	}
+	
 	@GetMapping("/serieses")
 	public PageableListDataResponse<GearboxSeries> getGearboxSerieses(
 			@RequestParam(value = QRY_PARAM_NAME_PAGE_NUMBER, required = false) Integer pageNumber,

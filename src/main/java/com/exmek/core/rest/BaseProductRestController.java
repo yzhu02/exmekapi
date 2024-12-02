@@ -3,10 +3,10 @@ package com.exmek.core.rest;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
@@ -24,6 +24,7 @@ import org.springframework.util.StringUtils;
 import com.exmek.commons.expr.LogicalOperator;
 import com.exmek.commons.utils.ReflectionUtils;
 import com.exmek.core.annotation.Searchable;
+import com.exmek.core.config.AppConfig;
 import com.exmek.core.context.ResourceContext;
 import com.exmek.core.model.AbstractProduct;
 import com.exmek.core.persistence.JPAUtils;
@@ -50,6 +51,9 @@ public abstract class BaseProductRestController<T extends AbstractProductEntity,
 	
 	@Autowired
 	protected ResourceContext resourceContext;
+	
+	@Autowired
+	protected AppConfig appConfig;
 
 	protected List<FieldMetaCriterion> fieldMetaCriteria;
 	
@@ -59,24 +63,45 @@ public abstract class BaseProductRestController<T extends AbstractProductEntity,
 	
 	protected abstract M mapEntityToModel(T entity, boolean comprehensiveMapping);
 
+	protected abstract List<String> getSearchMetaCriteriaFields();
+
 	@PostConstruct
 	protected void initFieldMetaCriteria() {
-		this.fieldMetaCriteria = new ArrayList<>();
+		List<String> searchMetaFieldNames = getSearchMetaCriteriaFields();
+		if (!ObjectUtils.isEmpty(searchMetaFieldNames)) {
+			this.fieldMetaCriteria = createFieldMetaCriteriaByConfig(searchMetaFieldNames);
+		} else {
+			this.fieldMetaCriteria = createFieldMetaCriteriaByAnnotation();
+		}
+	}
+
+	List<FieldMetaCriterion> createFieldMetaCriteriaByConfig(List<String> searchMetaFieldNames) {
+		List<FieldMetaCriterion> fieldMetaCriteria = new ArrayList<>();
 		
 		Class<?> clazz = getEntityClass();
 		if (clazz == null) {
-			throw new RuntimeException("Unable to initialize 'fieldCriteria' as 'entityClass' is not defined.");
+			throw new RuntimeException("Unable to initialize 'fieldMetaCriteria' as 'entityClass' is not defined.");
 		}
-		Set<String> fieldNameSet = new HashSet<>();
-		while (clazz != null && clazz != Object.class) {
-			Field[] fields = clazz.getDeclaredFields();
-			for (Field field : fields) {
-				if (!Modifier.isStatic(field.getModifiers()) && !Modifier.isTransient(field.getModifiers())) {
-					fieldNameSet.add(field.getName());
-				}
+		Map<String, Field> fieldsMap = collectFields(clazz);
+		for (String searchMetaFieldName : searchMetaFieldNames) {
+			if (!fieldsMap.containsKey(searchMetaFieldName)) {
+				continue;
 			}
-			clazz = clazz.getSuperclass();
+			FieldMetaCriterion c = createFieldMetaCriterion(searchMetaFieldName, fieldsMap);
+			fieldMetaCriteria.add(c);
 		}
+		
+		return fieldMetaCriteria;
+	}
+	
+	List<FieldMetaCriterion> createFieldMetaCriteriaByAnnotation() {
+		List<FieldMetaCriterion> fieldMetaCriteria = new ArrayList<>();
+		
+		Class<?> clazz = getEntityClass();
+		if (clazz == null) {
+			throw new RuntimeException("Unable to initialize 'fieldMetaCriteria' as 'entityClass' is not defined.");
+		}
+		Map<String, Field> fieldsMap = collectFields(clazz);
 		
 		clazz = getEntityClass();
 		while (clazz != null && clazz != Object.class) {
@@ -85,34 +110,55 @@ public abstract class BaseProductRestController<T extends AbstractProductEntity,
 				if (!field.isAnnotationPresent(Searchable.class)) {
 					continue;
 				}
-				FieldMetaCriterion c = new FieldMetaCriterion();
-				String fieldName = field.getName();
-				c.setFieldName(fieldName);
-				c.setDisplayName(ExmekUtils.fieldNameToDisplayName(field.getName()));
-				c.setType(field.getType().getSimpleName());
-				String unitFieldName = field.getName() + "Unit";
-				if (fieldNameSet.contains(unitFieldName)) {
-					c.setUnitFieldName(unitFieldName);
-					@SuppressWarnings("unchecked")
-					List<String> units = (List<String>) ReflectionUtils.readValueFromMethod("find" + StringUtils.capitalize(unitFieldName) + "s", getProductRepository());
-					if (!ObjectUtils.isEmpty(units)) {
-						if (units.size() > 1) {
-							logger.warn("There are multiple different units used for unit field {} ", unitFieldName);
-						}
-						c.setUnit(units.get(0)); //supposed to have only one unit
-					}
-				}
-				boolean isNumber = Number.class.isAssignableFrom(field.getType());
-				c.setIsNumber(isNumber);
-				if (isNumber) {
-					c.setSupportedOperators(RelationalOperatorUtils.getNumberSupportedRelationalOperators());
-					c.setMinValue((Number) ReflectionUtils.readValueFromMethod("findMin" + StringUtils.capitalize(fieldName), getProductRepository()));
-					c.setMaxValue((Number) ReflectionUtils.readValueFromMethod("findMax" + StringUtils.capitalize(fieldName), getProductRepository()));
-				}
-				this.fieldMetaCriteria.add(c);
+				FieldMetaCriterion c = createFieldMetaCriterion(field.getName(), fieldsMap);
+				fieldMetaCriteria.add(c);
 			}
 			clazz = clazz.getSuperclass();
 		}
+		return fieldMetaCriteria;
+	}
+
+	private Map<String, Field> collectFields(Class<?> clazz) {
+		Map<String, Field> fieldsMap = new HashMap<>();
+		while (clazz != null && clazz != Object.class) {
+			Field[] fields = clazz.getDeclaredFields();
+			for (Field field : fields) {
+				if (!Modifier.isStatic(field.getModifiers()) && !Modifier.isTransient(field.getModifiers()) && !Modifier.isVolatile(field.getModifiers())) {
+					fieldsMap.put(field.getName(), field);
+				}
+			}
+			clazz = clazz.getSuperclass();
+		}
+		return fieldsMap;
+	}
+
+	private FieldMetaCriterion createFieldMetaCriterion(String searchMetaFieldName, Map<String, Field> fieldsMap) {
+		Field field = fieldsMap.get(searchMetaFieldName);
+		FieldMetaCriterion c = new FieldMetaCriterion();
+		String fieldName = field.getName();
+		c.setFieldName(fieldName);
+		c.setDisplayName(ExmekUtils.fieldNameToDisplayName(field.getName()));
+		c.setType(field.getType().getSimpleName());
+		String unitFieldName = field.getName() + "Unit";
+		if (fieldsMap.containsKey(unitFieldName)) {
+			c.setUnitFieldName(unitFieldName);
+			@SuppressWarnings("unchecked")
+			List<String> units = (List<String>) ReflectionUtils.readValueFromMethod("find" + StringUtils.capitalize(unitFieldName) + "s", getProductRepository());
+			if (!ObjectUtils.isEmpty(units)) {
+				if (units.size() > 1) {
+					logger.warn("There are multiple different units used for unit field {} ", unitFieldName);
+				}
+				c.setUnit(units.get(0)); //supposed to have only one unit
+			}
+		}
+		boolean isNumber = Number.class.isAssignableFrom(field.getType());
+		c.setIsNumber(isNumber);
+		if (isNumber) {
+			c.setSupportedOperators(RelationalOperatorUtils.getNumberSupportedRelationalOperators());
+			c.setMinValue((Number) ReflectionUtils.readValueFromMethod("findMin" + StringUtils.capitalize(fieldName), getProductRepository()));
+			c.setMaxValue((Number) ReflectionUtils.readValueFromMethod("findMax" + StringUtils.capitalize(fieldName), getProductRepository()));
+		}
+		return c;
 	}
 
 	@Override

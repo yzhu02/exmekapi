@@ -54,6 +54,11 @@ public class StepperMotorRestController extends BaseMotorRestController<StepperM
 		return motorMapper.mapStepperMotorToModel(entity, comprehensiveMapping);
 	}
 
+	@Override
+	protected List<String> getSearchMetaCriteriaFields() {
+		return appConfig.getSearchStepperMotorMetaCriteriaFields();
+	}
+	
 	@GetMapping("/stepper/categories")
 	public List<MotorCategory> getMotorCategories() {
 		

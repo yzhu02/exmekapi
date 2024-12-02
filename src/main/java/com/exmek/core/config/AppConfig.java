@@ -23,20 +23,29 @@ public class AppConfig {
 
 	private static final Logger logger = LoggerFactory.getLogger(AppConfig.class);
 
-	public static final String CONFIG_NAME_COMPANY_EXMEK					= "company.exmek";
+	public static final String CONFIG_NAME_COMPANY_EXMEK								= "company.exmek";
 	
-	public static final String CONFIG_NAME_SMTP_EXMEKSYS					= "smtp.exmeksys";
+	public static final String CONFIG_NAME_SMTP_EXMEKSYS								= "smtp.exmeksys";
 	
-	public static final String CONFIG_NAME_EMAIL_INQUIRY_RECEIVERS			= "email.inquiryReceivers";
+	public static final String CONFIG_NAME_EMAIL_INQUIRY_RECEIVERS						= "email.inquiryReceivers";
 	
-	public static final String CONFIG_NAME_EXTERNAL_LOOKUP_COUNTRY_SERVICE	= "external.lookupCountryService";
+	public static final String CONFIG_NAME_EXTERNAL_LOOKUP_COUNTRY_SERVICE				= "external.lookupCountryService";
 	
-	public static final String CONFIG_NAME_CONSUMERS						= "consumers";
+	public static final String CONFIG_NAME_CONSUMERS									= "consumers";
 	
-	public static final String CONFIG_NAME_CORS_ALLOWED_ORIGINS				= "cors.allowedOrigins";
+	public static final String CONFIG_NAME_CORS_ALLOWED_ORIGINS							= "cors.allowedOrigins";
+	
+	public static final String CONFIG_NAME_SEARCH_DC_MOTOR_METACRITERIA_FIELDS			= "search.dcMotor.metaCriteria.fields";
+	
+	public static final String CONFIG_NAME_SEARCH_STEPPER_MOTOR_METACRITERIA_FIELDS		= "search.stepperMotor.metaCriteria.fields";
+	
+	public static final String CONFIG_NAME_SEARCH_PLANETARY_GEARBOX_METACRITERIA_FIELDS	= "search.planetaryGearbox.metaCriteria.fields";
+	
+	public static final String CONFIG_NAME_SEARCH_BRAKE_METACRITERIA_FIELDS				= "search.brake.metaCriteria.fields";
+	
 
-	private static final String DEFAULT_VALUE_SMTP_EXMEKSYS_					= "{\"host\": \"smtp.gmail.com\", \"port\": 587, \"user\": \"exmeksys@gmail.com\", \"password\": \"mzuhdzrzhyeostbe\", \"properties\": {\"mail.transport.protocol\": \"smtp\", \"mail.smtp.auth\": \"true\", \"mail.smtp.starttls.enable\": \"true\"}}";
-	private static final String DEFAULT_VALUE_EXTERNAL_LOOKUP_COUNTRY_SERVICE	= "{\"baseEndpoint\": \"https://api.country.is/\", \"countryPropertyName\": \"country\"}";
+	private static final String DEFAULT_VALUE_SMTP_EXMEKSYS_							= "{\"host\": \"smtp.gmail.com\", \"port\": 587, \"user\": \"exmeksys@gmail.com\", \"password\": \"mzuhdzrzhyeostbe\", \"properties\": {\"mail.transport.protocol\": \"smtp\", \"mail.smtp.auth\": \"true\", \"mail.smtp.starttls.enable\": \"true\"}}";
+	private static final String DEFAULT_VALUE_EXTERNAL_LOOKUP_COUNTRY_SERVICE			= "{\"baseEndpoint\": \"https://api.country.is/\", \"countryPropertyName\": \"country\"}";
 
 	@Autowired
 	private ConfigRepository configRepository;
@@ -89,6 +98,26 @@ public class AppConfig {
 	
 	public List<String> getCorsAllowedOrigins() {
 		String confStr = getConfigValue(CONFIG_NAME_CORS_ALLOWED_ORIGINS, null);
+		return JsonMapperUtils.readValue(confStr, new TypeReference<List<String>>() {});
+	}
+
+	public List<String> getSearchDCMotorMetaCriteriaFields() {
+		String confStr = getConfigValue(CONFIG_NAME_SEARCH_DC_MOTOR_METACRITERIA_FIELDS, null);
+		return JsonMapperUtils.readValue(confStr, new TypeReference<List<String>>() {});
+	}
+	
+	public List<String> getSearchStepperMotorMetaCriteriaFields() {
+		String confStr = getConfigValue(CONFIG_NAME_SEARCH_STEPPER_MOTOR_METACRITERIA_FIELDS, null);
+		return JsonMapperUtils.readValue(confStr, new TypeReference<List<String>>() {});
+	}
+	
+	public List<String> getSearchPlanetaryGearboxMetaCriteriaFields() {
+		String confStr = getConfigValue(CONFIG_NAME_SEARCH_PLANETARY_GEARBOX_METACRITERIA_FIELDS, null);
+		return JsonMapperUtils.readValue(confStr, new TypeReference<List<String>>() {});
+	}
+	
+	public List<String> getSearchBrakeMetaCriteriaFields() {
+		String confStr = getConfigValue(CONFIG_NAME_SEARCH_BRAKE_METACRITERIA_FIELDS, null);
 		return JsonMapperUtils.readValue(confStr, new TypeReference<List<String>>() {});
 	}
 }

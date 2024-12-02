@@ -65,6 +65,11 @@ public class BrakeRestController extends BaseProductRestController<BrakeEntity, 
 		return brakeMapper.mapBrakeToModel(entity, comprehensiveMapping);
 	}
 
+	@Override
+	protected List<String> getSearchMetaCriteriaFields() {
+		return appConfig.getSearchBrakeMetaCriteriaFields();
+	}
+
 	@GetMapping("/serieses")
 	public PageableListDataResponse<BrakeSeries> getBrakeSerieses(
 			@RequestParam(value = QRY_PARAM_NAME_PAGE_NUMBER, required = false) Integer pageNumber,

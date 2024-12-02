@@ -18,8 +18,21 @@ VALUES
 ),
 (
 	'cors.allowedOrigins', '["http://localhost:3000", "http://localhost:80", "https://localhost:443"]' 
+),
+(
+	'search.dcMotor.metaCriteria.fields', '["frameSize", "length", "ratedVoltage", "ratedCurrent", "ratedPower", "ratedTorque", "ratedRotatingSpeed", "ratedLinearSpeed", "peakCurrent", "peakTorque", "maxSortingWeight", "weight", "model"]'
+),
+(
+	'search.stepperMotor.metaCriteria.fields', '["frameSize", "length", "ratedVoltage", "phaseCurrent", "phaseResistance", "holdingTorque", "detentTorque", "maxThrust", "stepAngle", "weight", "model"]'
+),
+(
+	'search.planetaryGearbox.metaCriteria.fields', '["frameSize", "length", "numOfStages", "efficiency", "ratedContinuousTorque", "maxMomentaryTorque", "weight", "model"]'
+),
+(
+	'search.brake.metaCriteria.fields', '["frameSize", "length", "ratedVoltage", "resistance", "current", "staticTorque", "ratedPower", "startVoltage", "weight", "model"]'
 )
 ;
 
 
 -- UPDATE  CONFIG set VALUE = '{"to": ["test4yz@gmail.com"], "cc": [], "bcc": []}' WHERE NAME = 'email.inquiry_receivers';
+

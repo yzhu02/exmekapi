@@ -59,6 +59,11 @@ public class DCMotorRestController extends BaseMotorRestController<DCMotorEntity
 		return motorMapper.mapDCMotorToModel(entity, comprehensiveMapping);
 	}
 
+	@Override
+	protected List<String> getSearchMetaCriteriaFields() {
+		return appConfig.getSearchDCMotorMetaCriteriaFields();
+	}
+	
 	@GetMapping("/DC/categories")
 	public List<MotorCategory> getMotorCategories(
 			@RequestParam(value = QRY_PARAM_NAME_TYPE, required = false) String type) {
