@@ -1,4 +1,4 @@
-package com.exmek.core.context;
+package com.exmek.core.resource;
 
 import java.io.IOException;
 import java.util.ArrayList;

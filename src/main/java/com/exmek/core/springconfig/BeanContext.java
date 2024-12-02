@@ -1,4 +1,4 @@
-package com.exmek.core.context;
+package com.exmek.core.springconfig;
 
 import java.util.Map;
 import java.util.Properties;
