@@ -1,6 +1,8 @@
-package com.exmek.core;
+package com.exmek.core.springconfig;
 
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.MediaType;
+import org.springframework.web.servlet.config.annotation.ContentNegotiationConfigurer;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -13,5 +15,10 @@ public class WebMvcConfig implements WebMvcConfigurer {
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/" + NewsRepo.NEWSREPO_NAME + "/**")
                 .addResourceLocations("classpath:/" + NewsRepo.NEWSREPO_NAME + "/");
+    }
+    
+    @Override
+    public void configureContentNegotiation(ContentNegotiationConfigurer configurer) {
+        configurer.defaultContentType(MediaType.APPLICATION_JSON);
     }
 }

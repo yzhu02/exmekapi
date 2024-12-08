@@ -1,39 +1,52 @@
 package com.exmek.core.springconfig;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.web.cors.CorsConfiguration;
 
+import com.exmek.commons.utils.JsonMapperUtils;
 import com.exmek.core.config.AppConfig;
-import com.exmek.core.filter.ConsumerAuthFilter;
+import com.exmek.core.consts.EndpointConsts;
+import com.exmek.core.error.ErrorCode;
+import com.exmek.core.error.ErrorResponse;
+import com.exmek.core.persistence.entity.UserEntity;
+import com.exmek.core.persistence.repository.UserRepository;
+import com.exmek.core.resource.ResourceContext;
 
 @Configuration
 @EnableWebSecurity
-public class SecurityConfiguration implements ApplicationContextAware {
-
-	private ApplicationContext applicationContext;
+public class SecurityConfiguration {
 
 	@Autowired
 	private AppConfig appConfig;
 	
-	@Override
-	public void setApplicationContext(ApplicationContext applicationContext) {
-		this.applicationContext = applicationContext;
-	}
-	  
+	@Autowired
+	private UserRepository userRepository;
+		  
     @Bean
     SecurityFilterChain filterChain(HttpSecurity httpSec) throws Exception {
-    	ConsumerAuthFilter consumerAuthFilter = applicationContext.getBean(ConsumerAuthFilter.class);
     	httpSec
-    	.addFilterBefore(consumerAuthFilter, UsernamePasswordAuthenticationFilter.class)
     	.cors(cors -> cors.configurationSource(request -> {
             CorsConfiguration corsConfig = new CorsConfiguration();
             corsConfig.setAllowedOrigins(appConfig.getCorsAllowedOrigins());
@@ -45,12 +58,78 @@ public class SecurityConfiguration implements ApplicationContextAware {
     	.csrf(csrf -> csrf.disable())
     	.authorizeHttpRequests(auth -> {
     	    auth
-    	    .requestMatchers("/api/**")
+    	    .requestMatchers(EndpointConsts.ENDPOINT_API_PREFIX + "/**")
+    	    .authenticated()
+    	    ;
+    	    
+    		auth
+    	    .requestMatchers(ResourceContext.IMAGES_PATH_PREFIX + "**", ResourceContext.MATERIALS_PATH_PREFIX + "**")
     	    .permitAll()
     	    .anyRequest()
-    	    .authenticated();
+    	    .authenticated()
+    	    ;
     	})
-    	.httpBasic(Customizer.withDefaults());
+    	.exceptionHandling(exceptions -> exceptions
+    			.authenticationEntryPoint(authenticationEntryPoint())
+    			.accessDeniedHandler(accessDeniedHandler())
+    	)
+    	.httpBasic(Customizer.withDefaults())
+    	;
     	return httpSec.build();
+    }
+    
+    @Bean
+    AuthenticationEntryPoint authenticationEntryPoint() {
+        return (request, response, authException) -> {
+            response.setStatus(HttpStatus.UNAUTHORIZED.value());
+            response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+            ErrorResponse errorResp = ErrorResponse.builder()
+            		.code(ErrorCode.ERR_CODE_UNAUTHORIZED)
+            		.message(authException.getMessage()).build();
+            response.getWriter().write(JsonMapperUtils.writeValueAsString(errorResp));
+        };
+    }
+    
+    @Bean
+    AccessDeniedHandler accessDeniedHandler() {
+        return (request, response, accessDeniedException) -> {
+            response.setStatus(HttpStatus.FORBIDDEN.value());
+            response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+            ErrorResponse errorResp = ErrorResponse.builder()
+            		.code(ErrorCode.ERR_CODE_FORBIDDEN)
+            		.message(accessDeniedException.getMessage()).build();
+            response.getWriter().write(JsonMapperUtils.writeValueAsString(errorResp));
+        };
+    }
+
+    @Bean
+    DaoAuthenticationProvider authenticationProvider(UserDetailsService userDetailsService, PasswordEncoder passwordEncoder) {
+        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
+        authProvider.setUserDetailsService(userDetailsService);
+        authProvider.setPasswordEncoder(passwordEncoder);
+        return authProvider;
+    }
+
+    @Bean
+    AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
+        return configuration.getAuthenticationManager();
+    }
+    
+    @Bean
+    UserDetailsService userDetailsService() {
+    	List<UserEntity> userEntities = userRepository.findAll();
+    	List<UserDetails> userDetails = userEntities.stream()
+    			.map(u -> User.builder()
+    					.username(u.getUsername())
+    					.password(passwordEncoder().encode(u.getPassword()))
+    					.roles(u.getRole())
+    					.build())
+    			.collect(Collectors.toList());
+        return new InMemoryUserDetailsManager(userDetails);
+    }
+
+    @Bean
+    PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
     }
 }

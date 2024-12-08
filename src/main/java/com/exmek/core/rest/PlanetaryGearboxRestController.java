@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.exmek.core.consts.EndpointConsts;
 import com.exmek.core.mapper.GearboxSeriesMapper;
 import com.exmek.core.mapper.PlanetaryGearboxMapper;
 import com.exmek.core.model.GearboxSeries;
@@ -34,7 +35,7 @@ import com.exmek.core.service.ProductService;
 import jakarta.validation.constraints.NotNull;
 
 @RestController
-@RequestMapping("/api/gearboxes")
+@RequestMapping(EndpointConsts.ENDPOINT_API_GEARBOXES)
 public class PlanetaryGearboxRestController extends BaseProductRestController<PlanetaryGearboxEntity, PlanetaryGearbox> implements ProductService<PlanetaryGearbox> {
 
 	@Autowired

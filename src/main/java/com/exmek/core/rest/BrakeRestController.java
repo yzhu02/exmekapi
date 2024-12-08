@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.exmek.core.consts.EndpointConsts;
 import com.exmek.core.mapper.BrakeMapper;
 import com.exmek.core.mapper.BrakeSeriesMapper;
 import com.exmek.core.model.Brake;
@@ -35,7 +36,7 @@ import com.exmek.core.service.ProductService;
 import jakarta.validation.constraints.NotNull;
 
 @RestController
-@RequestMapping("/api/brakes")
+@RequestMapping(EndpointConsts.ENDPOINT_API_BRAKES)
 public class BrakeRestController extends BaseProductRestController<BrakeEntity, Brake> implements ProductService<Brake> {
 
 	@Autowired

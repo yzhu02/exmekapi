@@ -29,7 +29,7 @@ public class BeanContext {
 	}
 
     @Bean
-    SpringTemplateEngine getTemplateEngine() {
+    SpringTemplateEngine templateEngine() {
         SpringTemplateEngine templateEngine = new SpringTemplateEngine();
         templateEngine.addTemplateResolver(templateResolver());
         return templateEngine;
@@ -46,7 +46,7 @@ public class BeanContext {
     }
 
     @Bean
-    JavaMailSender getJavaMailSender() {
+    JavaMailSender javaMailSender() {
     	SmtpConf smtpConf = appConfig.getSmtpExmekSysConf();
         JavaMailSenderImpl mailSender = new JavaMailSenderImpl();        
         mailSender.setHost(smtpConf.getHost());

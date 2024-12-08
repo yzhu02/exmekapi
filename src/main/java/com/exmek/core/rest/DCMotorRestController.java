@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.exmek.commons.expr.LogicalOperator;
+import com.exmek.core.consts.EndpointConsts;
 import com.exmek.core.mapper.MotorMapper;
 import com.exmek.core.model.DCMotor;
 import com.exmek.core.model.MotorCategory;
@@ -32,7 +33,7 @@ import jakarta.persistence.criteria.Predicate;
 import jakarta.validation.constraints.NotNull;
 
 @RestController
-@RequestMapping("/api/motors")
+@RequestMapping(EndpointConsts.ENDPOINT_API_MOTORS)
 public class DCMotorRestController extends BaseMotorRestController<DCMotorEntity, DCMotor> implements ProductService<DCMotor> {
 	
 	public static final String QRY_PARAM_VALUE_TYPE_BLDC	= "BLDC";

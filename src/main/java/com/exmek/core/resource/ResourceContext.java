@@ -38,8 +38,8 @@ public class ResourceContext {
 	private static final String DIR_NAME_3D							= "3d";
 	private static final String DIR_NAME_TECHDOC					= "techdoc";
 	
-	private static final String IMAGES_PATH_PREFIX					= "/" + DIR_NAME_IMAGES + "/";
-	private static final String MATERIALS_PATH_PREFIX				= "/" + DIR_NAME_MATERIALS + "/";
+	public static final String IMAGES_PATH_PREFIX					= "/" + DIR_NAME_IMAGES + "/";
+	public static final String MATERIALS_PATH_PREFIX				= "/" + DIR_NAME_MATERIALS + "/";
 	////Directory names END
 	
 	////Exposed relative paths BEGIN

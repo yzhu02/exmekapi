@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.exmek.commons.expr.LogicalOperator;
+import com.exmek.core.consts.EndpointConsts;
 import com.exmek.core.mapper.MotorMapper;
 import com.exmek.core.model.MotorCategory;
 import com.exmek.core.model.MotorSeries;
@@ -30,7 +31,7 @@ import jakarta.persistence.criteria.Predicate;
 import jakarta.validation.constraints.NotNull;
 
 @RestController
-@RequestMapping("/api/motors")
+@RequestMapping(EndpointConsts.ENDPOINT_API_MOTORS)
 public class StepperMotorRestController extends BaseMotorRestController<StepperMotorEntity, StepperMotor> implements ProductService<StepperMotor> {
 
 	@Autowired

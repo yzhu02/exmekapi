@@ -20,7 +20,10 @@ import org.thymeleaf.context.Context;
 import com.exmek.commons.net.ContentType;
 import com.exmek.core.config.AppConfig;
 import com.exmek.core.config.ReceiverEmailConf;
+import com.exmek.core.consts.EndpointConsts;
 import com.exmek.core.email.MailSenderService;
+import com.exmek.core.error.ErrorCode;
+import com.exmek.core.error.ValidationException;
 import com.exmek.core.external.CountryLookupService;
 import com.exmek.core.mapper.InquiryMapper;
 import com.exmek.core.model.Company;
@@ -35,7 +38,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.constraints.NotNull;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping(EndpointConsts.ENDPOINT_API_PREFIX)
 public class GeneralRestController {
 
 	private static final Logger logger = LoggerFactory.getLogger(GeneralRestController.class);
@@ -82,7 +85,7 @@ public class GeneralRestController {
 	@PostMapping("/inquiries")
 	public InquiryResponse createInquiry(@NotNull @RequestBody InquiryRequest reqInquiryPayload) {
 		if (reqInquiryPayload == null) {
-			throw new ValidationException("request payload cannot be null. ");
+			throw new ValidationException("inquiry request payload cannot be null. ", ErrorCode.ERR_CODE_INQUIRY_MISSING_REQUEST_PAYLOAD);
 		}
 		InquiryResponse response = new InquiryResponse();
 		HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
