@@ -3,6 +3,7 @@ package com.exmek.core.rest;
 import java.util.List;
 import java.util.Locale;
 
+import org.apache.commons.lang3.ObjectUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,10 +11,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
@@ -21,6 +21,7 @@ import com.exmek.commons.net.ContentType;
 import com.exmek.core.config.AppConfig;
 import com.exmek.core.config.ReceiverEmailConf;
 import com.exmek.core.consts.EndpointConsts;
+import com.exmek.core.consts.RequestHeaderConsts;
 import com.exmek.core.email.MailSenderService;
 import com.exmek.core.error.ErrorCode;
 import com.exmek.core.error.ValidationException;
@@ -34,7 +35,6 @@ import com.exmek.core.persistence.entity.InquiryEntity;
 import com.exmek.core.persistence.repository.InquiryRepository;
 
 import jakarta.mail.MessagingException;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.constraints.NotNull;
 
 @RestController
@@ -83,16 +83,16 @@ public class GeneralRestController {
 	}
 
 	@PostMapping("/inquiries")
-	public InquiryResponse createInquiry(@NotNull @RequestBody InquiryRequest reqInquiryPayload) {
+	public InquiryResponse createInquiry(@NotNull @RequestBody InquiryRequest reqInquiryPayload,
+			@RequestHeader(RequestHeaderConsts.CLIENT_IP) String clientIpAddr) {
 		if (reqInquiryPayload == null) {
 			throw new ValidationException("inquiry request payload cannot be null. ", ErrorCode.ERR_CODE_INQUIRY_MISSING_REQUEST_PAYLOAD);
 		}
 		InquiryResponse response = new InquiryResponse();
-		HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
+//		HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
 		InquiryEntity entity = mapToEntity(reqInquiryPayload.getInquiry());
-		entity.setClientIpAddress(request.getRemoteAddr());
-		entity.setClientHost(request.getRemoteHost());
-		entity.setClientCountryOrRegion(getCountryOrRegionName(request.getRemoteAddr()));
+		entity.setClientIpAddress(clientIpAddr);
+		entity.setClientCountryOrRegion(getCountryOrRegionName(clientIpAddr));
 		try {
 			entity = inquiryRepository.save(entity);
 			response.setStatus("SAVED");
@@ -122,8 +122,11 @@ public class GeneralRestController {
 		return entity;
 	}
 	
-	private String getCountryOrRegionName(String ip) {
-		String countryOrRegionCode = countryLookupService.getCountryOrRegionCodeByIP(ip);
+	private String getCountryOrRegionName(String ipAddr) {
+		if (ObjectUtils.isEmpty(ipAddr)) {
+			return null;
+		}
+		String countryOrRegionCode = countryLookupService.getCountryOrRegionCodeByIP(ipAddr);
 		if (countryOrRegionCode == null) {
 			return null;
 		}

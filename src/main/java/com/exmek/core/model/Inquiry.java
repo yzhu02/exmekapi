@@ -27,8 +27,6 @@ public class Inquiry extends AbstractModel {
 	
 	private String clientIpAddress;
 	
-	private String clientHost;
-	
 	private String clientCountryOrRegion;
 
 	private InquiryStatus status;

@@ -22,7 +22,6 @@ public class InquiryMapper {
 		model.setContent(entity.getContent());
 		model.setRefLink(entity.getRefLink());
 		model.setClientIpAddress(entity.getClientIpAddress());
-		model.setClientHost(entity.getClientHost());
 		model.setClientCountryOrRegion(entity.getClientCountryOrRegion());
 		model.setStatus(entity.getStatus());
 		return model;

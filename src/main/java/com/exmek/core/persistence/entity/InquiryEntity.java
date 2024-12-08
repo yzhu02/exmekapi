@@ -36,11 +36,8 @@ public class InquiryEntity extends AbstractManagableEntity {
 	@Column(name = "REF_LINK")
 	private String refLink;
 
-	@Column(name = "CLIENT_IP_ADDRRESS")
+	@Column(name = "CLIENT_IP_ADDRESS")
 	private String clientIpAddress;
-	
-	@Column(name = "CLIENT_HOST")
-	private String clientHost;
 	
 	@Column(name = "CLIENT_COUNTRY_OR_REGION")
 	private String clientCountryOrRegion;
@@ -111,14 +108,6 @@ public class InquiryEntity extends AbstractManagableEntity {
 
 	public void setClientIpAddress(String clientIpAddress) {
 		this.clientIpAddress = clientIpAddress;
-	}
-
-	public String getClientHost() {
-		return clientHost;
-	}
-
-	public void setClientHost(String clientHost) {
-		this.clientHost = clientHost;
 	}
 
 	public String getClientCountryOrRegion() {
