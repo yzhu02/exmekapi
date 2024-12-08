@@ -336,13 +336,12 @@ CREATE TABLE `INQUIRY` (
   `QUANTITY` int unsigned DEFAULT NULL,
   `CONTENT` varchar(1024) DEFAULT NULL,
   `REF_LINK` varchar(256) DEFAULT NULL,
-  `CLIENT_IP_ADDRRESS` varchar(64) DEFAULT NULL,
-  `CLIENT_HOST` varchar(64) DEFAULT NULL,
+  `CLIENT_IP_ADDRESS` varchar(64) DEFAULT NULL,
   `CLIENT_COUNTRY_OR_REGION` varchar(64) DEFAULT NULL,
   `STATUS` varchar(32) DEFAULT NULL,
   PRIMARY KEY (`ID`),
   KEY `IX_INQUIRY_REF_MODEL` (`REF_MODEL`)
-) ENGINE=InnoDB AUTO_INCREMENT=38 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -351,7 +350,7 @@ CREATE TABLE `INQUIRY` (
 
 LOCK TABLES `INQUIRY` WRITE;
 /*!40000 ALTER TABLE `INQUIRY` DISABLE KEYS */;
-INSERT INTO `INQUIRY` VALUES (32,0,NULL,NULL,'Rahaul Choudhary','lc599024@gmail.com','7087422405','ME057AH300',2,'Exmek electronic P/N ME057AH300 REV:P2 24VDC 8NM 6RPM','https://www.exmek.com/motors/ME057AH300','0:0:0:0:0:0:0:1','0:0:0:0:0:0:0:1',NULL,NULL),(33,0,NULL,NULL,'Rahaul Choudhary','lc599024@gmail.com','7087422405','ME057AH300',2,'Exmek electronic P/N ME057AH300 REV:P2 24VDC 8NM 6RPM','https://www.exmek.com/motors/ME057AH300','0:0:0:0:0:0:0:1','0:0:0:0:0:0:0:1',NULL,NULL),(34,0,NULL,NULL,'Rahaul Choudhary','lc599024@gmail.com','7087422405','ME057AH300',2,'Exmek electronic P/N ME057AH300 REV:P2 24VDC 8NM 6RPM','https://www.exmek.com/motors/ME057AH300','0:0:0:0:0:0:0:1','0:0:0:0:0:0:0:1',NULL,NULL),(35,0,NULL,NULL,'Rahaul Choudhary','lc599024@gmail.com','7087422405','ME057AH300',2,'Exmek electronic P/N ME057AH300 REV:P2 24VDC 8NM 6RPM','https://www.exmek.com/motors/ME057AH300','0:0:0:0:0:0:0:1','0:0:0:0:0:0:0:1',NULL,NULL),(36,0,NULL,NULL,'Rahaul Choudhary','lc599024@gmail.com','7087422405','ME057AH300',2,'Exmek electronic P/N ME057AH300 REV:P2 24VDC 8NM 6RPM','https://www.exmek.com/motors/ME057AH300','0:0:0:0:0:0:0:1','0:0:0:0:0:0:0:1',NULL,NULL),(37,0,NULL,NULL,'Rahaul Choudhary','lc599024@gmail.com','7087422405','ME057AH300',2,'Exmek electronic P/N ME057AH300 REV:P2 24VDC 8NM 6RPM','https://www.exmek.com/motors/ME057AH300','0:0:0:0:0:0:0:1','0:0:0:0:0:0:0:1','United States',NULL);
+INSERT INTO `INQUIRY` VALUES (1,0,NULL,NULL,'Test Rahaul Choudhary','lc599024@gmail.com','7087422405','ME057AH200',2,'Electronic P/N ME057AH200 REV:P2 24VDC 8NM 6RPM','https://www.exmek.com/motors/ME057AH200','156.93.246.30','United States',NULL);
 /*!40000 ALTER TABLE `INQUIRY` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -796,4 +795,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-12-08  0:55:54
+-- Dump completed on 2024-12-08 13:39:29
