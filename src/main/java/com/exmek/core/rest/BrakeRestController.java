@@ -68,7 +68,7 @@ public class BrakeRestController extends BaseProductRestController<BrakeEntity, 
 
 	@Override
 	protected List<String> getSearchMetaCriteriaFields() {
-		return appConfig.getSearchBrakeMetaCriteriaFields();
+		return appConfigProvider.getSearchBrakeMetaCriteriaFields();
 	}
 
 	@GetMapping("/serieses")

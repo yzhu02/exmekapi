@@ -3,6 +3,8 @@ package com.exmek.core.config;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,15 +12,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.exmek.commons.utils.JsonMapperUtils;
+import com.exmek.commons.utils.MiscUtils;
 import com.exmek.core.persistence.repository.MotorConfigRepository;
 import com.fasterxml.jackson.core.type.TypeReference;
 
 import jakarta.annotation.PostConstruct;
 
 @Component
-public class MotorConfig {
+public class MotorConfigProvider {
 
-	private static final Logger logger = LoggerFactory.getLogger(MotorConfig.class);
+	private static final Logger logger = LoggerFactory.getLogger(MotorConfigProvider.class);
 
 	public static final String CONFIG_NAME_MOTOR_CURVE_COORDINATES	= "curve.coordinates";
 
@@ -31,13 +34,16 @@ public class MotorConfig {
 	protected void init() {
 		this.perMotorConfigMap = new HashMap<>();
 		this.motorConfigRepository.findAll().stream().forEach(motorConfigEntity -> {
-			String modelRef = motorConfigEntity.getModelRef();
-			Map<String, String> mConfigMap = this.perMotorConfigMap.get(modelRef);
-			if (mConfigMap == null) {
-				mConfigMap = new HashMap<>();
-				this.perMotorConfigMap.put(modelRef, mConfigMap);
+			String modelRefsStr = motorConfigEntity.getModelRefs();
+			String[] modelRefs = MiscUtils.split(modelRefsStr, ",");
+			for (String modelRef : modelRefs) {
+				Map<String, String> mConfigMap = this.perMotorConfigMap.get(modelRef);
+				if (mConfigMap == null) {
+					mConfigMap = new HashMap<>();
+					this.perMotorConfigMap.put(modelRef, mConfigMap);
+				}
+				mConfigMap.put(motorConfigEntity.getConfigName(), motorConfigEntity.getConfigValue());
 			}
-			mConfigMap.put(motorConfigEntity.getConfigName(), motorConfigEntity.getConfigValue());
 		});
 	}
 		
@@ -56,31 +62,24 @@ public class MotorConfig {
 		//if not found by exact match, then try to match by stripping tail digits
 		//for example, MB057GA100 will match with MB057GA*
 		if (mConfigMap == null) {
-			int i = -1;
-			for (i = model.length() - 1; i >= 0; i--) {
-				char c = model.charAt(i);
-				if (!Character.isDigit(c) && c != '-' && c != '_') {
-					break;
-				}
-			}
-			if (i >= 0) {
-				mConfigMap = perMotorConfigMap.get(model.substring(0, i + 1) + "*");
-			}
-		}
-		
-		//if not found by exact match and stripping tail digits match, then try to match by looking up with prefix or suffix
-		//for example, MB057GA100 will match with MB057GA*
-//		if (mConfigMap == null) {
-//			Set<String> modelRefs = perMotorConfigMap.keySet();
-//			for (String modelRef : modelRefs) {
-//				if (modelRef.endsWith("*")) {
-//					if (model.startsWith(modelRef.substring(0, modelRef.length() - 1))) {
-//						mConfigMap = perMotorConfigMap.get(modelRef);
-//						break;
-//					}
+//			int i = -1;
+//			for (i = model.length() - 1; i >= 0; i--) {
+//				char c = model.charAt(i);
+//				if (!Character.isDigit(c) && c != '-' && c != '_') {
+//					break;
 //				}
 //			}
-//		}
+//			if (i >= 0) {
+//				mConfigMap = perMotorConfigMap.get(model.substring(0, i + 1) + "*");
+//			}
+			
+			Optional<String> opFoundKey = perMotorConfigMap.keySet().stream()
+					.filter(k -> matchKey(k, model))
+					.findFirst();
+			if (opFoundKey.isPresent()) {
+				mConfigMap = perMotorConfigMap.get(opFoundKey.get());
+			}
+		}
 		
 		if (mConfigMap == null) {
 			logger.error("Unable to getMotorCurveCoordinates for model '{}' as the submap from 'perMotorConfigMap[{}]' is null. ", model, model);
@@ -92,5 +91,13 @@ public class MotorConfig {
 			return null;
 		}
 		return JsonMapperUtils.readValue(configValue, new TypeReference<List<CurveCoordinate>>() {});
+	}
+	
+	private boolean matchKey(String keyPattern, String finding) {
+		if (keyPattern != null && keyPattern.contains("*")) {
+			keyPattern = keyPattern.replace("*", ".*");
+			return finding.matches(keyPattern);
+		}
+		return Objects.equals(keyPattern, finding);
 	}
 }

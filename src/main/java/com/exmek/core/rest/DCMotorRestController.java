@@ -62,7 +62,7 @@ public class DCMotorRestController extends BaseMotorRestController<DCMotorEntity
 
 	@Override
 	protected List<String> getSearchMetaCriteriaFields() {
-		return appConfig.getSearchDCMotorMetaCriteriaFields();
+		return appConfigProvider.getSearchDCMotorMetaCriteriaFields();
 	}
 	
 	@GetMapping("/DC/categories")

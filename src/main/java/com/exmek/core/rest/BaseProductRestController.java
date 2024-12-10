@@ -24,7 +24,7 @@ import org.springframework.util.StringUtils;
 import com.exmek.commons.expr.LogicalOperator;
 import com.exmek.commons.utils.ReflectionUtils;
 import com.exmek.core.annotation.Searchable;
-import com.exmek.core.config.AppConfig;
+import com.exmek.core.config.AppConfigProvider;
 import com.exmek.core.model.AbstractProduct;
 import com.exmek.core.persistence.JPAUtils;
 import com.exmek.core.persistence.entity.AbstractProductEntity;
@@ -53,7 +53,7 @@ public abstract class BaseProductRestController<T extends AbstractProductEntity,
 	protected ResourceContext resourceContext;
 	
 	@Autowired
-	protected AppConfig appConfig;
+	protected AppConfigProvider appConfigProvider;
 
 	protected List<FieldMetaCriterion> fieldMetaCriteria;
 	

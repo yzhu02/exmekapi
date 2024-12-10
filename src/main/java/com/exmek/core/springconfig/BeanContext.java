@@ -14,14 +14,14 @@ import org.thymeleaf.spring6.SpringTemplateEngine;
 import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
 import org.thymeleaf.templateresolver.ITemplateResolver;
 
-import com.exmek.core.config.AppConfig;
+import com.exmek.core.config.AppConfigProvider;
 import com.exmek.core.config.SmtpConf;
 
 @Configuration
 public class BeanContext {
 
 	@Autowired
-	private AppConfig appConfig;
+	private AppConfigProvider appConfigProvider;
 	
     @Bean
     RestTemplate restTemplate(RestTemplateBuilder builder) {
@@ -47,7 +47,7 @@ public class BeanContext {
 
     @Bean
     JavaMailSender javaMailSender() {
-    	SmtpConf smtpConf = appConfig.getSmtpExmekSysConf();
+    	SmtpConf smtpConf = appConfigProvider.getSmtpExmekSysConf();
         JavaMailSenderImpl mailSender = new JavaMailSenderImpl();        
         mailSender.setHost(smtpConf.getHost());
         if (smtpConf.getPort() != null) {

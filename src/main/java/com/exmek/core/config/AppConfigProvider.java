@@ -19,9 +19,9 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import jakarta.annotation.PostConstruct;
 
 @Component
-public class AppConfig {
+public class AppConfigProvider {
 
-	private static final Logger logger = LoggerFactory.getLogger(AppConfig.class);
+	private static final Logger logger = LoggerFactory.getLogger(AppConfigProvider.class);
 
 	public static final String CONFIG_NAME_COMPANY_EXMEK								= "company.exmek";
 	

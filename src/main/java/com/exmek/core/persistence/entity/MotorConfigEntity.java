@@ -11,8 +11,8 @@ import jakarta.persistence.Table;
 @Access(AccessType.FIELD)
 public class MotorConfigEntity extends AbstractManagableEntity {
 
-	@Column(name = "MODEL_REF")
-	private String modelRef;
+	@Column(name = "MODEL_REFS")
+	private String modelRefs;
 
 	@Column(name = "CONFIG_NAME")
 	private String configName;
@@ -20,12 +20,12 @@ public class MotorConfigEntity extends AbstractManagableEntity {
 	@Column(name = "CONFIG_VALUE")
 	private String configValue;
 
-	public String getModelRef() {
-		return modelRef;
+	public String getModelRefs() {
+		return modelRefs;
 	}
 
-	public void setModelRef(String modelRef) {
-		this.modelRef = modelRef;
+	public void setModelRefs(String modelRefs) {
+		this.modelRefs = modelRefs;
 	}
 
 	public String getConfigName() {

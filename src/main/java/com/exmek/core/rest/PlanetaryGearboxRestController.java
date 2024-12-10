@@ -67,7 +67,7 @@ public class PlanetaryGearboxRestController extends BaseProductRestController<Pl
 
 	@Override
 	protected List<String> getSearchMetaCriteriaFields() {
-		return appConfig.getSearchPlanetaryGearboxMetaCriteriaFields();
+		return appConfigProvider.getSearchPlanetaryGearboxMetaCriteriaFields();
 	}
 	
 	@GetMapping("/serieses")

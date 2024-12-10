@@ -26,7 +26,7 @@ import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.web.cors.CorsConfiguration;
 
 import com.exmek.commons.utils.JsonMapperUtils;
-import com.exmek.core.config.AppConfig;
+import com.exmek.core.config.AppConfigProvider;
 import com.exmek.core.consts.EndpointConsts;
 import com.exmek.core.error.ErrorCode;
 import com.exmek.core.error.ErrorResponse;
@@ -39,7 +39,7 @@ import com.exmek.core.resource.ResourceContext;
 public class SecurityConfiguration {
 
 	@Autowired
-	private AppConfig appConfig;
+	private AppConfigProvider appConfigProvider;
 	
 	@Autowired
 	private UserRepository userRepository;
@@ -49,7 +49,7 @@ public class SecurityConfiguration {
     	httpSec
     	.cors(cors -> cors.configurationSource(request -> {
             CorsConfiguration corsConfig = new CorsConfiguration();
-            corsConfig.setAllowedOrigins(appConfig.getCorsAllowedOrigins());
+            corsConfig.setAllowedOrigins(appConfigProvider.getCorsAllowedOrigins());
             corsConfig.addAllowedMethod("*");
             corsConfig.addAllowedHeader("*");
             corsConfig.setAllowCredentials(true);

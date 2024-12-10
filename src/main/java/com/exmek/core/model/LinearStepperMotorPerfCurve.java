@@ -1,9 +1,7 @@
 package com.exmek.core.model;
 
 import java.math.BigDecimal;
-import java.util.List;
 
-import com.exmek.core.commons.model.CurveLine;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import lombok.Data;
@@ -13,10 +11,6 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class LinearStepperMotorPerfCurve extends MotorPerfCurve {
-
-	private String title;
-	
-	private List<CurveLine> curveLines;
 
 	private SpeedMeasure speedMeasure;
 	

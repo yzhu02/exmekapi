@@ -57,7 +57,7 @@ public class StepperMotorRestController extends BaseMotorRestController<StepperM
 
 	@Override
 	protected List<String> getSearchMetaCriteriaFields() {
-		return appConfig.getSearchStepperMotorMetaCriteriaFields();
+		return appConfigProvider.getSearchStepperMotorMetaCriteriaFields();
 	}
 	
 	@GetMapping("/stepper/categories")

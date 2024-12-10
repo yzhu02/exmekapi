@@ -18,7 +18,7 @@ import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
 import com.exmek.commons.net.ContentType;
-import com.exmek.core.config.AppConfig;
+import com.exmek.core.config.AppConfigProvider;
 import com.exmek.core.config.ReceiverEmailConf;
 import com.exmek.core.consts.EndpointConsts;
 import com.exmek.core.consts.RequestHeaderConsts;
@@ -44,7 +44,7 @@ public class GeneralRestController {
 	private static final Logger logger = LoggerFactory.getLogger(GeneralRestController.class);
 
 	@Autowired
-	private AppConfig appConfig; 
+	private AppConfigProvider appConfigProvider; 
 
 	@Autowired
 	private NewsRepo newsRepo;
@@ -66,7 +66,7 @@ public class GeneralRestController {
 	
 	@GetMapping("/company/exmek")
 	public Company getExmekCompany() {
-		return appConfig.getExmekCompany();
+		return appConfigProvider.getExmekCompany();
 	}
 		
 	@GetMapping("/news/{idOrTitle}")
@@ -142,7 +142,7 @@ public class GeneralRestController {
 		templContext.setVariable("inquiry", inquiry);
 	    String htmlContent = templateEngine.process("inquiry", templContext);
 	    String subject = "Inquiry for " + inquiry.getRefModel();
-	    ReceiverEmailConf irEmailConf = appConfig.getInquiryReceiverEmailConf();
+	    ReceiverEmailConf irEmailConf = appConfigProvider.getInquiryReceiverEmailConf();
 		try {
 			mailSenderService.sendMail(irEmailConf.getTo(), irEmailConf.getCc(), irEmailConf.getBcc(), subject, htmlContent, ContentType.TEXT_HTML);
 			return true;
