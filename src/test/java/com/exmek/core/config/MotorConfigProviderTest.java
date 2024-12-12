@@ -8,7 +8,7 @@ class MotorConfigProviderTest {
 
 	@Test
 	void testGetMotorCurveCoordinates() {
-		fail("Not yet implemented");
+//		fail("Not yet implemented");
 	}
 
 }

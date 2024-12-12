@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
@@ -35,6 +37,7 @@ import com.exmek.core.persistence.entity.InquiryEntity;
 import com.exmek.core.persistence.repository.InquiryRepository;
 
 import jakarta.mail.MessagingException;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.constraints.NotNull;
 
 @RestController
@@ -84,13 +87,18 @@ public class GeneralRestController {
 
 	@PostMapping("/inquiries")
 	public InquiryResponse createInquiry(@NotNull @RequestBody InquiryRequest reqInquiryPayload,
-			@RequestHeader(RequestHeaderConsts.CLIENT_IP) String clientIpAddr) {
+			@RequestHeader(name = RequestHeaderConsts.CLIENT_IP, required = false) String headerClientIp) {
 		if (reqInquiryPayload == null) {
 			throw new ValidationException("inquiry request payload cannot be null. ", ErrorCode.ERR_CODE_INQUIRY_MISSING_REQUEST_PAYLOAD);
 		}
 		InquiryResponse response = new InquiryResponse();
 //		HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
 		InquiryEntity entity = mapToEntity(reqInquiryPayload.getInquiry());
+		String clientIpAddr = headerClientIp;
+		if (ObjectUtils.isEmpty(clientIpAddr)) {
+			HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
+			clientIpAddr = request.getRemoteAddr();
+		}
 		entity.setClientIpAddress(clientIpAddr);
 		entity.setClientCountryOrRegion(getCountryOrRegionName(clientIpAddr));
 		try {
