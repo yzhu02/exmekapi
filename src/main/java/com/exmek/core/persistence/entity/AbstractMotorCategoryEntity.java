@@ -2,25 +2,25 @@ package com.exmek.core.persistence.entity;
 
 import com.exmek.core.model.MotorCategory;
 
-import jakarta.persistence.Access;
-import jakarta.persistence.AccessType;
 import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import jakarta.persistence.Table;
+import jakarta.persistence.MappedSuperclass;
 
-@Entity
-@Table(name = "MOTOR_CATEGORY")
-@Access(AccessType.FIELD)
-public class MotorCategoryEntity extends AbstractManagableEntity {
+@MappedSuperclass
+public abstract class AbstractMotorCategoryEntity extends AbstractManagableEntity {
 
 	public static final String FIELD_NAME_CATEGORY	= "category";
+	
+	public static final String FIELD_NAME_TYPE		= "type";
 
 	@Column(name = "CATEGORY")
-	@Enumerated(EnumType.STRING)
-	private MotorCategory.Category category;
+	private String category;
 
+	@Column(name = "TYPE")
+	@Enumerated(EnumType.STRING)
+	private MotorCategory.Type type;
+	
 	@Column(name = "DISPLAY_NAME")
 	private String displayName;
 
@@ -30,12 +30,20 @@ public class MotorCategoryEntity extends AbstractManagableEntity {
 	@Column(name = "TECHNICAL_DATA")
 	private String technicalData;
 
-	public MotorCategory.Category getCategory() {
+	public String getCategory() {
 		return category;
 	}
 
-	public void setCategory(MotorCategory.Category category) {
+	public void setCategory(String category) {
 		this.category = category;
+	}
+
+	public MotorCategory.Type getType() {
+		return type;
+	}
+
+	public void setType(MotorCategory.Type type) {
+		this.type = type;
 	}
 
 	public String getDisplayName() {

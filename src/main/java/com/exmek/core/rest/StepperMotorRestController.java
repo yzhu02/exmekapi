@@ -1,11 +1,8 @@
 package com.exmek.core.rest;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,28 +11,35 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.exmek.commons.expr.LogicalOperator;
 import com.exmek.core.consts.EndpointConsts;
 import com.exmek.core.mapper.MotorMapper;
 import com.exmek.core.model.MotorCategory;
 import com.exmek.core.model.MotorSeries;
 import com.exmek.core.model.StepperMotor;
-import com.exmek.core.persistence.JPAUtils;
-import com.exmek.core.persistence.entity.MotorCategoryEntity;
+import com.exmek.core.persistence.entity.StepperMotorCategoryEntity;
 import com.exmek.core.persistence.entity.StepperMotorEntity;
+import com.exmek.core.persistence.entity.StepperMotorSeriesEntity;
 import com.exmek.core.persistence.repository.BaseProductRepository;
+import com.exmek.core.persistence.repository.StepperMotorCategoryRepository;
 import com.exmek.core.persistence.repository.StepperMotorRepository;
+import com.exmek.core.persistence.repository.StepperMotorSeriesRepository;
 import com.exmek.core.service.ProductService;
 
-import jakarta.persistence.criteria.Predicate;
 import jakarta.validation.constraints.NotNull;
 
 @RestController
 @RequestMapping(EndpointConsts.ENDPOINT_API_MOTORS)
-public class StepperMotorRestController extends BaseMotorRestController<StepperMotorEntity, StepperMotor> implements ProductService<StepperMotor> {
+public class StepperMotorRestController 
+extends BaseMotorRestController<StepperMotorEntity, StepperMotor, StepperMotorCategoryEntity, StepperMotorSeriesEntity> implements ProductService<StepperMotor> {
 
 	@Autowired
-	private StepperMotorRepository stepperMotorRepository;
+	protected StepperMotorCategoryRepository motorCategoryRepository;
+
+	@Autowired
+	protected StepperMotorSeriesRepository motorSeriesRepository;
+	
+	@Autowired
+	private StepperMotorRepository motorRepository;
 
 	@Autowired
 	private MotorMapper motorMapper;
@@ -46,8 +50,18 @@ public class StepperMotorRestController extends BaseMotorRestController<StepperM
 	}
 
 	@Override
+	protected StepperMotorCategoryRepository getMotorCategoryRepository() {
+		return motorCategoryRepository;
+	}
+
+	@Override
+	protected StepperMotorSeriesRepository getSeriesRepository() {
+		return motorSeriesRepository;
+	}
+	
+	@Override
 	protected BaseProductRepository<StepperMotorEntity> getProductRepository() {
-		return stepperMotorRepository;
+		return motorRepository;
 	}
 
 	@Override
@@ -62,36 +76,18 @@ public class StepperMotorRestController extends BaseMotorRestController<StepperM
 	
 	@GetMapping("/stepper/categories")
 	public List<MotorCategory> getMotorCategories() {
-		
-		Specification<MotorCategoryEntity> jpaSpec = (root, query, builder) -> {
-			MotorCategory.Category[] cats = MotorCategory.Category.getCategories(MotorCategory.Supertype.STEPPER, null);
-			String categoryField = MotorCategoryEntity.FIELD_NAME_CATEGORY;
-			List<Predicate> predicates = new ArrayList<>();
-			for (MotorCategory.Category cat : cats) {
-				predicates.add(builder.equal(root.get(categoryField), cat));
-			}
-			Predicate pResult = JPAUtils.buildConjunctPredicate(builder, predicates, LogicalOperator.OR);
-			return pResult;
-		};
-		List<MotorCategoryEntity> entities = motorCategoryRepository.findAll(jpaSpec);
-		
-		if (entities == null) {
-			return new ArrayList<>();
-		}
-		return entities.stream()
-				.map(entity -> motorCategoryMapper.mapToCategoryModel(entity))
-				.collect(Collectors.toList());
+		return super.getMotorCategories(null);
 	}
 	
 	@Override
 	@GetMapping("/stepper/categories/{" + PARAM_NAME_CATEGORY + "}")
-	public MotorCategory getMotorCategory(@PathVariable(PARAM_NAME_CATEGORY) MotorCategory.Category category) {
+	public MotorCategory getMotorCategory(@PathVariable(PARAM_NAME_CATEGORY) String category) {
 		return super.getMotorCategory(category);
 	}
 
 	@GetMapping("/stepper/{" + PARAM_NAME_CATEGORY + "}/serieses")
 	public PageableListDataResponse<MotorSeries> getMotorSeriesesByCategory(
-			@PathVariable(PARAM_NAME_CATEGORY) MotorCategory.Category category,
+			@PathVariable(PARAM_NAME_CATEGORY) String category,
 			@RequestParam(value = QRY_PARAM_NAME_PAGE_NUMBER, required = false) Integer pageNumber,
 			@RequestParam(value = QRY_PARAM_NAME_PAGE_SIZE, required = false) Integer pageSize) {
 
@@ -100,8 +96,8 @@ public class StepperMotorRestController extends BaseMotorRestController<StepperM
 
 	@Override
 	@GetMapping("/stepper/serieses/{" + PARAM_NAME_SERIES + "}")
-	public MotorSeries getMotorSeries(@PathVariable(PARAM_NAME_SERIES) String series) {
-		return super.getMotorSeries(series);
+	public MotorSeries getSeries(@PathVariable(PARAM_NAME_SERIES) String series) {
+		return super.getSeries(series);
 	}
 
 	@GetMapping("/stepper/{idOrModel}")
@@ -129,7 +125,7 @@ public class StepperMotorRestController extends BaseMotorRestController<StepperM
 
 	@PostMapping("/stepper/{" + PARAM_NAME_CATEGORY + "}/search")
 	public PageableListDataResponse<StepperMotor> searchMotorsByCategory(@RequestBody ConditionClause conditionClause,
-			@PathVariable(PARAM_NAME_CATEGORY) MotorCategory.Category category,
+			@PathVariable(PARAM_NAME_CATEGORY) String category,
 			@RequestParam(value = QRY_PARAM_NAME_PAGE_NUMBER, required = false) Integer pageNumber,
 			@RequestParam(value = QRY_PARAM_NAME_PAGE_SIZE, required = false) Integer pageSize) {
 		return super.searchMotorsByCategoryBySeries(conditionClause, category, null, pageNumber, pageSize);
@@ -138,7 +134,7 @@ public class StepperMotorRestController extends BaseMotorRestController<StepperM
 	@Override
 	@PostMapping("/stepper/{" + PARAM_NAME_CATEGORY + "}/{" + PARAM_NAME_SERIES + "}/search")
 	public PageableListDataResponse<StepperMotor> searchMotorsByCategoryBySeries(@RequestBody ConditionClause conditionClause,
-			@PathVariable(PARAM_NAME_CATEGORY) MotorCategory.Category category,
+			@PathVariable(PARAM_NAME_CATEGORY) String category,
 			@PathVariable(PARAM_NAME_SERIES) String series,
 			@RequestParam(value = QRY_PARAM_NAME_PAGE_NUMBER, required = false) Integer pageNumber,
 			@RequestParam(value = QRY_PARAM_NAME_PAGE_SIZE, required = false) Integer pageSize) {
@@ -153,13 +149,13 @@ public class StepperMotorRestController extends BaseMotorRestController<StepperM
 
 	@GetMapping("/stepper/{" + PARAM_NAME_CATEGORY + "}/criteria")
 	public SearchMetaCriteriaResponse getSearchMetaCriteriaByCategory(
-			@PathVariable(PARAM_NAME_CATEGORY) MotorCategory.Category category) {
+			@PathVariable(PARAM_NAME_CATEGORY) String category) {
 		return super.getSearchMetaCriteria();
 	}
 	
 	@GetMapping("/stepper/{" + PARAM_NAME_CATEGORY + "}/{" + PARAM_NAME_SERIES + "}/criteria")
 	public SearchMetaCriteriaResponse getSearchMetaCriteriaByCategoryBySeries(
-			@PathVariable(PARAM_NAME_CATEGORY) MotorCategory.Category category,
+			@PathVariable(PARAM_NAME_CATEGORY) String category,
 			@PathVariable(PARAM_NAME_SERIES) String series) {
 		return super.getSearchMetaCriteria();
 	}

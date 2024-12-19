@@ -35,6 +35,7 @@ build/
 ### Apple Paths
 .DS_Store
 
+
 ### Maven Paths
 log/
 target/

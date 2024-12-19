@@ -15,7 +15,7 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 public abstract class AbstractMotor extends AbstractProduct {
 
-	private MotorCategory.Category category;
+	private String category;
 
 	private MeasuredValue<BigDecimal, VoltageUnit> ratedVoltage;
 	

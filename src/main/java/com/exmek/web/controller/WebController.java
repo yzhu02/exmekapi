@@ -153,8 +153,8 @@ public class WebController {
 	 * @param model
 	 * @return
 	 */
-	@GetMapping("/products/dc_motors")
-	public String landDCMotorsByType(@RequestParam(name = QRY_PARAM_NAME_TYPE, required = false) String type, Model model) {
+	@GetMapping("/products/dc-motors")
+	public String landDCMotorsByType(@RequestParam(name = QRY_PARAM_NAME_TYPE, required = false) MotorCategory.Type type, Model model) {
 
 		Company exmekCompany = generalRestController.getExmekCompany();
 		SearchMetaCriteriaResponse searchMetaCriteria = dcMotorRestController.getSearchMetaCriteria(type);
@@ -166,8 +166,8 @@ public class WebController {
 		return VIEW_NAME_MOTORS_LANDING;
 	}
 
-	@GetMapping("/products/dc_motors/categories/{" + PATH_PARAM_CATEGORY + "}")
-	public String landDCMotorsByCategory(@PathVariable(PATH_PARAM_CATEGORY) MotorCategory.Category category, Model model) {
+	@GetMapping("/products/dc-motors/categories/{" + PATH_PARAM_CATEGORY + "}")
+	public String landDCMotorsByCategory(@PathVariable(PATH_PARAM_CATEGORY) String category, Model model) {
 
 		Company exmekCompany = generalRestController.getExmekCompany();
 		SearchMetaCriteriaResponse searchMetaCriteria = dcMotorRestController.getSearchMetaCriteriaByCategory(category);
@@ -180,11 +180,11 @@ public class WebController {
 		return VIEW_NAME_MOTORS_LANDING;
 	}
 	
-	@GetMapping("/products/dc_motors/serieses/{" + PATH_PARAM_SERIES + "}")
+	@GetMapping("/products/dc-motors/serieses/{" + PATH_PARAM_SERIES + "}")
 	public String landDCMotorsBySeries(@PathVariable(PATH_PARAM_SERIES) String series, Model model) {
 
 		Company exmekCompany = generalRestController.getExmekCompany();
-		MotorSeries motorSeries = dcMotorRestController.getMotorSeries(series);
+		MotorSeries motorSeries = dcMotorRestController.getSeries(series);
 		SearchMetaCriteriaResponse searchMetaCriteria = dcMotorRestController.getSearchMetaCriteriaByCategoryBySeries(motorSeries.getCategory(), series);
 		model.addAttribute(PAGEMODEL_NAME_EXMEK_COMPANY, exmekCompany);
 		model.addAttribute(PAGEMODEL_NAME_SERIES, motorSeries);
@@ -192,7 +192,7 @@ public class WebController {
 		return VIEW_NAME_MOTORS_LANDING;
 	}
 
-	@GetMapping("/products/dc_motors/{" + PATH_PARAM_MODEL + "}")
+	@GetMapping("/products/dc-motors/{" + PATH_PARAM_MODEL + "}")
 	public String landDCMotorDetail(@PathVariable(PATH_PARAM_MODEL) String motorModel, Model model) {
 
 		Company exmekCompany = generalRestController.getExmekCompany();
@@ -218,8 +218,8 @@ public class WebController {
 		return VIEW_NAME_MOTORS_LANDING;
 	}
 
-	@GetMapping("/products/stepper_motors/categories/{" + PATH_PARAM_CATEGORY + "}")
-	public String landStepperMotorsByCategory(@PathVariable(PATH_PARAM_CATEGORY) MotorCategory.Category category, Model model) {
+	@GetMapping("/products/stepper-motors/categories/{" + PATH_PARAM_CATEGORY + "}")
+	public String landStepperMotorsByCategory(@PathVariable(PATH_PARAM_CATEGORY) String category, Model model) {
 
 		Company exmekCompany = generalRestController.getExmekCompany();
 		SearchMetaCriteriaResponse searchMetaCriteria = stepperMotorRestController.getSearchMetaCriteriaByCategory(category);
@@ -232,11 +232,11 @@ public class WebController {
 		return VIEW_NAME_MOTORS_LANDING;
 	}
 	
-	@GetMapping("/products/stepper_motors/serieses/{" + PATH_PARAM_SERIES + "}")
+	@GetMapping("/products/stepper-motors/serieses/{" + PATH_PARAM_SERIES + "}")
 	public String landStepperMotorsBySeries(@PathVariable(PATH_PARAM_SERIES) String series, Model model) {
 
 		Company exmekCompany = generalRestController.getExmekCompany();
-		MotorSeries motorSeries = stepperMotorRestController.getMotorSeries(series);
+		MotorSeries motorSeries = stepperMotorRestController.getSeries(series);
 		SearchMetaCriteriaResponse searchMetaCriteria = stepperMotorRestController.getSearchMetaCriteriaByCategoryBySeries(motorSeries.getCategory(), series);
 		model.addAttribute(PAGEMODEL_NAME_EXMEK_COMPANY, exmekCompany);
 		model.addAttribute(PAGEMODEL_NAME_SERIES, motorSeries);
@@ -244,7 +244,7 @@ public class WebController {
 		return VIEW_NAME_MOTORS_LANDING;
 	}
 
-	@GetMapping("/products/stepper_motors/{" + PATH_PARAM_MODEL + "}")
+	@GetMapping("/products/stepper-motors/{" + PATH_PARAM_MODEL + "}")
 	public String landStepperMotorDetail(@PathVariable(PATH_PARAM_MODEL) String motorModel, Model model) {
 
 		Company exmekCompany = generalRestController.getExmekCompany();
@@ -257,23 +257,23 @@ public class WebController {
 
 
 	//////////Planetary Gearbox Page //////////
-	@GetMapping("/products/planetary_gearboxes")
+	@GetMapping("/products/planetary-gearboxes")
 	public String landPlanetaryGearboxes(Model model) {
 
 		Company exmekCompany = generalRestController.getExmekCompany();
 		SearchMetaCriteriaResponse searchMetaCriteria = planetaryGearboxRestController.getSearchMetaCriteria();
-		PageableListDataResponse<GearboxSeries> gearboxSeriesesPage = planetaryGearboxRestController.getGearboxSerieses(null, null);
+		PageableListDataResponse<GearboxSeries> gearboxSeriesesPage = planetaryGearboxRestController.getSerieses(null, null);
 		model.addAttribute(PAGEMODEL_NAME_EXMEK_COMPANY, exmekCompany);
 		model.addAttribute(PAGEMODEL_NAME_SERIESES, gearboxSeriesesPage.getData());
 		model.addAttribute(PAGEMODEL_NAME_SEARCH_META_CRITERIA, searchMetaCriteria);
 		return VIEW_NAME_PLANETARY_GEARBOXES_LANDING;
 	}
 	
-	@GetMapping("/products/planetary_gearboxes/serieses/{" + PATH_PARAM_SERIES + "}")
+	@GetMapping("/products/planetary-gearboxes/serieses/{" + PATH_PARAM_SERIES + "}")
 	public String landPlanetaryGearboxesBySeries(@PathVariable(PATH_PARAM_SERIES) String series, Model model) {
 
 		Company exmekCompany = generalRestController.getExmekCompany();
-		GearboxSeries gearboxSeries = planetaryGearboxRestController.getGearboxSeries(series);
+		GearboxSeries gearboxSeries = planetaryGearboxRestController.getSeries(series);
 		SearchMetaCriteriaResponse searchMetaCriteria = planetaryGearboxRestController.getSearchMetaCriteriaBySeries(series);
 		model.addAttribute(PAGEMODEL_NAME_EXMEK_COMPANY, exmekCompany);
 		model.addAttribute(PAGEMODEL_NAME_SERIES, gearboxSeries);
@@ -281,7 +281,7 @@ public class WebController {
 		return VIEW_NAME_PLANETARY_GEARBOXES_LANDING;
 	}
 
-	@GetMapping("/products/planetary_gearboxes/{" + PATH_PARAM_MODEL + "}")
+	@GetMapping("/products/planetary-gearboxes/{" + PATH_PARAM_MODEL + "}")
 	public String landPlanetaryGearboxDetail(@PathVariable(PATH_PARAM_MODEL) String gearboxModel, Model model) {
 
 		Company exmekCompany = generalRestController.getExmekCompany();
@@ -299,7 +299,7 @@ public class WebController {
 
 		Company exmekCompany = generalRestController.getExmekCompany();
 		SearchMetaCriteriaResponse searchMetaCriteria = brakeRestController.getSearchMetaCriteria();
-		PageableListDataResponse<BrakeSeries> brakeSeriesesPage = brakeRestController.getBrakeSerieses(null, null);
+		PageableListDataResponse<BrakeSeries> brakeSeriesesPage = brakeRestController.getSerieses(null, null);
 		model.addAttribute(PAGEMODEL_NAME_EXMEK_COMPANY, exmekCompany);
 		model.addAttribute(PAGEMODEL_NAME_SERIESES, brakeSeriesesPage.getData());
 		model.addAttribute(PAGEMODEL_NAME_SEARCH_META_CRITERIA, searchMetaCriteria);
@@ -310,7 +310,7 @@ public class WebController {
 	public String landBrakesBySeries(@PathVariable(PATH_PARAM_SERIES) String series, Model model) {
 
 		Company exmekCompany = generalRestController.getExmekCompany();
-		BrakeSeries brakeSeries = brakeRestController.getBrakeSeries(series);
+		BrakeSeries brakeSeries = brakeRestController.getSeries(series);
 		SearchMetaCriteriaResponse searchMetaCriteria = brakeRestController.getSearchMetaCriteriaBySeries(series);
 		model.addAttribute(PAGEMODEL_NAME_EXMEK_COMPANY, exmekCompany);
 		model.addAttribute(PAGEMODEL_NAME_SERIES, brakeSeries);

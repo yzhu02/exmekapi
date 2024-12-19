@@ -25,10 +25,14 @@ import com.exmek.commons.expr.LogicalOperator;
 import com.exmek.commons.utils.ReflectionUtils;
 import com.exmek.core.annotation.Searchable;
 import com.exmek.core.config.AppConfigProvider;
+import com.exmek.core.mapper.AbstractSeriesMapper;
 import com.exmek.core.model.AbstractProduct;
+import com.exmek.core.model.AbstractSeries;
 import com.exmek.core.persistence.JPAUtils;
 import com.exmek.core.persistence.entity.AbstractProductEntity;
+import com.exmek.core.persistence.entity.AbstractSeriesEntity;
 import com.exmek.core.persistence.repository.BaseProductRepository;
+import com.exmek.core.persistence.repository.BaseSeriesRepository;
 import com.exmek.core.resource.ResourceContext;
 import com.exmek.core.service.ProductService;
 import com.exmek.core.utils.ExmekUtils;
@@ -39,7 +43,7 @@ import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 
-public abstract class BaseProductRestController<T extends AbstractProductEntity, M extends AbstractProduct> implements ProductService<M> {
+public abstract class BaseProductRestController<T extends AbstractProductEntity, M extends AbstractProduct, SE extends AbstractSeriesEntity, S extends AbstractSeries> implements ProductService<M> {
 
 	public static final String PARAM_NAME_SERIES			= "series";
 
@@ -59,7 +63,11 @@ public abstract class BaseProductRestController<T extends AbstractProductEntity,
 	
 	protected abstract Class<T> getEntityClass();
 
+	protected abstract BaseSeriesRepository<SE> getSeriesRepository();
+	
 	protected abstract BaseProductRepository<T> getProductRepository();
+	
+	protected abstract <SM extends AbstractSeriesMapper<S, SE>> SM getSeriesMapper();
 	
 	protected abstract M mapEntityToModel(T entity, boolean comprehensiveMapping);
 
@@ -204,6 +212,14 @@ public abstract class BaseProductRestController<T extends AbstractProductEntity,
 		}
 	}
 
+	protected PageableListDataResponse<M> searchBySeries(ConditionClause conditionClause, String series, Integer pageNumber, Integer pageSize) {
+		List<Pair<String, Object>> additionalFieldMatching = new ArrayList<>();
+		if (!ObjectUtils.isEmpty(series)) {
+			additionalFieldMatching.add(Pair.of(AbstractProductEntity.FIELD_NAME_SERIES, series));
+		}
+		return searchWith(conditionClause, additionalFieldMatching, pageNumber, pageSize);
+	}
+
 	/**
 	 * <pre>
 	 * Search with given list of criteria that act as AND.
@@ -281,7 +297,7 @@ public abstract class BaseProductRestController<T extends AbstractProductEntity,
 		}
 		return dataResponse;
 	}
-	
+		
 	protected <MM, TT> void populatePageableListDataResponse(PageableListDataResponse<MM> dataResponse, Page<TT> page) {
 		dataResponse.setPageNumber(page.getNumber());
 		dataResponse.setPageSize(page.getSize());
@@ -292,5 +308,34 @@ public abstract class BaseProductRestController<T extends AbstractProductEntity,
 
 	protected String getModelDisplayName() {
 		return "Model";
+	}
+
+	protected PageableListDataResponse<S> getSerieses(Integer pageNumber, Integer pageSize) {
+		PageableListDataResponse<S> dataResponse = new PageableListDataResponse<>();
+		List<SE> entities = null;
+		if (pageNumber == null || pageSize == null) {
+			entities = getSeriesRepository().findAll();
+		} else {
+			Page<SE> page = getSeriesRepository().findAll(
+					PageRequest.of(pageNumber, pageSize, Sort.by(AbstractSeriesEntity.FIELD_NAME_SERIES)));
+			entities = page.getContent();
+			populatePageableListDataResponse(dataResponse, page);
+		}
+		if (entities != null) {
+			List<S> serieses = entities.stream()
+					.map(entity -> getSeriesMapper().mapToSeriesModel(entity))
+					.collect(Collectors.toList());
+			dataResponse.setData(serieses);
+		}
+		return dataResponse;
+	}
+
+	protected S getSeries(String series) {
+		Optional<SE> opSeries = getSeriesRepository().findBySeries(series);
+		if (opSeries.isPresent()) {
+			return getSeriesMapper().mapToSeriesModel(opSeries.get());
+		} else {
+			return null;
+		}
 	}
 }

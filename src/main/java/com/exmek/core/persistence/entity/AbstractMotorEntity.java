@@ -4,21 +4,28 @@ import java.math.BigDecimal;
 
 import com.exmek.core.annotation.Searchable;
 import com.exmek.core.commons.enums.VoltageUnit;
-import com.exmek.core.model.MotorCategory;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.MappedSuperclass;
 
 @MappedSuperclass
 public abstract class AbstractMotorEntity extends AbstractProductEntity {
 
-	public static final String FIELD_NAME_CATEGORY	= MotorCategoryEntity.FIELD_NAME_CATEGORY;
-
+	public static final String FIELD_NAME_CATEGORY			= AbstractMotorCategoryEntity.FIELD_NAME_CATEGORY;
+	
+	public static final String FIELD_NAME_MOTOR_CATEGORY	= "motorCategory";
+	
 	@Column(name = "CATEGORY")
-	@Enumerated(EnumType.STRING)
-	private MotorCategory.Category category;
+	private String category;
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "CATEGORY", referencedColumnName = "CATEGORY", nullable = false, insertable = false, updatable = false)
+    private DCMotorCategoryEntity motorCategory;
 
 	@Searchable
 	@Column(name = "RATED_VOLTAGE")
@@ -28,12 +35,20 @@ public abstract class AbstractMotorEntity extends AbstractProductEntity {
 	@Enumerated(EnumType.STRING)
 	private VoltageUnit ratedVoltageUnit;
 
-	public MotorCategory.Category getCategory() {
+	public String getCategory() {
 		return category;
 	}
 
-	public void setCategory(MotorCategory.Category category) {
+	public void setCategory(String category) {
 		this.category = category;
+	}
+
+	public DCMotorCategoryEntity getMotorCategory() {
+		return motorCategory;
+	}
+
+	public void setCategory(DCMotorCategoryEntity motorCategory) {
+		this.motorCategory = motorCategory;
 	}
 
 	public BigDecimal getRatedVoltage() {

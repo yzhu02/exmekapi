@@ -1,12 +1,8 @@
 package com.exmek.core.rest;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.domain.Specification;
-import org.springframework.data.util.Pair;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,32 +11,38 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.exmek.commons.expr.LogicalOperator;
 import com.exmek.core.consts.EndpointConsts;
 import com.exmek.core.mapper.MotorMapper;
 import com.exmek.core.model.DCMotor;
 import com.exmek.core.model.MotorCategory;
 import com.exmek.core.model.MotorSeries;
-import com.exmek.core.persistence.JPAUtils;
-import com.exmek.core.persistence.entity.AbstractMotorEntity;
+import com.exmek.core.persistence.entity.DCMotorCategoryEntity;
 import com.exmek.core.persistence.entity.DCMotorEntity;
-import com.exmek.core.persistence.entity.MotorCategoryEntity;
+import com.exmek.core.persistence.entity.DCMotorSeriesEntity;
 import com.exmek.core.persistence.repository.BaseProductRepository;
+import com.exmek.core.persistence.repository.DCMotorCategoryRepository;
 import com.exmek.core.persistence.repository.DCMotorRepository;
+import com.exmek.core.persistence.repository.DCMotorSeriesRepository;
 import com.exmek.core.service.ProductService;
 
-import jakarta.persistence.criteria.Predicate;
 import jakarta.validation.constraints.NotNull;
 
 @RestController
 @RequestMapping(EndpointConsts.ENDPOINT_API_MOTORS)
-public class DCMotorRestController extends BaseMotorRestController<DCMotorEntity, DCMotor> implements ProductService<DCMotor> {
+public class DCMotorRestController 
+extends BaseMotorRestController<DCMotorEntity, DCMotor, DCMotorCategoryEntity, DCMotorSeriesEntity> implements ProductService<DCMotor> {
 	
 	public static final String QRY_PARAM_VALUE_TYPE_BLDC	= "BLDC";
 	public static final String QRY_PARAM_VALUE_TYPE_BRUSH	= "Brush";
 
 	@Autowired
-	private DCMotorRepository dcMotorRepository;
+	protected DCMotorCategoryRepository motorCategoryRepository;
+
+	@Autowired
+	protected DCMotorSeriesRepository motorSeriesRepository;
+
+	@Autowired
+	private DCMotorRepository motorRepository;
 	
 	@Autowired
 	private MotorMapper motorMapper;
@@ -51,8 +53,18 @@ public class DCMotorRestController extends BaseMotorRestController<DCMotorEntity
 	}
 
 	@Override
+	protected DCMotorCategoryRepository getMotorCategoryRepository() {
+		return motorCategoryRepository;
+	}
+
+	@Override
+	protected DCMotorSeriesRepository getSeriesRepository() {
+		return motorSeriesRepository;
+	}
+	
+	@Override
 	protected BaseProductRepository<DCMotorEntity> getProductRepository() {
-		return dcMotorRepository;
+		return motorRepository;
 	}
 
 	@Override
@@ -65,46 +77,20 @@ public class DCMotorRestController extends BaseMotorRestController<DCMotorEntity
 		return appConfigProvider.getSearchDCMotorMetaCriteriaFields();
 	}
 	
+	@Override
 	@GetMapping("/DC/categories")
-	public List<MotorCategory> getMotorCategories(
-			@RequestParam(value = QRY_PARAM_NAME_TYPE, required = false) String type) {
-		
-		Specification<MotorCategoryEntity> jpaSpec = (root, query, builder) -> {
-			MotorCategory.Category[] cats = null;
-			if (QRY_PARAM_VALUE_TYPE_BLDC.equalsIgnoreCase(type)) {
-				cats = MotorCategory.Category.getCategories(MotorCategory.Supertype.DC, MotorCategory.Type.BLDC);
-			} else if (QRY_PARAM_VALUE_TYPE_BRUSH.equalsIgnoreCase(type)) {
-				cats = MotorCategory.Category.getCategories(MotorCategory.Supertype.DC, MotorCategory.Type.BRUSH);
-			} else {
-				cats = MotorCategory.Category.getCategories(MotorCategory.Supertype.DC, null);
-			}
-			String categoryField = MotorCategoryEntity.FIELD_NAME_CATEGORY;
-			List<Predicate> predicates = new ArrayList<>();
-			for (MotorCategory.Category cat : cats) {
-				predicates.add(builder.equal(root.get(categoryField), cat));
-			}
-			Predicate pResult = JPAUtils.buildConjunctPredicate(builder, predicates, LogicalOperator.OR);
-			return pResult;
-		};
-		List<MotorCategoryEntity> entities = motorCategoryRepository.findAll(jpaSpec);
-		
-		if (entities == null) {
-			return new ArrayList<>();
-		}
-		return entities.stream()
-				.map(entity -> motorCategoryMapper.mapToCategoryModel(entity))
-				.collect(Collectors.toList());
+	public List<MotorCategory> getMotorCategories(@RequestParam(value = QRY_PARAM_NAME_TYPE, required = false) MotorCategory.Type type) {
+		return super.getMotorCategories(type);
 	}
 
-	@Override
 	@GetMapping("/DC/categories/{" + PARAM_NAME_CATEGORY + "}")
-	public MotorCategory getMotorCategory(@PathVariable(PARAM_NAME_CATEGORY) MotorCategory.Category category) {
+	public MotorCategory getMotorCategory(@PathVariable(PARAM_NAME_CATEGORY) String category) {
 		return super.getMotorCategory(category);
 	}
 	
 	@GetMapping("/DC/{" + PARAM_NAME_CATEGORY + "}/serieses")
 	public PageableListDataResponse<MotorSeries> getMotorSeriesesByCategory(
-			@PathVariable(PARAM_NAME_CATEGORY) MotorCategory.Category category,
+			@PathVariable(PARAM_NAME_CATEGORY) String category,
 			@RequestParam(value = QRY_PARAM_NAME_PAGE_NUMBER, required = false) Integer pageNumber,
 			@RequestParam(value = QRY_PARAM_NAME_PAGE_SIZE, required = false) Integer pageSize) {
 
@@ -113,8 +99,8 @@ public class DCMotorRestController extends BaseMotorRestController<DCMotorEntity
 	
 	@Override
 	@GetMapping("/DC/serieses/{" + PARAM_NAME_SERIES + "}")
-	public MotorSeries getMotorSeries(@PathVariable(PARAM_NAME_SERIES) String series) {
-		return super.getMotorSeries(series);
+	public MotorSeries getSeries(@PathVariable(PARAM_NAME_SERIES) String series) {
+		return super.getSeries(series);
 	}
 	
 	@GetMapping("/DC/{idOrModel}")
@@ -138,22 +124,7 @@ public class DCMotorRestController extends BaseMotorRestController<DCMotorEntity
 			@RequestParam(value = QRY_PARAM_NAME_TYPE, required = false) String type,
 			@RequestParam(value = QRY_PARAM_NAME_PAGE_NUMBER, required = false) Integer pageNumber,
 			@RequestParam(value = QRY_PARAM_NAME_PAGE_SIZE, required = false) Integer pageSize) {
-		return super.searchBy(conditionClause, (root, builder) -> {
-			MotorCategory.Category[] cats = null;
-			if (QRY_PARAM_VALUE_TYPE_BLDC.equalsIgnoreCase(type)) {
-				cats = MotorCategory.Category.getCategories(MotorCategory.Supertype.DC, MotorCategory.Type.BLDC);
-			} else if (QRY_PARAM_VALUE_TYPE_BRUSH.equalsIgnoreCase(type)) {
-				cats = MotorCategory.Category.getCategories(MotorCategory.Supertype.DC, MotorCategory.Type.BRUSH);
-			} else {
-				cats = MotorCategory.Category.getCategories(null, null);
-			}
-			String categoryField = AbstractMotorEntity.FIELD_NAME_CATEGORY;
-			List<Predicate> predicates = new ArrayList<>();
-			for (MotorCategory.Category cat : cats) {
-				predicates.add(builder.equal(root.get(categoryField), cat));
-			}
-			return Pair.of(JPAUtils.buildConjunctPredicate(builder, predicates, LogicalOperator.OR), LogicalOperator.AND) ;
-		}, pageNumber, pageSize);
+		return super.searchMotors(conditionClause, type, pageNumber, pageSize);
 	}
 
 	/**
@@ -169,7 +140,7 @@ public class DCMotorRestController extends BaseMotorRestController<DCMotorEntity
 	 */
 	@PostMapping("/DC/{" + PARAM_NAME_CATEGORY + "}/search")
 	public PageableListDataResponse<DCMotor> searchMotorsByCategory(@RequestBody ConditionClause conditionClause,
-			@PathVariable(PARAM_NAME_CATEGORY) MotorCategory.Category category,
+			@PathVariable(PARAM_NAME_CATEGORY) String category,
 			@RequestParam(value = QRY_PARAM_NAME_PAGE_NUMBER, required = false) Integer pageNumber,
 			@RequestParam(value = QRY_PARAM_NAME_PAGE_SIZE, required = false) Integer pageSize) {
 		return super.searchMotorsByCategoryBySeries(conditionClause, category, null, pageNumber, pageSize);
@@ -189,7 +160,7 @@ public class DCMotorRestController extends BaseMotorRestController<DCMotorEntity
 	@Override
 	@PostMapping("/DC/{" + PARAM_NAME_CATEGORY + "}/{" + PARAM_NAME_SERIES + "}/search")
 	public PageableListDataResponse<DCMotor> searchMotorsByCategoryBySeries(@RequestBody ConditionClause conditionClause,
-			@PathVariable(PARAM_NAME_CATEGORY) MotorCategory.Category category,
+			@PathVariable(PARAM_NAME_CATEGORY) String category,
 			@PathVariable(PARAM_NAME_SERIES) String series,
 			@RequestParam(value = QRY_PARAM_NAME_PAGE_NUMBER, required = false) Integer pageNumber,
 			@RequestParam(value = QRY_PARAM_NAME_PAGE_SIZE, required = false) Integer pageSize) {
@@ -198,19 +169,19 @@ public class DCMotorRestController extends BaseMotorRestController<DCMotorEntity
 	
 	@GetMapping("/DC/criteria")
 	public SearchMetaCriteriaResponse getSearchMetaCriteria(
-			@RequestParam(value = QRY_PARAM_NAME_TYPE, required = false) String type) {
+			@RequestParam(value = QRY_PARAM_NAME_TYPE, required = false) MotorCategory.Type type) {
 		return super.getSearchMetaCriteria();
 	}
 	
 	@GetMapping("/DC/{" + PARAM_NAME_CATEGORY + "}/criteria")
 	public SearchMetaCriteriaResponse getSearchMetaCriteriaByCategory(
-			@PathVariable(PARAM_NAME_CATEGORY) MotorCategory.Category category) {
+			@PathVariable(PARAM_NAME_CATEGORY) String category) {
 		return super.getSearchMetaCriteria();
 	}
 
 	@GetMapping("/DC/{" + PARAM_NAME_CATEGORY + "}/{" + PARAM_NAME_SERIES + "}/criteria")
 	public SearchMetaCriteriaResponse getSearchMetaCriteriaByCategoryBySeries(
-			@PathVariable(PARAM_NAME_CATEGORY) MotorCategory.Category category,
+			@PathVariable(PARAM_NAME_CATEGORY) String category,
 			@PathVariable(PARAM_NAME_SERIES) String series) {
 		return super.getSearchMetaCriteria();
 	}

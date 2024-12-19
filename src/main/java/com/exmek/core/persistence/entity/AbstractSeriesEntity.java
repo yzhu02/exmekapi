@@ -11,6 +11,9 @@ public abstract class AbstractSeriesEntity extends AbstractManagableEntity {
 	@Column(name = "SERIES")
 	private String series;
 
+	@Column(name = "DISPLAY_NAME")
+	private String displayName;
+	
 	@Column(name = "DESCRIPTION")
 	private String description;
 
@@ -23,6 +26,14 @@ public abstract class AbstractSeriesEntity extends AbstractManagableEntity {
 
 	public void setSeries(String series) {
 		this.series = series;
+	}
+
+	public String getDisplayName() {
+		return displayName;
+	}
+
+	public void setDisplayName(String displayName) {
+		this.displayName = displayName;
 	}
 
 	public String getDescription() {

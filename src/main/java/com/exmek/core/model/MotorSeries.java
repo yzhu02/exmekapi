@@ -10,5 +10,5 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 public class MotorSeries extends AbstractSeries {
 
-	private MotorCategory.Category category;
+	private String category;
 }

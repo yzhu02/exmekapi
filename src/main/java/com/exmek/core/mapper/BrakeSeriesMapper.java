@@ -6,8 +6,9 @@ import com.exmek.core.model.BrakeSeries;
 import com.exmek.core.persistence.entity.BrakeSeriesEntity;
 
 @Component
-public class BrakeSeriesMapper extends AbstractSeriesMapper {
+public class BrakeSeriesMapper extends AbstractSeriesMapper<BrakeSeries, BrakeSeriesEntity> {
 
+	@Override
 	public BrakeSeries mapToSeriesModel(BrakeSeriesEntity entity) {
 		return super.mapToSeriesModel(entity, BrakeSeries::new);
 	}

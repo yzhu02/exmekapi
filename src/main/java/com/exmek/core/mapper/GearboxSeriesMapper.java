@@ -6,8 +6,9 @@ import com.exmek.core.model.GearboxSeries;
 import com.exmek.core.persistence.entity.GearboxSeriesEntity;
 
 @Component
-public class GearboxSeriesMapper extends AbstractSeriesMapper {
+public class GearboxSeriesMapper extends AbstractSeriesMapper<GearboxSeries, GearboxSeriesEntity> {
 
+	@Override
 	public GearboxSeries mapToSeriesModel(GearboxSeriesEntity entity) {
 		return super.mapToSeriesModel(entity, GearboxSeries::new);
 	}

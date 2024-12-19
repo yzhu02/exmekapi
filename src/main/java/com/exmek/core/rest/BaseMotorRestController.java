@@ -11,30 +11,29 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.util.Pair;
 import org.springframework.util.ObjectUtils;
+import org.springframework.web.bind.annotation.RequestParam;
 
+import com.exmek.commons.expr.LogicalOperator;
 import com.exmek.core.mapper.MotorCategoryMapper;
 import com.exmek.core.mapper.MotorSeriesMapper;
 import com.exmek.core.model.AbstractMotor;
 import com.exmek.core.model.MotorCategory;
 import com.exmek.core.model.MotorSeries;
+import com.exmek.core.persistence.entity.AbstractMotorCategoryEntity;
 import com.exmek.core.persistence.entity.AbstractMotorEntity;
+import com.exmek.core.persistence.entity.AbstractMotorSeriesEntity;
 import com.exmek.core.persistence.entity.AbstractSeriesEntity;
-import com.exmek.core.persistence.entity.MotorCategoryEntity;
-import com.exmek.core.persistence.entity.MotorSeriesEntity;
-import com.exmek.core.persistence.repository.MotorCategoryRepository;
-import com.exmek.core.persistence.repository.MotorSeriesRepository;
+import com.exmek.core.persistence.repository.BaseMotorCategoryRepository;
+import com.exmek.core.persistence.repository.BaseMotorSeriesRepository;
 
-public abstract class BaseMotorRestController<T extends AbstractMotorEntity, M extends AbstractMotor> extends BaseProductRestController<T, M> {
+import jakarta.persistence.criteria.Join;
+
+public abstract class BaseMotorRestController<T extends AbstractMotorEntity, M extends AbstractMotor, CE extends AbstractMotorCategoryEntity, SE extends AbstractMotorSeriesEntity> 
+extends BaseProductRestController<T, M, SE, MotorSeries> {
 
 	public static final String PARAM_NAME_CATEGORY	= "category";
 	
 	public static final String QRY_PARAM_NAME_TYPE	= "type";
-
-	@Autowired
-	protected MotorCategoryRepository motorCategoryRepository;
-
-	@Autowired
-	protected MotorSeriesRepository motorSeriesRepository;
 
 	@Autowired
 	protected MotorCategoryMapper motorCategoryMapper;
@@ -42,26 +41,55 @@ public abstract class BaseMotorRestController<T extends AbstractMotorEntity, M e
 	@Autowired
 	protected MotorSeriesMapper motorSeriesMapper;
 
-	protected MotorCategory getMotorCategory(MotorCategory.Category category) {
-		Optional<MotorCategoryEntity> opCategory = motorCategoryRepository.findByCategory(category);
+	protected abstract BaseMotorCategoryRepository<CE> getMotorCategoryRepository();
+	
+	@Override
+	protected abstract BaseMotorSeriesRepository<SE> getSeriesRepository();
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	protected MotorSeriesMapper getSeriesMapper() {
+		return motorSeriesMapper;
+	}
+
+	protected List<MotorCategory> getMotorCategories(
+			@RequestParam(value = QRY_PARAM_NAME_TYPE, required = false) MotorCategory.Type type) {
+		List<CE> entities = null;
+		if (!ObjectUtils.isEmpty(type)) {
+			entities = getMotorCategoryRepository().findByType(type);
+		} else {
+			entities = getMotorCategoryRepository().findAll();
+		}
+		if (entities == null) {
+			return new ArrayList<>();
+		}
+		return entities.stream()
+				.map(entity -> motorCategoryMapper.mapToCategoryModel(entity))
+				.collect(Collectors.toList());
+	}
+	
+	protected MotorCategory getMotorCategory(String category) {
+		Optional<CE> opCategory = getMotorCategoryRepository().findByCategory(category);
 		if (opCategory.isPresent()) {
 			return motorCategoryMapper.mapToCategoryModel(opCategory.get());
 		} else {
 			return null;
 		}
 	}
-
-	protected MotorSeries getMotorSeries(String series) {
-		Optional<MotorSeriesEntity> opSeries = motorSeriesRepository.findBySeries(series);
-		if (opSeries.isPresent()) {
-			return motorSeriesMapper.mapToSeriesModel(opSeries.get());
-		} else {
-			return null;
+	
+	protected PageableListDataResponse<M> searchMotors(ConditionClause conditionClause,
+			String type, Integer pageNumber, Integer pageSize) {
+		if (ObjectUtils.isEmpty(type)) {
+			return super.searchBy(conditionClause, null, pageNumber, pageSize);
 		}
+		return super.searchBy(conditionClause, (root, builder) -> {
+			Join<T, CE> categoryJoin = root.join(AbstractMotorEntity.FIELD_NAME_MOTOR_CATEGORY);
+			return Pair.of(builder.equal(categoryJoin.get(AbstractMotorCategoryEntity.FIELD_NAME_TYPE), type), LogicalOperator.AND);
+		}, pageNumber, pageSize);
 	}
-
+	
 	protected PageableListDataResponse<M> searchMotorsByCategoryBySeries(ConditionClause conditionClause,
-			MotorCategory.Category category, String series,
+			String category, String series,
 			Integer pageNumber, Integer pageSize) {
 
 		List<Pair<String, Object>> additionalFieldMatching = new ArrayList<>();
@@ -74,15 +102,15 @@ public abstract class BaseMotorRestController<T extends AbstractMotorEntity, M e
 		return super.searchWith(conditionClause, additionalFieldMatching, pageNumber, pageSize);
 	}
 
-	protected PageableListDataResponse<MotorSeries> searchMotorSeriesesByCategory(MotorCategory.Category category,
+	protected PageableListDataResponse<MotorSeries> searchMotorSeriesesByCategory(String category,
 			Integer pageNumber, Integer pageSize) {
 
 		PageableListDataResponse<MotorSeries> dataResponse = new PageableListDataResponse<>();
-		List<MotorSeriesEntity> entities = null;
+		List<SE> entities = null;
 		if (pageNumber == null || pageSize == null) {
-			entities = motorSeriesRepository.findAllByCategory(category);
+			entities = getSeriesRepository().findAllByCategory(category);
 		} else {
-			Page<MotorSeriesEntity> page = motorSeriesRepository.findAllByCategory(category,
+			Page<SE> page = getSeriesRepository().findAllByCategory(category,
 					PageRequest.of(pageNumber, pageSize, Sort.by(AbstractSeriesEntity.FIELD_NAME_SERIES)));
 			entities = page.getContent();
 			populatePageableListDataResponse(dataResponse, page);

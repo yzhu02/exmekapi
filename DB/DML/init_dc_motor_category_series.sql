@@ -1,36 +1,32 @@
--- MOTOR_CATEGORY --
-INSERT INTO MOTOR_CATEGORY (CATEGORY, DISPLAY_NAME, DESCRIPTION, TECHNICAL_DATA)
+-- DC_MOTOR_CATEGORY --
+INSERT INTO MOTOR_CATEGORY (CATEGORY, TYPE, DISPLAY_NAME, DESCRIPTION, TECHNICAL_DATA)
 VALUES 
-('BLDC_INTERNAL_ROTOR', 'Internal Rotor BLDC motor', '', ''),
-('BLDC_EXTERNAL_ROTOR', 'External Rotor BLDC motor', '', ''),
-('BLDC_FRAMELESS', 'Frameless BLDC motor', '', ''),
-('BLDC_CORELESS', 'Coreless BLDC motor', '', ''),
-('BLDC_SERVO', 'BLDC Servo motor', '', ''),
-('BLDC_WITH_GEARBOX', 'BLDC motor with gearbox', '', ''),
-('BLDC_DIRECT_DRIVE', 'Direct-drive Brushless motor', '', ''),
+('BLDC_INTERNAL_ROTOR', 'BLDC', 'Internal Rotor BLDC motor', '', ''),
+('BLDC_EXTERNAL_ROTOR', 'BLDC', 'External Rotor BLDC motor', '', ''),
+('BLDC_FRAMELESS', 'BLDC', 'Frameless BLDC motor', '', ''),
+('BLDC_CORELESS', 'BLDC', 'Coreless BLDC motor', '', ''),
+('BLDC_SERVO', 'BLDC', 'BLDC Servo motor', '', ''),
+('BLDC_WITH_GEARBOX', 'BLDC', 'BLDC motor with gearbox', '', ''),
+('BLDC_DIRECT_DRIVE', 'BLDC', 'Direct-drive Brushless motor', '', ''),
 
-('PERMANENT_MAGNET_BRUSH', 'Permanent Magnet Brush motor', '', ''),
-('BRUSH_WITH_GEARBOX', 'Brush motor with gearbox', '', ''),
+('PERMANENT_MAGNET_BRUSH', 'BRUSH', 'Permanent Magnet Brush motor', '', ''),
+('BRUSH_WITH_GEARBOX', 'BRUSH', 'Brush motor with gearbox', '', ''),
 
-('INTEGRATED', 'Integrated motor', '', ''),
+('INTEGRATED', NULL, 'Integrated motor', '', ''),
 
-('SOLAR_TRACKING_APPLICATION', 'Solar Tracking Application', '', ''),
-('MATERIAL_HANDLING_SOLUTION', 'Material Handling Solution', '', ''),
-
-('STEPPER_STANDARD_TORQUE', 'Standard torque Stepper motor', '', ''),
-('STEPPER_FLAT', 'Flat Stepper motor', '', ''),
-('STEPPER_WITH_CONTROL', 'Stepper motor with control', '', ''),
-('STEPPER_LINEAR', 'Linear Stepper motor', '', '')
+('SOLAR_TRACKING_APPLICATION', NULL, 'Solar Tracking Application', '', ''),
+('MATERIAL_HANDLING_SOLUTION', NULL, 'Material Handling Solution', '', '')
 ;
 
 
--- MOTOR_SERIES --
-INSERT INTO MOTOR_SERIES (CATEGORY, SERIES, DESCRIPTION, TECHNICAL_DATA)
+-- DC_ MOTOR_SERIES --
+INSERT INTO DC_MOTOR_SERIES (CATEGORY, SERIES, DISPLAY_NAME, DESCRIPTION, TECHNICAL_DATA)
 VALUES
 -- BLDC_INTERNAL_ROTOR Begin --
 (
 'BLDC_INTERNAL_ROTOR',
-'ME042WS', 
+'ME042WS',
+'ME042WS',
 'Wide speed range, flat torque
 Excellent speed stability
 Compact and high power
@@ -40,7 +36,8 @@ Low temperature rise, low noise, low vibration',
 
 (
 'BLDC_INTERNAL_ROTOR',
-'ME036GA', 
+'ME036GA',
+'ME036GA',
 'Long Life
 Direct Replacement of Toy Motor
 Economic Design for Power Tool',
@@ -49,7 +46,8 @@ Economic Design for Power Tool',
 
 (
 'BLDC_INTERNAL_ROTOR',
-'ME042AS', 
+'ME042AS',
+'ME042AS',
 'Low cogging
 High Power Density
 High Efficiency',
@@ -58,7 +56,8 @@ High Efficiency',
 
 (
 'BLDC_INTERNAL_ROTOR',
-'ME042GS', 
+'ME042GS',
+'ME042GS',
 'Nema 17 Mounting Interface
 Economic Design for Volume Production
 Bonded Neo Magnet',
@@ -67,7 +66,8 @@ Bonded Neo Magnet',
 
 (
 'BLDC_INTERNAL_ROTOR',
-'ME042YS', 
+'ME042YS',
+'ME042YS',
 'Compact Design
 Economic Design
 Bonded Neo Magnet',
@@ -76,7 +76,8 @@ Bonded Neo Magnet',
 
 (
 'BLDC_INTERNAL_ROTOR',
-'ME043AS', 
+'ME043AS',
+'ME043AS',
 'Sealed Housing Design
 120/60 degree hall effect
 Smooth Operation',
@@ -85,7 +86,8 @@ Smooth Operation',
 
 (
 'BLDC_INTERNAL_ROTOR',
-'MB057GA', 
+'MB057GA',
+'MB057GA',
 'High Reliable
 Bonded Neo Magnet
 Nema 23 Flange Available',
@@ -94,7 +96,8 @@ Nema 23 Flange Available',
 
 (
 'BLDC_INTERNAL_ROTOR',
-'MEL57AH', 
+'MEL57AH',
+'MEL57AH',
 'Multiple Poles Design for Low speed
 Sintered Neo Magnet
 NEMA 23 Flange Available',
@@ -103,7 +106,8 @@ NEMA 23 Flange Available',
 
 (
 'BLDC_INTERNAL_ROTOR',
-'MDB56GS', 
+'MDB56GS',
+'MDB56GS',
 'Low Cogging
 NEMA 23 Mounting Interface
 Economic Design for High Power',
@@ -112,7 +116,8 @@ Economic Design for High Power',
 
 (
 'BLDC_INTERNAL_ROTOR',
-'ME057AH', 
+'ME057AH',
+'ME057AH',
 'High Efficiency
 High Voltage Capability
 High Power Density',
@@ -121,7 +126,8 @@ High Power Density',
 
 (
 'BLDC_INTERNAL_ROTOR',
-'MB059AH', 
+'MB059AH',
+'MB059AH',
 'High Power Density
 Nema 23 Mounting Available
 Sintered Neo Magnet',
@@ -130,7 +136,8 @@ Sintered Neo Magnet',
 
 (
 'BLDC_INTERNAL_ROTOR',
-'ME060AS', 
+'ME060AS',
+'ME060AS',
 '12 slots design for low cogging
 Sintered Neo Magnet
 Economic Design for Direct Drive',
@@ -139,7 +146,8 @@ Economic Design for Direct Drive',
 
 (
 'BLDC_INTERNAL_ROTOR',
-'MB070GA', 
+'MB070GA',
+'MB070GA',
 'Low cogging
 Special Deisgn for Easy Production
 High Reliable',
@@ -148,7 +156,8 @@ High Reliable',
 
 (
 'BLDC_INTERNAL_ROTOR',
-'ME070AS', 
+'ME070AS',
+'ME070AS',
 '12 slots design for low cogging
 Sintered Neo Magnet
 Economic Design for Direct Drive',
@@ -157,7 +166,8 @@ Economic Design for Direct Drive',
 
 (
 'BLDC_INTERNAL_ROTOR',
-'ME080AS', 
+'ME080AS',
+'ME080AS',
 '8 Poles with 3 Phases
 Low Cogging
 High Power Density',
@@ -166,7 +176,8 @@ High Power Density',
 
 (
 'BLDC_INTERNAL_ROTOR',
-'ME080RS', 
+'ME080RS',
+'ME080RS',
 '4 poles with 3 phases
 Sintered Neo Magnet
 Economic Design for Direct Drive',
@@ -175,7 +186,8 @@ Economic Design for Direct Drive',
 
 (
 'BLDC_INTERNAL_ROTOR',
-'MB082GA', 
+'MB082GA',
+'MB082GA',
 'Low Cogging
 NEMA 34 Mounting Interface
 Bonded Neo Magnet
@@ -185,7 +197,8 @@ High Voltage Available',
 
 (
 'BLDC_INTERNAL_ROTOR',
-'ME086AS', 
+'ME086AS',
+'ME086AS',
 '8 poles with 3 phases
 Economic Design for Simple Servo
 High Efficiency',
@@ -194,7 +207,8 @@ High Efficiency',
 
 (
 'BLDC_INTERNAL_ROTOR',
-'ME110AS', 
+'ME110AS',
+'ME110AS',
 '8 poles with 3 phases
 18 slots design for low cogging
 High Power Density',
@@ -203,7 +217,8 @@ High Power Density',
 
 (
 'BLDC_INTERNAL_ROTOR',
-'ME130AS', 
+'ME130AS',
+'ME130AS',
 '8 poles with 3 phases
 24 slots design for low cogging
 Direct Replacement of IEC AC motor',
@@ -212,7 +227,8 @@ Direct Replacement of IEC AC motor',
 
 (
 'BLDC_INTERNAL_ROTOR',
-'MB120GA', 
+'MB120GA',
+'MB120GA',
 'Economic Design with Bonded Neo
 Voltage Rating up to 325VDC
 Optional; NEMA 56 mounting',
@@ -221,7 +237,8 @@ Optional; NEMA 56 mounting',
 
 (
 'BLDC_INTERNAL_ROTOR',
-'MBH057GA', 
+'MBH057GA',
+'MBH057GA',
 '',
 '{"Rated Power": "250-520 W", "Rated Voltage": "70 VDC", "Rated Torque": "0.2-0.4 Nm", "Rated Speed": "12500 rpm", "Length": "54-94 mm"}'
 ),
@@ -230,6 +247,7 @@ Optional; NEMA 56 mounting',
 -- BLDC_EXTERNAL_ROTOR Begin --
 (
 'BLDC_EXTERNAL_ROTOR',
+'EF045AS',
 'EF045AS',
 '16 poles with 3 phases
 Compact Design
@@ -240,6 +258,7 @@ Smooth Operation under Low Speed',
 (
 'BLDC_EXTERNAL_ROTOR',
 'EF048GA',
+'EF048GA',
 '10 Poles with 3 Phases
 Economic Solution with Driver
 Special for Fan Application',
@@ -248,6 +267,7 @@ Special for Fan Application',
 
 (
 'BLDC_EXTERNAL_ROTOR',
+'EF058GA',
 'EF058GA',
 '10 Poles with 3 Phases
 Economic Solution with Driver
@@ -260,6 +280,7 @@ Special for Fan Application',
 (
 'BLDC_FRAMELESS',
 'MF180AS',
+'MF180AS',
 'High Overload capability
 Low Speed Design Available
 Economic Design',
@@ -268,6 +289,7 @@ Economic Design',
 
 (
 'BLDC_FRAMELESS',
+'TF060',
 'TF060',
 'High Power Density
 Low Cogging Torque
@@ -278,6 +300,7 @@ Hall Board available',
 (
 'BLDC_FRAMELESS',
 'TF076',
+'TF076',
 'High Power Density
 Low Cogging Torque
 Hall Board available',
@@ -286,6 +309,7 @@ Hall Board available',
 
 (
 'BLDC_FRAMELESS',
+'MF080AS',
 'MF080AS',
 'Multipolar and high torque density
 Low Speed and High Torque
@@ -298,6 +322,7 @@ Hall Board or encoder available',
 (
 'BLDC_FRAMELESS',
 'MF090AS',
+'MF090AS',
 'Multipolar and high torque density
 Low Cogging Torque
 Low torque ripple
@@ -308,6 +333,7 @@ Hall Board or encoder available',
 
 (
 'BLDC_FRAMELESS',
+'MF130AS',
 'MF130AS',
 'Multipolar and high torque density
 Low Cogging Torque
@@ -322,6 +348,7 @@ Hall Board or encoder available',
 (
 'BLDC_CORELESS',
 'SLS',
+'SLS',
 'As High As 40000rpm Speed
 Low Temperature Rise
 Hall Sensor Available',
@@ -333,12 +360,14 @@ Hall Sensor Available',
 (
 'BLDC_SERVO',
 'SEP040',
+'SEP040',
 '',
 '{"Rated Power": "50-100 W", "Rated Voltage": "48 VDC", "Rated Torque": "0.16-0.32 Nm", "Rated Speed": "3000 rpm", "Length": "49.5-63.5 mm"}'
 ),
 
 (
 'BLDC_SERVO',
+'SEP060',
 'SEP060',
 '',
 '{"Rated Power": "200-400 W", "Rated Voltage": "24-48 VDC", "Rated Torque": "0.64-1.27 Nm", "Rated Speed": "3000 rpm", "Length": "64.5-84.5 mm"}'
@@ -347,12 +376,14 @@ Hall Sensor Available',
 (
 'BLDC_SERVO',
 'SEP080',
+'SEP080',
 '',
 '{"Rated Power": "500-800 W", "Rated Voltage": "24-48 VDC", "Rated Torque": "1.53-2.55 Nm", "Rated Speed": "3000 rpm", "Length": "75-92 mm"}'
 ),
 
 (
 'BLDC_SERVO',
+'SEP110',
 'SEP110',
 '',
 '{"Rated Power": "1320 W", "Rated Voltage": "48 VDC", "Rated Torque": "4.2 Nm", "Rated Speed": "3000 rpm", "Length": "109 mm"}'
@@ -361,12 +392,14 @@ Hall Sensor Available',
 (
 'BLDC_SERVO',
 'SEP130',
+'SEP130',
 '',
 '{"Rated Power": "3000 W", "Rated Voltage": "538 VDC", "Rated Torque": "14.33 Nm", "Rated Speed": "2000 rpm", "Length": "150.5 mm"}'
 ),
 
 (
 'BLDC_SERVO',
+'SE080AS-REDUCER',
 'SE080AS REDUCER',
 'All-in-one compact design
 High efficiency, low noise and high reliable gearbox
@@ -378,6 +411,7 @@ Drive solution for mobile robot (AGV/Forklift)',
 (
 'BLDC_SERVO',
 'SE060AS',
+'SE060AS',
 '8 Poles with 3 Phases
 Low Cogging
 High Power Density',
@@ -386,6 +420,7 @@ High Power Density',
 
 (
 'BLDC_SERVO',
+'SE080AS',
 'SE080AS',
 '8 Poles with 3 Phases
 Low Cogging
@@ -398,6 +433,7 @@ High Power Density',
 (
 'BLDC_WITH_GEARBOX',
 'ME032RS100-SI0020',
+'ME032RS100-SI0020',
 'Direct Replacement of PMDC motor
 Economic Solution
 Long Life',
@@ -407,6 +443,7 @@ Long Life',
 (
 'BLDC_WITH_GEARBOX',
 'ME036RS100-SI0010',
+'ME036RS100-SI0010',
 'Direct Replacement of PMDC motor
 Economic Solution
 Long Life',
@@ -415,6 +452,7 @@ Long Life',
 
 (
 'BLDC_WITH_GEARBOX',
+'AGV_BLDC_Motor',
 'AGV BLDC Motor',
 '8 poles with 3 phases
 Low Cogging',
@@ -425,6 +463,7 @@ Low Cogging',
 -- BLDC_DIRECT_DRIVE Begin --
 (
 'BLDC_DIRECT_DRIVE',
+'MFP180AT100',
 'MFP180AT100',
 'Direct-drive brushless motor
 High Torque, low inertia, fast response,
@@ -442,6 +481,7 @@ Steering motor for autopilot agriculture machinery',
 (
 'PERMANENT_MAGNET_BRUSH',
 'MB030JS',
+'MB030JS',
 'Ball Bearings
 Low Cogging
 Reliable Brush Holder Design',
@@ -450,6 +490,7 @@ Reliable Brush Holder Design',
 
 (
 'PERMANENT_MAGNET_BRUSH',
+'MB040JS',
 'MB040JS',
 'Long life
 Skew Slot Design for Low cogging
@@ -460,6 +501,7 @@ Reliable Brush Holder Design',
 (
 'PERMANENT_MAGNET_BRUSH',
 'MB042DK',
+'MB042DK',
 'DIN Standard Mounting
 High Efficiency
 EMI filter available',
@@ -468,6 +510,7 @@ EMI filter available',
 
 (
 'PERMANENT_MAGNET_BRUSH',
+'MB054TP',
 'MB054TP',
 'Ceramic magnet
 Replacement Carbon Brush
@@ -478,6 +521,7 @@ Economic Design for Volume Production',
 (
 'PERMANENT_MAGNET_BRUSH',
 'MB063KG',
+'MB063KG',
 'Ceramic Magnets
 High Effiency
 Long Life Brush',
@@ -487,12 +531,14 @@ Long Life Brush',
 (
 'PERMANENT_MAGNET_BRUSH',
 'MB076HG',
+'MB076HG',
 'Stator with permanent rare earth magnet stator whichare glued and protected by a stainless steel sleeve',
 '{"Rated Power": "182-442 W", "Rated Voltage": "24-90 VDC", "Rated Torque": "0.75-1.39 Nm", "Rated Speed": "1200-3200 rpm", "Length": "114-157 mm"}'
 ),
 
 (
 'PERMANENT_MAGNET_BRUSH',
+'MB100FG',
 'MB100FG',
 'IEC34-1 Standard Flange
 Hard Ferrite magnet
@@ -507,6 +553,7 @@ Number of Poles: 4',
 (
 'BRUSH_WITH_GEARBOX',
 'SG80',
+'SG80',
 'Low noise
 Double output shaft available
 Door Opener application',
@@ -520,6 +567,7 @@ Door Opener application',
 (
 'INTEGRATED',
 'MDS040',
+'MDS040',
 '',
 '{"Rated Power": "50-100 W", "Rated Voltage": "24-36 VDC", "Rated Torque": "0.16-0.32 Nm", "Rated Speed": "3000 rpm", "Length": "69-83 mm"}'
 ),
@@ -527,12 +575,14 @@ Door Opener application',
 (
 'INTEGRATED',
 'MDS075',
+'MDS075',
 '',
 '{"Rated Power": "47-188 W", "Rated Voltage": "36 VDC", "Rated Torque": "0.1-0.6 Nm", "Rated Speed": "3000 rpm", "Length": "88-148 mm"}'
 ),
 
 (
 'INTEGRATED',
+'MDS060',
 'MDS060',
 '',
 '{"Rated Power": "100-400 W", "Rated Voltage": "36 VDC", "Rated Torque": "0.32-1.27 Nm", "Rated Speed": "3000 rpm", "Length": "96.5-133.5 mm"}'
@@ -544,7 +594,8 @@ Door Opener application',
 -- SOLAR_TRACKING_APPLICATION Begin --
 (
 'SOLAR_TRACKING_APPLICATION',
-'66 FRAME PMDC/BLDC GEAR MOTOR', 
+'66-FRAME-PMDC_BLDC-GEAR-MOTOR',
+'66 FRAME PMDC/BLDC GEAR MOTOR',
 '2 PPR or 4 PPR encoder available
 Protection class IP 65
 With protective vent valve to reduce condensation',
@@ -553,7 +604,8 @@ With protective vent valve to reduce condensation',
 
 (
 'SOLAR_TRACKING_APPLICATION',
-'82 FRAME PMDC/BLDC GEAR MOTOR', 
+'82-FRAME-PMDC_BLDC-GEAR-MOTOR',
+'82 FRAME PMDC/BLDC GEAR MOTOR',
 '2 PPR or 4 PPR encoder available
 Protection class IP 65
 With protective vent valve to reduce condensation',
@@ -562,7 +614,8 @@ With protective vent valve to reduce condensation',
 
 (
 'SOLAR_TRACKING_APPLICATION',
-'94 FRAME PMDC/BLDC GEAR MOTOR', 
+'94-FRAME-PMDC_BLDC-GEAR-MOTOR',
+'94 FRAME PMDC/BLDC GEAR MOTOR',
 '2 PPR or 4 PPR encoder available
 Protection class IP 65
 With protective vent valve to reduce condensation
@@ -572,7 +625,8 @@ UL Certified',
 
 (
 'SOLAR_TRACKING_APPLICATION',
-'128 FRAME PMDC/BLDC GEAR MOTOR', 
+'128-FRAME-PMDC_BLDC-GEAR-MOTOR',
+'128 FRAME PMDC/BLDC GEAR MOTOR',
 '2 PPR or 4 PPR encoder available
 Epoxy coating on the surface 
 With protective vent valve to reduce condensation',
@@ -583,6 +637,7 @@ With protective vent valve to reduce condensation',
 -- MATERIAL_HANDLING_SOLUTION Begin --
 (
 'MATERIAL_HANDLING_SOLUTION',
+'Sorter-BLDC-Roller',
 'Sorter BLDC Roller',
 'Direct drive
 Wide speed range
@@ -593,6 +648,7 @@ Surface knurling available',
 
 (
 'MATERIAL_HANDLING_SOLUTION',
+'Sorter-Servo-Roller',
 'Sorter Servo Roller',
 'Direct drive
 Servo control
@@ -602,6 +658,7 @@ Inductive encoder',
 
 (
 'MATERIAL_HANDLING_SOLUTION',
+'Smart-Roller',
 'Smart Roller',
 'Multiple color rubber available
 Coating Thickness 2mm or customized',
@@ -609,179 +666,6 @@ Coating Thickness 2mm or customized',
 ),
 -- MATERIAL_HANDLING_SOLUTION End --
 
-
-
--- STEPPER_STANDARD_TORQUE Begin --
-(
-'STEPPER_STANDARD_TORQUE',
-'MP020NA',
-'NEMA 8
-2 Phase Hybrid stepper motor',
-'{"Holding Torque": "1.8-2 Ncm", "Detent Torque": "0.2 Ncm", "Phase Current": "0.6 A", "Step Angle": "1.8 °", "Length": "30-60 mm"}'
-),
-
-(
-'STEPPER_STANDARD_TORQUE',
-'MP028NB',
-'NEMA 11
-2 Phase Hybrid stepper motor',
-'{"Holding Torque": "4-9.5 Ncm", "Detent Torque": "0.8-1.5 Ncm", "Phase Current": "0.47-1.30 A", "Step Angle": "1.8 °", "Length": "31.5-50.5 mm"}'
-),
-
-(
-'STEPPER_STANDARD_TORQUE',
-'MP039NA',
-'NEMA 16
-2 Phase Hybrid stepper motor',
-'{"Holding Torque": "4.6-30 Ncm", "Detent Torque": "0.8-2.5 Ncm", "Phase Current": "0.28-0.80 A", "Step Angle": "1.8 °", "Length": "20-53 mm"}'
-),
-
-(
-'STEPPER_STANDARD_TORQUE',
-'MP042NB',
-'NEMA 17
-2 Phase Hybrid stepper motor',
-'{"Holding Torque": "12-80 Ncm", "Detent Torque": "1.42-6 Ncm", "Phase Current": "0.3-3.5 A", "Step Angle": "1.8 °", "Length": "24-60 mm"}'
-),
-
-(
-'STEPPER_STANDARD_TORQUE',
-'MP042SB',
-'NEMA 17
-2 Phase Hybrid stepper motor',
-'{"Holding Torque": "14.5-49 Ncm", "Detent Torque": "1.5-2.74 Ncm", "Phase Current": "0.4-1.68 A", "Step Angle": "0.9 °", "Length": "22-68 mm"}'
-),
-
-(
-'STEPPER_STANDARD_TORQUE',
-'MP057NB',
-'NEMA 23
-2 Phase Hybrid stepper motor',
-'{"Holding Torque": "41-300 Ncm", "Detent Torque": "2.6-12 Ncm", "Phase Current": "1-6 A", "Step Angle": "1.8 °", "Length": "41-115 mm"}'
-),
-
-(
-'STEPPER_STANDARD_TORQUE',
-'MP057SB',
-'NEMA 23
-2 Phase Hybrid stepper motor',
-'{"Holding Torque": "19.6-250 Ncm", "Detent Torque": "3.92-12 Ncm", "Phase Current": "1.0-3.0 A", "Step Angle": "0.9 °", "Length": "41-115 mm"}'
-),
-
-(
-'STEPPER_STANDARD_TORQUE',
-'MP060NB',
-'NEMA 24
-2 Phase Hybrid stepper motor',
-'{"Holding Torque": "110-310 Ncm", "Detent Torque": "6-17 Ncm", "Phase Current": "2.8 A", "Step Angle": "1.8 °", "Length": "45-86 mm"}'
-),
-
-(
-'STEPPER_STANDARD_TORQUE',
-'MP086NA',
-'NEMA 34, Round housing
-2 Phases Hybrid Stepper Motor',
-'{"Holding Torque": "137.2-392 Ncm", "Detent Torque": "7.84-24.5 Ncm", "Phase Current": "1.7-7 A", "Step Angle": "1.8 °", "Length": "62-127 mm"}'
-),
-
-(
-'STEPPER_STANDARD_TORQUE',
-'MP086YG',
-'NEMA 34
-2 Phases Hybrid Stepper Motor',
-'{"Holding Torque": "2.8-12.1 Nm", "Detent Torque": "0.2-0.38 Nm", "Phase Current": "6.1-10.0 A", "Step Angle": "1.8 °", "Length": "65-156.5 mm"}'
-),
-
-(
-'STEPPER_STANDARD_TORQUE',
-'MP110YG',
-'NEMA 43
-2 Phases Hybrid Stepper Motor',
-'{"Holding Torque": "11.68-30.81 Nm", "Detent Torque": "0.3-0.75 Nm", "Phase Current": "10.7-15.8 A", "Step Angle": "1.8 °", "Length": "99-201 mm"}'
-),
--- STEPPER_STANDARD_TORQUE End --
-
-
-
--- STEPPER_FLAT Begin --
-(
-'STEPPER_FLAT',
-'MPF028NB',
-'',
-'{"Holding Torque": "0.98 Ncm", "Phase Current": "0.5 A", "Step Angle": "1.8 °", "Length": "9.4 mm"}'
-),
-
-(
-'STEPPER_FLAT',
-'MPF068NB',
-'',
-'{"Holding Torque": "6.4 Ncm", "Phase Current": "1 A", "Step Angle": "1.8 °", "Length": "9.6 mm"}'
-),
--- STEPPER_FLAT End --
-
-
-
--- STEPPER_WITH_CONTROL Begin --
-(
-'STEPPER_WITH_CONTROL',
-'EMP42',
-'',
-'{"Holding Torque": "33.3-80 Ncm", "Phase Current": "1-2.5 A", "Length": "40-60 mm"}'
-),
-
-(
-'STEPPER_WITH_CONTROL',
-'EMP57',
-'',
-'{"Holding Torque": "55-300 Ncm", "Phase Current": "2-2.5 A", "Length": "41-115 mm"}'
-),
--- STEPPER_WITH_CONTROL End --
-
-
-
--- STEPPER_LINEAR Begin --
-(
-'STEPPER_LINEAR',
-'LS020NB',
-'',
-'{"Phase Current": "0.5 A", "Length": "27.2-38.1 mm"}'
-),
-
-(
-'STEPPER_LINEAR',
-'LS028NB',
-'',
-'{"Phase Current": "0.5-1.6 A", "Length": "32.6-45 mm"}'
-),
-
-(
-'STEPPER_LINEAR',
-'LS035NB',
-'',
-'{"Phase Current": "0.5-1.5 A", "Length": "33.6-45.6 mm"}'
-),
-
-(
-'STEPPER_LINEAR',
-'LS042NB',
-'',
-'{"Phase Current": "0.5-2.5 A", "Length": "34.1-48.1 mm"}'
-),
-
-(
-'STEPPER_LINEAR',
-'LS057NB',
-'',
-'{"Phase Current": "1.0-4.0 A", "Length": "45-65 mm"}'
-),
-
-(
-'STEPPER_LINEAR',
-'LS086NB',
-'',
-'{"Phase Current": "1.3-6.0 A", "Length": "78-100 mm"}'
-)
--- STEPPER_LINEAR End --
 ;
 
 

@@ -14,6 +14,8 @@ public abstract class AbstractSeries extends AbstractModel {
 
 	private String series;
 	
+	private String displayName;
+	
 	private String description;
 	
 	private Map<String, String> technicalData;
