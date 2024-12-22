@@ -506,7 +506,7 @@ CREATE TABLE `MOTOR_CONFIG` (
   `CONFIG_NAME` varchar(64) NOT NULL,
   `CONFIG_VALUE` varchar(512) DEFAULT NULL,
   PRIMARY KEY (`ID`)
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=38 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -515,7 +515,7 @@ CREATE TABLE `MOTOR_CONFIG` (
 
 LOCK TABLES `MOTOR_CONFIG` WRITE;
 /*!40000 ALTER TABLE `MOTOR_CONFIG` DISABLE KEYS */;
-INSERT INTO `MOTOR_CONFIG` VALUES (5,0,'2024-12-08 22:45:42',NULL,'MB057GA*','curve.coordinates','[{\"name\": \"Tcont\", \"x\": \"Speed(Krpm)\", \"y\": \"Torque(oz-in)\"}, {\"name\": \"Tpeak\", \"x\": \"Speed(Krpm)\", \"y\": \"Torque(Ncm)\"}]'),(6,0,'2024-12-08 22:45:42',NULL,'MB059AH*','curve.coordinates','[{\"name\": \"\", \"x\": \"Torque(Nm)\", \"y\": \"Speed(rpm)\"}, {\"name\": \"\", \"x\": \"Torque(Nm)\", \"y\": \"Current(A)\"}]'),(7,0,'2024-12-08 22:45:42',NULL,'MB082GA*','curve.coordinates','[{\"name\": \"Torque(oz-in)\", \"x\": \"Speed(Krpm)\", \"y\": \"Torque(oz-in)\"}, {\"name\": \"Torque(Ncm)\", \"x\": \"Speed(Krpm)\", \"y\": \"Torque(Ncm)\"}]'),(8,0,'2024-12-08 22:45:42',NULL,'MDB56GS*,ME042AS*,ME042GS*,ME042WS*,ME042YS*,ME043AS*,ME057AH*,ME060AS*,MEO70AS*,ME080AS*,ME080RS*D','curve.coordinates','[{\"name\": \"\", \"x\": \"Torque(Nm)\", \"y\": \"Speed(rpm)\"}, {\"name\": \"\", \"x\": \"Torque(Nm)\", \"y\": \"Current(A)\"}]'),(9,0,'2024-12-09 14:51:31',NULL,'SE060AS*','curve.coordinates','[{\"name\": \"Tpeak\", \"x\": \"Speed(rpm)[0]\", \"y\": \"Torque(Nm)[0]\"}, {\"name\": \"Tcont\", \"x\": \"Speed(rpm)[1]\", \"y\": \"Torque(Nm)[1]\"}]');
+INSERT INTO `MOTOR_CONFIG` VALUES (28,0,'2024-12-22 00:09:01',NULL,'MB057GA*','curve.coordinates','[{\"name\": \"Tcont\", \"x\": \"Speed(Krpm)\", \"y\": \"Torque(oz-in)\"}, {\"name\": \"Tpeak\", \"x\": \"Speed(Krpm)\", \"y\": \"Torque(Ncm)\"}]'),(29,0,'2024-12-22 00:09:01',NULL,'MB059AH*','curve.coordinates','[{\"name\": \"\", \"x\": \"Torque(Nm)\", \"y\": \"Speed(rpm)\"}, {\"name\": \"\", \"x\": \"Torque(Nm)\", \"y\": \"Current(A)\"}]'),(30,0,'2024-12-22 00:09:01',NULL,'MB082GA*','curve.coordinates','[{\"name\": \"Torque(oz-in)\", \"x\": \"Speed(Krpm)\", \"y\": \"Torque(oz-in)\"}, {\"name\": \"Torque(Ncm)\", \"x\": \"Speed(Krpm)\", \"y\": \"Torque(Ncm)\"}]'),(31,0,'2024-12-22 00:09:01',NULL,'MDB56GS*,ME042AS*,ME042GS*,ME042WS*,ME042YS*,ME043AS*,ME057AH*,ME060AS*,MEO70AS*,ME080AS*,ME080RS*D,ME080AS*,ME110AS*,MEL57AH*','curve.coordinates','[{\"name\": \"\", \"x\": \"Torque(Nm)\", \"y\": \"Speed(rpm)\"}, {\"name\": \"\", \"x\": \"Torque(Nm)\", \"y\": \"Current(A)\"}]'),(32,0,'2024-12-22 00:09:01',NULL,'EF045AS*','curve.coordinates','[{\"name\": \"\", \"x\": \"Torque(Nm)\", \"y\": \"Speed(rpm)\"}, {\"name\": \"\", \"x\": \"Torque(Nm)\", \"y\": \"Current(A)\"}]'),(33,0,'2024-12-22 00:09:01',NULL,'SE060AS*,SE080AS*','curve.coordinates','[{\"name\": \"Tpeak\", \"x\": \"Speed(rpm)[0]\", \"y\": \"Torque(Nm)[0]\"}, {\"name\": \"Tcont\", \"x\": \"Speed(rpm)[1]\", \"y\": \"Torque(Nm)[1]\"}]'),(34,0,'2024-12-22 00:09:01',NULL,'SEP040A(B)Q*,SEP060A(B)M*,SEP080A(B)M*,SEP110A(B)13H*,SEP130A(B)R30H*','curve.coordinates','[{\"name\": \"\", \"x\": \"Speed(rpm)[0]\", \"y\": \"Torque(Nm)[0]\"}, {\"name\": \"\", \"x\": \"Speed(rpm)[1]\", \"y\": \"Torque(Nm)[1]\"}]'),(35,0,'2024-12-22 00:09:01',NULL,'MB030JS*,MB040JS*,MB042DK*,MB063KG*','curve.coordinates','[{\"name\": \"Speed(rpm)\", \"x\": \"Torque(mNm)\", \"y\": \"Speed(rpm)\"}, {\"name\": \"Current(A)\", \"x\": \"Torque(mNm)\", \"y\": \"Current(A)\"}]'),(36,0,'2024-12-22 00:09:01',NULL,'MB054TP*,MB076HG*,MB100FG*','curve.coordinates','[{\"name\": \"Speed(rpm)\", \"x\": \"Torque(Nm)\", \"y\": \"Speed(rpm)\"}, {\"name\": \"Current(A)\", \"x\": \"Torque(Nm)\", \"y\": \"Current(A)\"}]'),(37,0,'2024-12-22 00:09:01',NULL,'MP028NB*,MP039NA*,MP042NB*,MP057NB*','curve.coordinates','[{\"x\": \"Frequency(Hz)\", \"y\": \"Torque(Ncm)\"}]');
 /*!40000 ALTER TABLE `MOTOR_CONFIG` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -868,4 +868,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-12-19 13:46:26
+-- Dump completed on 2024-12-22  0:11:29
