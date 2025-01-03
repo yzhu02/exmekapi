@@ -36,4 +36,6 @@ public abstract class AbstractProduct extends AbstractModel.Namable {
 	private List<String> threeDDrawingPaths;
 	
 	private List<String> techDocPaths;
+
+	private List<Spec> allSpecs;
 }

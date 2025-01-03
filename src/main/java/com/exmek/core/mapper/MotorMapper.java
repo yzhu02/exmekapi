@@ -1,31 +1,49 @@
 package com.exmek.core.mapper;
 
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.util.ObjectUtils;
 
-import com.exmek.commons.utils.MiscUtils;
-import com.exmek.commons.utils.ReflectionUtils;
 import com.exmek.core.commons.model.MeasuredValue;
 import com.exmek.core.model.DCMotor;
 import com.exmek.core.model.LeadDef;
 import com.exmek.core.model.LinearStepperMotor;
-import com.exmek.core.model.MotorSpec;
+import com.exmek.core.model.Spec;
 import com.exmek.core.model.StepperMotor;
 import com.exmek.core.persistence.entity.AbstractMotorEntity;
 import com.exmek.core.persistence.entity.AbstractMotorSpecEntity;
+import com.exmek.core.persistence.entity.AbstractProductEntity;
 import com.exmek.core.persistence.entity.DCMotorEntity;
 import com.exmek.core.persistence.entity.LeadDefEntity;
 import com.exmek.core.persistence.entity.StepperMotorEntity;
 
 @Component
 public class MotorMapper extends AbstractProductMapper {
+	
+	static final Set<String> DC_MOTOR_EXCLUDED_FIELDS_TO_SPECS = new HashSet<>(Arrays.asList(
+			AbstractProductEntity.FIELD_NAME_SERIES,
+			AbstractProductEntity.FIELD_NAME_MODEL,
+			AbstractProductEntity.FIELD_NAME_NAME,
+			AbstractProductEntity.FIELD_NAME_DESCRIPTION,
+			AbstractMotorEntity.FIELD_NAME_CATEGORY,
+			AbstractMotorEntity.FIELD_NAME_MOTOR_CATEGORY,
+			"specs",
+			"perfMeasurements"
+			));
+	
+	static final Set<String> STEPPER_MOTOR_EXCLUDED_FIELDS_TO_SPECS = new HashSet<>(DC_MOTOR_EXCLUDED_FIELDS_TO_SPECS);
+	static {
+		STEPPER_MOTOR_EXCLUDED_FIELDS_TO_SPECS.add("linearStepperMotorLeads");
+	}
 	
 	@Autowired
 	private MotorPerfCurveMapper motorPerfCurveMapper;
@@ -53,7 +71,7 @@ public class MotorMapper extends AbstractProductMapper {
 		motor.setNoloadRotatingSpeed(MeasuredValue.of(entity.getNoloadRotatingSpeed(), entity.getNoloadRotatingSpeedUnit()));
 		
 		if (comprehensiveMapping) {
-			motor.setAllSpecs(mapAllCombinedSpecsToModels(entity));
+			motor.setAllSpecs(mapAllCombinedSpecs(entity, entity.getSpecs(), appConfigProvider.getSearchDCMotorMetaCriteriaFields(), DC_MOTOR_EXCLUDED_FIELDS_TO_SPECS));
 			motor.setPerfCurves(motorPerfCurveMapper.mapToPerfCurveModels(entity.getPerfMeasurements(), entity.getModel()));
 		}
 		
@@ -66,100 +84,44 @@ public class MotorMapper extends AbstractProductMapper {
 		return motor;
 	}
 
-	private List<MotorSpec> mapAllCombinedSpecsToModels(DCMotorEntity motorEntity) {
-		if (motorEntity == null) {
-			return null;
+	List<Spec> mapAllCombinedSpecs(
+			AbstractMotorEntity entity,
+			Set<? extends AbstractMotorSpecEntity> specEntitities,
+			List<String> configuredFields,
+			Set<String> excludedFieldNames) {
+		List<Spec> allCombinedSpecs = super.mapAllCombinedSpecs(entity, configuredFields, excludedFieldNames);
+		Set<String> uniqueSpecNames = allCombinedSpecs.stream().map(Spec::getName).collect(Collectors.toSet());
+		List<Spec> motorSpecs = mapMotorSpecsIfNameNotExist(specEntitities, uniqueSpecNames);
+		if (!ObjectUtils.isEmpty(motorSpecs)) {
+			allCombinedSpecs.addAll(motorSpecs);
 		}
-		List<MotorSpec> models = new ArrayList<>();
-		
-		addProductPropertiesAsSpecs(models, motorEntity);
-		
-		MiscUtils.addNonNullToList(models, () -> createMotorSpec("Rated Voltage", motorEntity.getRatedVoltageUnit(), motorEntity.getRatedVoltage()));
-		MiscUtils.addNonNullToList(models, () -> createMotorSpec("Rated Current", motorEntity.getRatedCurrentUnit(), motorEntity.getRatedCurrent()));
-		MiscUtils.addNonNullToList(models, () -> createMotorSpec("Rated Power", motorEntity.getRatedPowerUnit(), motorEntity.getRatedPower()));
-		MiscUtils.addNonNullToList(models, () -> createMotorSpec("Rated Torque", motorEntity.getRatedTorqueUnit(), motorEntity.getRatedTorque()));
-		MiscUtils.addNonNullToList(models, () -> createMotorSpec("Rated Speed", motorEntity.getRatedRotatingSpeedUnit(), motorEntity.getRatedRotatingSpeed()));
-		MiscUtils.addNonNullToList(models, () -> createMotorSpec("Rated Linear Speed", motorEntity.getRatedLinearSpeedUnit(), motorEntity.getRatedLinearSpeed()));
-		MiscUtils.addNonNullToList(models, () -> createMotorSpec("Peak Current", motorEntity.getPeakCurrentUnit(), motorEntity.getPeakCurrent()));
-		MiscUtils.addNonNullToList(models, () -> createMotorSpec("Peak Torque", motorEntity.getPeakTorqueUnit(), motorEntity.getPeakTorque()));
-		MiscUtils.addNonNullToList(models, () -> createMotorSpec("Max Sorting Weight", motorEntity.getMaxSortingWeightUnit(), motorEntity.getMaxSortingWeight()));
-		MiscUtils.addNonNullToList(models, () -> createMotorSpec("No Load Current", motorEntity.getNoloadCurrentUnit(), motorEntity.getNoloadCurrent()));
-		MiscUtils.addNonNullToList(models, () -> createMotorSpec("No Load Speed", motorEntity.getNoloadRotatingSpeedUnit(), motorEntity.getNoloadRotatingSpeed()));
-
-		addAllSpecsIfNameNotExist(models, mapSpecsToModels(motorEntity.getSpecs()));
-		
-		return models;
+		return allCombinedSpecs;
 	}
 	
-	private void addProductPropertiesAsSpecs(List<MotorSpec> models, AbstractMotorEntity motorEntity) {
-		MiscUtils.addNonNullToList(models, () -> createMotorSpec("Motor Length", motorEntity.getLengthUnit(), motorEntity.getLength()));
-		MiscUtils.addNonNullToList(models, () -> createMotorSpec("Motor Weight", motorEntity.getWeightUnit(), motorEntity.getWeight()));
-		MiscUtils.addNonNullToList(models, () -> createMotorSpec("Frame Size", motorEntity.getFrameSizeUnit(), motorEntity.getFrameSize(),
-				Optional.ofNullable(motorEntity.getFrameSizeType()).map(f -> f.getSymbol()).orElse(null)));
-		MiscUtils.addNonNullToList(models, () -> createMotorSpec("NEMA", null, motorEntity.getNemaSize()));
-
-	}
-
-	private <E extends AbstractMotorSpecEntity> List<MotorSpec> mapSpecsToModels(Set<E> entities) {
-		if (entities == null) {
+	private List<Spec> mapMotorSpecsIfNameNotExist(Set<? extends AbstractMotorSpecEntity> specEntities, Set<String> uniqueSpecNames) {
+		if (specEntities == null || specEntities.isEmpty()) {
 			return null;
 		}
-		List<MotorSpec> models = new ArrayList<>();
-		if (entities != null) {
-			for (E entity : entities) {
-				MotorSpec spec = mapSpecToModel(entity);
-				if (spec != null) {
-					models.add(spec);
-				}
+		List<Spec> result = new ArrayList<>();
+		for (AbstractMotorSpecEntity specEntity : specEntities) {
+			if (!uniqueSpecNames.contains(specEntity.getName())) {
+				result.add(mapSpecToModel(specEntity));
 			}
 		}
-		return models;
+		Collections.sort(result, Comparator.comparing(Spec::getName));
+		return result;
 	}
 
-	private MotorSpec mapSpecToModel(AbstractMotorSpecEntity entity) {
+	private Spec mapSpecToModel(AbstractMotorSpecEntity entity) {
 		if (entity == null) {
 			return null;
 		}
-		MotorSpec spec = new MotorSpec();
+		Spec spec = new Spec();
 		spec.setName(entity.getName());
-		spec.setUnit(entity.getUnit());
 		spec.setValue(entity.getValue());
+		spec.setUnit(entity.getUnit());
 		return spec;
 	}
-	
-	private MotorSpec createMotorSpec(String name, Enum<?> unit, Number value) {
-		return createMotorSpec(name, unit, value, null);
-	}
-
-	private MotorSpec createMotorSpec(String name, Enum<?> unit, Number value, String symbol) {
-		if (value == null) {
-			return null;
-		}
-		MotorSpec spec = new MotorSpec();
-		spec.setName(name);
-		if (unit != null) {
-			spec.setUnit(ReflectionUtils.getEnumJsonValue(unit));
-		}
-		spec.setValue(String.valueOf(value));
-		spec.setSymbol(symbol);
-		return spec;
-	}
-	
-	private void addAllSpecsIfNameNotExist(List<MotorSpec> resultSpecs, Collection<MotorSpec> addingSpecs) {
-		if (resultSpecs == null) {
-			return;
-		}
-		if (addingSpecs == null || addingSpecs.isEmpty()) {
-			return;
-		}
-		Set<String> uniqueSpecNames = resultSpecs.stream().map(MotorSpec::getName).collect(Collectors.toSet());
-		for (MotorSpec spec : addingSpecs) {
-			if (!uniqueSpecNames.contains(spec.getName())) {
-				resultSpecs.add(spec);
-			}
-		}
-	}
-
 
 	public StepperMotor mapStepperMotorToModel(StepperMotorEntity entity) {
 		return mapStepperMotorToModel(entity, true);
@@ -192,7 +154,7 @@ public class MotorMapper extends AbstractProductMapper {
 		motor.setMaxThrust(MeasuredValue.of(entity.getMaxThrust(), entity.getMaxThrustUnit()));
 		
 		if (comprehensiveMapping) {
-			motor.setAllSpecs(mapAllCombinedSpecsToModels(entity));
+			motor.setAllSpecs(mapAllCombinedSpecs(entity, entity.getSpecs(), appConfigProvider.getSearchStepperMotorMetaCriteriaFields(), STEPPER_MOTOR_EXCLUDED_FIELDS_TO_SPECS));
 			if (motor instanceof LinearStepperMotor) {
 				motor.setPerfCurves(motorPerfCurveMapper.mapToLinearStepperMotorPerfCurveModels(entity.getPerfMeasurements(), entity.getModel()));
 			} else {
@@ -232,27 +194,5 @@ public class MotorMapper extends AbstractProductMapper {
 		lead.setScrewDiameterMM(leadEntity.getScrewDiameterMM());
 		lead.setThreads(leadEntity.getThreads());
 		return lead;
-	}
-
-	private List<MotorSpec> mapAllCombinedSpecsToModels(StepperMotorEntity motorEntity) {
-		if (motorEntity == null) {
-			return null;
-		}
-		List<MotorSpec> models = new ArrayList<>();
-		
-		addProductPropertiesAsSpecs(models, motorEntity);
-		
-		MiscUtils.addNonNullToList(models, () -> createMotorSpec("Rated Voltage", motorEntity.getRatedVoltageUnit(), motorEntity.getRatedVoltage()));
-		MiscUtils.addNonNullToList(models, () -> createMotorSpec("Phase Current", motorEntity.getPhaseCurrentUnit(), motorEntity.getPhaseCurrent()));
-		MiscUtils.addNonNullToList(models, () -> createMotorSpec("Phase Resistance", motorEntity.getPhaseResistanceUnit(), motorEntity.getPhaseResistance()));
-		MiscUtils.addNonNullToList(models, () -> createMotorSpec("Phase Inductance", motorEntity.getPhaseInductanceUnit(), motorEntity.getPhaseInductance()));
-		MiscUtils.addNonNullToList(models, () -> createMotorSpec("Holding Torque", motorEntity.getHoldingTorqueUnit(), motorEntity.getHoldingTorque()));
-		MiscUtils.addNonNullToList(models, () -> createMotorSpec("Detent Torque", motorEntity.getDetentTorqueUnit(), motorEntity.getDetentTorque()));
-		MiscUtils.addNonNullToList(models, () -> createMotorSpec("Step Angle", motorEntity.getStepAngleUnit(), motorEntity.getStepAngle()));
-		MiscUtils.addNonNullToList(models, () -> createMotorSpec("Max Thrust", motorEntity.getMaxThrustUnit(), motorEntity.getMaxThrust()));
-
-		addAllSpecsIfNameNotExist(models, mapSpecsToModels(motorEntity.getSpecs()));
-		
-		return models;
 	}
 }

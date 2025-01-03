@@ -131,9 +131,10 @@ public abstract class BaseProductRestController<T extends AbstractProductEntity,
 		while (clazz != null && clazz != Object.class) {
 			Field[] fields = clazz.getDeclaredFields();
 			for (Field field : fields) {
-				if (!Modifier.isStatic(field.getModifiers()) && !Modifier.isTransient(field.getModifiers()) && !Modifier.isVolatile(field.getModifiers())) {
-					fieldsMap.put(field.getName(), field);
+				if (Modifier.isStatic(field.getModifiers()) || Modifier.isTransient(field.getModifiers()) || Modifier.isVolatile(field.getModifiers())) {
+					continue;
 				}
+				fieldsMap.put(field.getName(), field);
 			}
 			clazz = clazz.getSuperclass();
 		}
@@ -147,7 +148,7 @@ public abstract class BaseProductRestController<T extends AbstractProductEntity,
 		c.setFieldName(fieldName);
 		c.setDisplayName(ExmekUtils.fieldNameToDisplayName(field.getName()));
 		c.setType(field.getType().getSimpleName());
-		String unitFieldName = field.getName() + "Unit";
+		String unitFieldName = field.getName() + AbstractProductEntity.UNIT_FIELD_SUFFIX;
 		if (fieldsMap.containsKey(unitFieldName)) {
 			c.setUnitFieldName(unitFieldName);
 			@SuppressWarnings("unchecked")

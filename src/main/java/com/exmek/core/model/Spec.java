@@ -6,7 +6,7 @@ import lombok.Data;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Data
-public class MotorSpec {
+public class Spec {
 
 	private String name;
 	
@@ -14,6 +14,6 @@ public class MotorSpec {
 	
 	private String value;
 	
-	private String symbol;
+	private String type;
 
 }

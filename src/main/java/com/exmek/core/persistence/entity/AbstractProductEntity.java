@@ -17,9 +17,13 @@ import jakarta.persistence.MappedSuperclass;
 @MappedSuperclass
 public abstract class AbstractProductEntity extends AbstractManagableEntity {
 
-	public static final String FIELD_NAME_SERIES	= AbstractSeriesEntity.FIELD_NAME_SERIES;
-
-	public static final String FIELD_NAME_MODEL		= "model";
+	public static final String FIELD_NAME_SERIES		= AbstractSeriesEntity.FIELD_NAME_SERIES;
+	public static final String FIELD_NAME_MODEL			= "model";
+	public static final String FIELD_NAME_NAME			= "name";
+	public static final String FIELD_NAME_DESCRIPTION	= "description";
+	
+	public static final String UNIT_FIELD_SUFFIX	= "Unit";
+	public static final String TYPE_FIELD_SUFFIX	= "Type";
 
 	@Column(name = "SERIES")
 	private String series;

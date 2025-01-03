@@ -1,17 +1,28 @@
 package com.exmek.core.mapper;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.stereotype.Component;
 
 import com.exmek.core.commons.model.MeasuredValue;
 import com.exmek.core.model.PlanetaryGearbox;
+import com.exmek.core.persistence.entity.AbstractProductEntity;
 import com.exmek.core.persistence.entity.PlanetaryGearboxEntity;
 
 @Component
 public class PlanetaryGearboxMapper extends AbstractProductMapper {
 
+	static final Set<String> EXCLUDED_FIELDS_TO_SPECS = new HashSet<>(Arrays.asList(
+			AbstractProductEntity.FIELD_NAME_SERIES,
+			AbstractProductEntity.FIELD_NAME_MODEL,
+			AbstractProductEntity.FIELD_NAME_NAME,
+			AbstractProductEntity.FIELD_NAME_DESCRIPTION
+			));
+	
 	public PlanetaryGearbox mapPlanetaryGearboxToModel(PlanetaryGearboxEntity entity, boolean comprehensiveMapping) {
 		if (entity == null) {
 			return null;
@@ -28,6 +39,10 @@ public class PlanetaryGearboxMapper extends AbstractProductMapper {
 		model.setOperatingTemperature(entity.getOperatingTemperature());
 		model.setRecommendInputSpeed(entity.getRecommendInputSpeed());
 		
+		if (comprehensiveMapping) {
+			model.setAllSpecs(mapAllCombinedSpecs(entity, appConfigProvider.getSearchPlanetaryGearboxMetaCriteriaFields(), EXCLUDED_FIELDS_TO_SPECS));
+		}
+
 		if (comprehensiveMapping) {
 			model.setMechanicalImagePaths(resourceContext.getGearboxMechanicalImagePaths(entity.getModel()));
 			model.setThreeDDrawingPaths(resourceContext.getGearbox3DDrawingPaths(entity.getModel()));
