@@ -1,5 +1,6 @@
 package com.exmek.core.resource;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -9,6 +10,7 @@ import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,6 +20,9 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.ResourcePatternResolver;
 import org.springframework.core.io.support.ResourcePatternUtils;
 import org.springframework.stereotype.Component;
+import org.springframework.util.ObjectUtils;
+
+import com.exmek.commons.utils.UrlUtils;
 
 import jakarta.annotation.PostConstruct;
 
@@ -25,69 +30,66 @@ import jakarta.annotation.PostConstruct;
 public class ResourceContext {
 	
 	////Directory names BEGIN
-	private static final String DIR_NAME_STATIC			= "static";
+	public static final String DIR_NAME_STATIC			= "static";
 
-	private static final String DIR_NAME_IMAGES				= "images";
+	public static final String DIR_NAME_IMAGES				= "images";
 
-	private static final String DIR_NAME_MOTOR					= "motor";
-	private static final String DIR_NAME_GEARBOX					= "gearbox";
-	private static final String DIR_NAME_BRAKE					= "brake";
-	private static final String DIR_NAME_MICHANICAL					= "mechanical";
+	public static final String DIR_NAME_MOTOR					= "motor";
+	public static final String DIR_NAME_GEARBOX					= "gearbox";
+	public static final String DIR_NAME_BRAKE					= "brake";
+	public static final String DIR_NAME_MICHANICAL					= "mechanical";
 
-	private static final String DIR_NAME_MATERIALS			= "materials";
-	private static final String DIR_NAME_3D							= "3d";
-	private static final String DIR_NAME_TECHDOC					= "techdoc";
-	
-	public static final String IMAGES_PATH_PREFIX					= "/" + DIR_NAME_IMAGES + "/";
-	public static final String MATERIALS_PATH_PREFIX				= "/" + DIR_NAME_MATERIALS + "/";
+	public static final String DIR_NAME_MATERIALS			= "materials";
+	public static final String DIR_NAME_3D							= "3d";
+	public static final String DIR_NAME_TECHDOC					= "techdoc";
 	////Directory names END
 	
 	////Exposed relative paths BEGIN
-	public static final String IMAGES_MOTOR_MECHANICAL_REL_PATH		= IMAGES_PATH_PREFIX + DIR_NAME_MOTOR + "/" + DIR_NAME_MICHANICAL;
-	public static final String IMAGES_GEARBOX_MECHANICAL_REL_PATH	= IMAGES_PATH_PREFIX + DIR_NAME_GEARBOX + "/" + DIR_NAME_MICHANICAL;
-	public static final String IMAGES_BRAKE_MECHANICAL_REL_PATH		= IMAGES_PATH_PREFIX + DIR_NAME_BRAKE + "/" + DIR_NAME_MICHANICAL;
+	public static final String IMAGES_MOTOR_MECHANICAL_REL_PATH		= UrlUtils.concatURL("/", DIR_NAME_IMAGES, DIR_NAME_MOTOR, DIR_NAME_MICHANICAL);
+	public static final String IMAGES_GEARBOX_MECHANICAL_REL_PATH	= UrlUtils.concatURL("/", DIR_NAME_IMAGES, DIR_NAME_GEARBOX, DIR_NAME_MICHANICAL);
+	public static final String IMAGES_BRAKE_MECHANICAL_REL_PATH		= UrlUtils.concatURL("/", DIR_NAME_IMAGES, DIR_NAME_BRAKE, DIR_NAME_MICHANICAL);
 
-	public static final String MATERIALS_MOTOR_3D_REL_PATH			= MATERIALS_PATH_PREFIX + DIR_NAME_MOTOR + "/" + DIR_NAME_3D;
-	public static final String MATERIALS_GEARBOX_3D_REL_PATH		= MATERIALS_PATH_PREFIX + DIR_NAME_GEARBOX + "/" + DIR_NAME_3D;
-	public static final String MATERIALS_BRAKE_3D_REL_PATH			= MATERIALS_PATH_PREFIX + DIR_NAME_BRAKE + "/" + DIR_NAME_3D;
+	public static final String MATERIALS_MOTOR_3D_REL_PATH			= UrlUtils.concatURL("/", DIR_NAME_MATERIALS, DIR_NAME_MOTOR, DIR_NAME_3D);
+	public static final String MATERIALS_GEARBOX_3D_REL_PATH		= UrlUtils.concatURL("/", DIR_NAME_MATERIALS, DIR_NAME_GEARBOX, DIR_NAME_3D);
+	public static final String MATERIALS_BRAKE_3D_REL_PATH			= UrlUtils.concatURL("/", DIR_NAME_MATERIALS, DIR_NAME_BRAKE, DIR_NAME_3D);
 	
-	public static final String MATERIALS_MOTOR_TECHDOC_REL_PATH		= MATERIALS_PATH_PREFIX + DIR_NAME_MOTOR + "/" + DIR_NAME_TECHDOC;
-	public static final String MATERIALS_GEARBOX_TECHDOC_REL_PATH	= MATERIALS_PATH_PREFIX + DIR_NAME_GEARBOX + "/" + DIR_NAME_TECHDOC;
-	public static final String MATERIALS_BRAKE_TECHDOC_REL_PATH		= MATERIALS_PATH_PREFIX + DIR_NAME_BRAKE + "/" + DIR_NAME_TECHDOC;
+	public static final String MATERIALS_MOTOR_TECHDOC_REL_PATH		= UrlUtils.concatURL("/", DIR_NAME_MATERIALS, DIR_NAME_MOTOR, DIR_NAME_TECHDOC);
+	public static final String MATERIALS_GEARBOX_TECHDOC_REL_PATH	= UrlUtils.concatURL("/", DIR_NAME_MATERIALS, DIR_NAME_GEARBOX, DIR_NAME_TECHDOC);
+	public static final String MATERIALS_BRAKE_TECHDOC_REL_PATH		= UrlUtils.concatURL("/", DIR_NAME_MATERIALS, DIR_NAME_BRAKE, DIR_NAME_TECHDOC);
 	////Exposed relative paths END
 	
 	////Internal directory locations BEGIN
-	private static final String IMAGES_MOTOR_MECHANICAL_FULL_LOCATION =
-			ResourcePatternResolver.CLASSPATH_ALL_URL_PREFIX + "/" + DIR_NAME_STATIC + IMAGES_MOTOR_MECHANICAL_REL_PATH;
+	private static final String IMAGES_MOTOR_MECHANICAL_FULL_LOCATION = UrlUtils.concatURL(
+			ResourcePatternResolver.CLASSPATH_ALL_URL_PREFIX, DIR_NAME_STATIC, IMAGES_MOTOR_MECHANICAL_REL_PATH);
 
-	private static final String IMAGES_GEARBOX_MECHANICAL_FULL_LOCATION =
-			ResourcePatternResolver.CLASSPATH_ALL_URL_PREFIX + "/" + DIR_NAME_STATIC + IMAGES_GEARBOX_MECHANICAL_REL_PATH;
+	private static final String IMAGES_GEARBOX_MECHANICAL_FULL_LOCATION = UrlUtils.concatURL(
+			ResourcePatternResolver.CLASSPATH_ALL_URL_PREFIX, DIR_NAME_STATIC, IMAGES_GEARBOX_MECHANICAL_REL_PATH);
 	
-	private static final String IMAGES_BRAKE_MECHANICAL_FULL_LOCATION =
-			ResourcePatternResolver.CLASSPATH_ALL_URL_PREFIX + "/" + DIR_NAME_STATIC + IMAGES_BRAKE_MECHANICAL_REL_PATH;
+	private static final String IMAGES_BRAKE_MECHANICAL_FULL_LOCATION = UrlUtils.concatURL(
+			ResourcePatternResolver.CLASSPATH_ALL_URL_PREFIX, DIR_NAME_STATIC, IMAGES_BRAKE_MECHANICAL_REL_PATH);
 	
 
-	private static final String MATERIALS_MOTOR_3D_FULL_LOCATION =
-			ResourcePatternResolver.CLASSPATH_ALL_URL_PREFIX + "/" + DIR_NAME_STATIC + MATERIALS_MOTOR_3D_REL_PATH;
+	private static final String MATERIALS_MOTOR_3D_FULL_LOCATION = UrlUtils.concatURL(
+			ResourcePatternResolver.CLASSPATH_ALL_URL_PREFIX, DIR_NAME_STATIC, MATERIALS_MOTOR_3D_REL_PATH);
 	
-	private static final String MATERIALS_GEARBOX_3D_FULL_LOCATION =
-			ResourcePatternResolver.CLASSPATH_ALL_URL_PREFIX + "/" + DIR_NAME_STATIC + MATERIALS_GEARBOX_3D_REL_PATH;
+	private static final String MATERIALS_GEARBOX_3D_FULL_LOCATION = UrlUtils.concatURL(
+			ResourcePatternResolver.CLASSPATH_ALL_URL_PREFIX, DIR_NAME_STATIC, MATERIALS_GEARBOX_3D_REL_PATH);
 	
-	private static final String MATERIALS_BRAKE_3D_FULL_LOCATION =
-			ResourcePatternResolver.CLASSPATH_ALL_URL_PREFIX + "/" + DIR_NAME_STATIC + MATERIALS_BRAKE_3D_REL_PATH;
+	private static final String MATERIALS_BRAKE_3D_FULL_LOCATION = UrlUtils.concatURL(
+			ResourcePatternResolver.CLASSPATH_ALL_URL_PREFIX, DIR_NAME_STATIC, MATERIALS_BRAKE_3D_REL_PATH);
 	
 	
-	private static final String MATERIALS_MOTOR_TECHDOC_FULL_LOCATION =
-			ResourcePatternResolver.CLASSPATH_ALL_URL_PREFIX + "/" + DIR_NAME_STATIC + MATERIALS_MOTOR_TECHDOC_REL_PATH;
+	private static final String MATERIALS_MOTOR_TECHDOC_FULL_LOCATION = UrlUtils.concatURL(
+			ResourcePatternResolver.CLASSPATH_ALL_URL_PREFIX, DIR_NAME_STATIC, MATERIALS_MOTOR_TECHDOC_REL_PATH);
 	
-	private static final String MATERIALS_GEARBOX_TECHDOC_FULL_LOCATION =
-			ResourcePatternResolver.CLASSPATH_ALL_URL_PREFIX + "/" + DIR_NAME_STATIC + MATERIALS_GEARBOX_TECHDOC_REL_PATH;
+	private static final String MATERIALS_GEARBOX_TECHDOC_FULL_LOCATION = UrlUtils.concatURL(
+			ResourcePatternResolver.CLASSPATH_ALL_URL_PREFIX, DIR_NAME_STATIC, MATERIALS_GEARBOX_TECHDOC_REL_PATH);
 	
-	private static final String MATERIALS_BRAKE_TECHDOC_FULL_LOCATION =
-			ResourcePatternResolver.CLASSPATH_ALL_URL_PREFIX + "/" + DIR_NAME_STATIC + MATERIALS_BRAKE_TECHDOC_REL_PATH;
+	private static final String MATERIALS_BRAKE_TECHDOC_FULL_LOCATION = UrlUtils.concatURL(
+			ResourcePatternResolver.CLASSPATH_ALL_URL_PREFIX, DIR_NAME_STATIC, MATERIALS_BRAKE_TECHDOC_REL_PATH);
 	////Internal directory locations END
 	
-	private static final String IMAGE_FILENAME_REGEX = "(\\w+)(\\[(\\d+)\\])*";
+	private static final String RESOURCE_FILENAME_REGEX = "(\\w+)(\\[(\\d+)\\])*";
 
 	private static final Logger logger = LoggerFactory.getLogger(ResourceContext.class);
 
@@ -111,33 +113,33 @@ public class ResourceContext {
 		String resFileMatch = "*.*";
 		
 		initResourcePathMap(this.motorMechanicalImagePathsMap,
-				IMAGES_MOTOR_MECHANICAL_FULL_LOCATION + "/" + resFileMatch,
+				UrlUtils.concatURL(IMAGES_MOTOR_MECHANICAL_FULL_LOCATION, resFileMatch),
 				IMAGES_MOTOR_MECHANICAL_REL_PATH);
 		initResourcePathMap(this.gearboxMechanicalImagePathsMap,
-				IMAGES_GEARBOX_MECHANICAL_FULL_LOCATION + "/" + resFileMatch,
+				UrlUtils.concatURL(IMAGES_GEARBOX_MECHANICAL_FULL_LOCATION, resFileMatch),
 				IMAGES_GEARBOX_MECHANICAL_REL_PATH);
 		initResourcePathMap(this.brakeMechanicalImagePathsMap,
-				IMAGES_BRAKE_MECHANICAL_FULL_LOCATION + "/" + resFileMatch,
+				UrlUtils.concatURL(IMAGES_BRAKE_MECHANICAL_FULL_LOCATION, resFileMatch),
 				IMAGES_BRAKE_MECHANICAL_REL_PATH);
 		
 		initResourcePathMap(this.motor3DDrawingPathsMap,
-				MATERIALS_MOTOR_3D_FULL_LOCATION + "/" + resFileMatch,
+				UrlUtils.concatURL(MATERIALS_MOTOR_3D_FULL_LOCATION, resFileMatch),
 				MATERIALS_MOTOR_3D_REL_PATH);
 		initResourcePathMap(this.gearbox3DDrawingPathsMap,
-				MATERIALS_GEARBOX_3D_FULL_LOCATION + "/" + resFileMatch,
+				UrlUtils.concatURL(MATERIALS_GEARBOX_3D_FULL_LOCATION, resFileMatch),
 				MATERIALS_GEARBOX_3D_REL_PATH);
 		initResourcePathMap(this.brake3DDrawingPathsMap,
-				MATERIALS_BRAKE_3D_FULL_LOCATION + "/" + resFileMatch,
+				UrlUtils.concatURL(MATERIALS_BRAKE_3D_FULL_LOCATION, resFileMatch),
 				MATERIALS_BRAKE_3D_REL_PATH);
 		
 		initResourcePathMap(this.motorTechDocPathsMap,
-				MATERIALS_MOTOR_TECHDOC_FULL_LOCATION + "/" + resFileMatch,
+				UrlUtils.concatURL(MATERIALS_MOTOR_TECHDOC_FULL_LOCATION, resFileMatch),
 				MATERIALS_MOTOR_TECHDOC_REL_PATH);
 		initResourcePathMap(this.gearboxTechDocPathsMap,
-				MATERIALS_GEARBOX_TECHDOC_FULL_LOCATION + "/" + resFileMatch,
+				UrlUtils.concatURL(MATERIALS_GEARBOX_TECHDOC_FULL_LOCATION, resFileMatch),
 				MATERIALS_GEARBOX_TECHDOC_REL_PATH);
 		initResourcePathMap(this.brakeTechDocPathsMap,
-				MATERIALS_BRAKE_TECHDOC_FULL_LOCATION + "/" + resFileMatch,
+				UrlUtils.concatURL(MATERIALS_BRAKE_TECHDOC_FULL_LOCATION, resFileMatch),
 				MATERIALS_BRAKE_TECHDOC_REL_PATH);
 	}
 
@@ -162,7 +164,7 @@ public class ResourceContext {
 				resourcePaths = new ArrayList<>();
 				resourceMap.put(resName, resourcePaths);
 			}
-			resourcePaths.add(resourceRelPath + "/" + filename);
+			resourcePaths.add(UrlUtils.concatURL(resourceRelPath, filename));
 		};
 		if (resources.length > 1) {
 			Arrays.sort(resources, (r1, r2) -> {
@@ -175,7 +177,7 @@ public class ResourceContext {
 			int dotInx = filename.lastIndexOf('.');
 			if (dotInx > 0) {
 				resName = filename.substring(0, dotInx);
-				Pattern p = Pattern.compile(IMAGE_FILENAME_REGEX);
+				Pattern p = Pattern.compile(RESOURCE_FILENAME_REGEX);
 				Matcher m = p.matcher(resName);
 				if (m.matches()) {
 					resName = m.group(1);
@@ -187,15 +189,15 @@ public class ResourceContext {
 	}
 	
 	private List<String> getResourcePaths(
-			String model, String pathPrefix, String productDirName, String resourceDirName, Map<String, List<String>> defaultResourceMap) {
-		String relModelResPath = pathPrefix + productDirName + "/" + model + "/" + resourceDirName;
+			String model, String basePath, String productDirName, String resourceDirName, Map<String, List<String>> defaultResourceMap) {
+		String relModelResPath = UrlUtils.concatURL(basePath, productDirName, model, resourceDirName);
 		String resFileMatch = "*.*";
-		String resLocation = ResourcePatternResolver.CLASSPATH_ALL_URL_PREFIX + "/" + DIR_NAME_STATIC + relModelResPath + "/" + resFileMatch;
+		String resLocation = UrlUtils.concatURL(ResourcePatternResolver.CLASSPATH_ALL_URL_PREFIX, DIR_NAME_STATIC, relModelResPath, resFileMatch);
 		Resource[] resources = null;
 		try {
 			resources = ResourcePatternUtils.getResourcePatternResolver(applicationContext).getResources(resLocation);
 			if (resources == null || resources.length == 0) {
-				logger.info("No resource loaded from {} for product {}. ", resLocation, model);
+				logger.warn("No resource loaded from {} for product {}. ", resLocation, model);
 			} else {
 				logger.info("Resources are loaded from {} successfully for product {}. ", resLocation, model);
 			}
@@ -212,45 +214,121 @@ public class ResourceContext {
 			});
 		}
 		for (Resource res : resources) {
-			resPaths.add(relModelResPath + "/" + res.getFilename());
+			resPaths.add(UrlUtils.concatURL(relModelResPath, res.getFilename()));
 		}
 		return resPaths;
 	}
 
+	private List<String> getMechanicalImageResourcePaths(
+			String model, String productDirName, Map<String, List<String>> defaultResourceMap) {
+		return getResourcePaths(model, DIR_NAME_IMAGES, productDirName, DIR_NAME_MICHANICAL, defaultResourceMap);
+	}
+	
+	private List<String> get3DDrawingResourcePaths(
+			String model, String productDirName, Map<String, List<String>> defaultResourceMap) {
+		return getResourcePaths(model, DIR_NAME_MATERIALS, productDirName, DIR_NAME_3D, defaultResourceMap);
+	}
+
+	private List<String> getTechDocResourcePaths(
+			String model, String productDirName, Map<String, List<String>> defaultResourceMap, String series) {
+		List<String> techDocPaths = getResourcePaths(model, DIR_NAME_MATERIALS, productDirName, DIR_NAME_TECHDOC, defaultResourceMap);
+		if (ObjectUtils.isEmpty(techDocPaths)) {
+			techDocPaths = getResourcePaths(series, DIR_NAME_MATERIALS, productDirName, DIR_NAME_TECHDOC, defaultResourceMap);
+		}
+		return techDocPaths;
+	}
+
+
 	public List<String> getMotorMechanicalImagePaths(String model) {
-		return getResourcePaths(model, IMAGES_PATH_PREFIX, DIR_NAME_MOTOR, DIR_NAME_MICHANICAL, this.motorMechanicalImagePathsMap);
+		return getMechanicalImageResourcePaths(model, DIR_NAME_MOTOR, this.motorMechanicalImagePathsMap);
 	}
 
 	public List<String> getGearboxMechanicalImagePaths(String model) {
-		return getResourcePaths(model, IMAGES_PATH_PREFIX, DIR_NAME_GEARBOX, DIR_NAME_MICHANICAL, this.gearboxMechanicalImagePathsMap);
+		return getMechanicalImageResourcePaths(model, DIR_NAME_GEARBOX, this.gearboxMechanicalImagePathsMap);
 	}
 
 	public List<String> getBrakeMechanicalImagePaths(String model) {
-		return getResourcePaths(model, IMAGES_PATH_PREFIX, DIR_NAME_BRAKE, DIR_NAME_MICHANICAL, this.brakeMechanicalImagePathsMap);
+		return getMechanicalImageResourcePaths(model, DIR_NAME_BRAKE, this.brakeMechanicalImagePathsMap);
 	}
+	
 
 	public List<String> getMotor3DDrawingPaths(String model) {
-		return getResourcePaths(model, MATERIALS_PATH_PREFIX, DIR_NAME_MOTOR, DIR_NAME_3D, this.motor3DDrawingPathsMap);
+		return get3DDrawingResourcePaths(model, DIR_NAME_MOTOR, this.motor3DDrawingPathsMap);
 	}
 	
 	public List<String> getGearbox3DDrawingPaths(String model) {
-		return getResourcePaths(model, MATERIALS_PATH_PREFIX, DIR_NAME_GEARBOX, DIR_NAME_3D, this.gearbox3DDrawingPathsMap);
+		return get3DDrawingResourcePaths(model, DIR_NAME_GEARBOX, this.gearbox3DDrawingPathsMap);
 	}
 	
 	public List<String> getBrake3DDrawingPaths(String model) {
-		return getResourcePaths(model, MATERIALS_PATH_PREFIX, DIR_NAME_BRAKE, DIR_NAME_3D, this.brake3DDrawingPathsMap);
+		return get3DDrawingResourcePaths(model, DIR_NAME_BRAKE, this.brake3DDrawingPathsMap);
 	}
 
-	public List<String> getMotorTechDocPaths(String model) {
-		return getResourcePaths(model, MATERIALS_PATH_PREFIX, DIR_NAME_MOTOR, DIR_NAME_TECHDOC, this.motorTechDocPathsMap);
+
+	public List<String> getMotorTechDocPaths(String model, String series) {
+		return getTechDocResourcePaths(model, DIR_NAME_MOTOR, this.motorTechDocPathsMap, series);
 	}
 	
-	public List<String> getGearboxTechDocPaths(String model) {
-		return getResourcePaths(model, MATERIALS_PATH_PREFIX, DIR_NAME_GEARBOX, DIR_NAME_TECHDOC, this.gearboxTechDocPathsMap);
+	public List<String> getGearboxTechDocPaths(String model, String series) {
+		return getTechDocResourcePaths(model, DIR_NAME_GEARBOX, this.gearboxTechDocPathsMap, series);
 	}
 	
-	public List<String> getBrakeTechDocPaths(String model) {
-		return getResourcePaths(model, MATERIALS_PATH_PREFIX, DIR_NAME_BRAKE, DIR_NAME_TECHDOC, this.brakeTechDocPathsMap);
+	public List<String> getBrakeTechDocPaths(String model, String series) {
+		return getTechDocResourcePaths(model, DIR_NAME_BRAKE, this.brakeTechDocPathsMap, series);
+	}
+	
+	public List<ResourceInfo> getAllTechDocInfos() {
+		String techDocPathPattern = UrlUtils.concatURL(ResourcePatternResolver.CLASSPATH_ALL_URL_PREFIX, DIR_NAME_STATIC, DIR_NAME_MATERIALS, "**", DIR_NAME_TECHDOC, "**");
+		Resource[] resources = null;
+		try {
+			resources = ResourcePatternUtils.getResourcePatternResolver(applicationContext).getResources(techDocPathPattern);
+		} catch (IOException ex) {
+			logger.error("Failed to load techdoc resources from {} ", DIR_NAME_STATIC, ex);
+		}
+		if (resources == null || resources.length == 0) {
+			logger.info("No techdoc resources loaded from {} ", DIR_NAME_STATIC);
+			return null;
+		}
+		return Arrays.stream(resources)
+				.filter(this::isResourceFile)
+				.map(r -> createResourceInfo(r, DIR_NAME_STATIC, DIR_NAME_MATERIALS))
+				.collect(Collectors.toList());
+    }
+	
+	private boolean isResourceFile(Resource resource) {
+		if (resource == null) {
+			return false;
+		}
+		File file = null;
+		try {
+			file = resource.getFile();
+		} catch (IOException e) {
+		}
+		if (file == null) {
+			return false;
+		}
+		return file.isFile();
+	}
+
+	private ResourceInfo createResourceInfo(Resource res, String contextDirName, String baseDirName) {
+		ResourceInfo resInfo = new ResourceInfo();
+		resInfo.setName(res.getFilename());
+		String fullPath = null;
+		try {
+			fullPath = res.getURL().getPath();
+		} catch (IOException e) {
+			logger.warn("Failed to get URL from file resource {} ", res.getFilename());
+		}
+		if (fullPath != null) {
+			String basePath = contextDirName + "/" + baseDirName;
+			resInfo.setPath(fullPath.substring(fullPath.indexOf(basePath) + contextDirName.length()));
+		}
+		try {
+			resInfo.setSize(res.contentLength());
+		} catch (IOException e) {
+			logger.warn("Failed to get contentLength from file resource {} ", res.getFilename());
+		}
+		return resInfo;
 	}
 }
 

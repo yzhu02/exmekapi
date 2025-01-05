@@ -78,7 +78,7 @@ public class MotorMapper extends AbstractProductMapper {
 		if (comprehensiveMapping) {
 			motor.setMechanicalImagePaths(resourceContext.getMotorMechanicalImagePaths(entity.getModel()));
 			motor.setThreeDDrawingPaths(resourceContext.getMotor3DDrawingPaths(entity.getModel()));
-			motor.setTechDocPaths(resourceContext.getMotorTechDocPaths(entity.getModel()));
+			motor.setTechDocPaths(resourceContext.getMotorTechDocPaths(entity.getModel(), entity.getSeries()));
 		}
 		
 		return motor;
@@ -165,7 +165,7 @@ public class MotorMapper extends AbstractProductMapper {
 		if (comprehensiveMapping) {
 			motor.setMechanicalImagePaths(resourceContext.getMotorMechanicalImagePaths(entity.getModel()));
 			motor.setThreeDDrawingPaths(resourceContext.getMotor3DDrawingPaths(entity.getModel()));
-			motor.setTechDocPaths(resourceContext.getMotorTechDocPaths(entity.getModel()));
+			motor.setTechDocPaths(resourceContext.getMotorTechDocPaths(entity.getModel(), entity.getSeries()));
 		}
 
 		return motor;

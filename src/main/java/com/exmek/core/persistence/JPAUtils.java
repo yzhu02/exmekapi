@@ -115,7 +115,7 @@ public class JPAUtils {
 			}
 			return builder.and(notPredicates.toArray(new Predicate[] {}));
 		} else {
-			//default to AND if 'operator' not specified
+			// default to AND if 'operator' not specified
 			return builder.and(predicates.toArray(new Predicate[] {}));
 		}
 	}

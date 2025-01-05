@@ -6,6 +6,7 @@ import org.springframework.web.servlet.config.annotation.ContentNegotiationConfi
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import com.exmek.commons.utils.UrlUtils;
 import com.exmek.core.news.NewsRepo;
 
 @Configuration
@@ -13,8 +14,8 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/" + NewsRepo.NEWSREPO_NAME + "/**")
-                .addResourceLocations("classpath:/" + NewsRepo.NEWSREPO_NAME + "/");
+        registry.addResourceHandler(UrlUtils.concatURL("/", NewsRepo.NEWSREPO_NAME, "**"))
+                .addResourceLocations(UrlUtils.concatURL("classpath:", NewsRepo.NEWSREPO_NAME, "/"));
     }
     
     @Override

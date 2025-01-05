@@ -20,6 +20,7 @@ import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Component;
 
 import com.exmek.commons.utils.JsonMapperUtils;
+import com.exmek.commons.utils.UrlUtils;
 import com.exmek.core.model.News;
 import com.fasterxml.jackson.core.type.TypeReference;
 
@@ -88,7 +89,7 @@ public class NewsRepo {
 			aNews.setPicturePaths(StreamSupport.stream(Arrays.spliterator(picFiles), false)
 					.map(f -> f.getName())
 					.sorted()
-					.map(name -> "/" + NEWSREPO_NAME + "/" + sub.getName() + "/" + name)
+					.map(name -> UrlUtils.concatURL("/", NEWSREPO_NAME, sub.getName(), name))
 					.collect(Collectors.toList()));
 			if (filter == null || filter.test(aNews)) {
 				newsList.add(aNews);

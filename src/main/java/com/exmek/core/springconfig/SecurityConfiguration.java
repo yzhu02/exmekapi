@@ -26,6 +26,7 @@ import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.web.cors.CorsConfiguration;
 
 import com.exmek.commons.utils.JsonMapperUtils;
+import com.exmek.commons.utils.UrlUtils;
 import com.exmek.core.config.AppConfigProvider;
 import com.exmek.core.consts.EndpointConsts;
 import com.exmek.core.error.ErrorCode;
@@ -58,12 +59,15 @@ public class SecurityConfiguration {
     	.csrf(csrf -> csrf.disable())
     	.authorizeHttpRequests(auth -> {
     	    auth
-    	    .requestMatchers(EndpointConsts.ENDPOINT_API_PREFIX + "/**")
+    	    .requestMatchers(
+    	    		UrlUtils.concatURL(EndpointConsts.ENDPOINT_API_PREFIX, "**"))
     	    .authenticated()
     	    ;
     	    
     		auth
-    	    .requestMatchers(ResourceContext.IMAGES_PATH_PREFIX + "**", ResourceContext.MATERIALS_PATH_PREFIX + "**")
+    	    .requestMatchers(
+    	    		UrlUtils.concatURL("/", ResourceContext.DIR_NAME_IMAGES, "**"),
+    	    		UrlUtils.concatURL("/", ResourceContext.DIR_NAME_MATERIALS, "**"))
     	    .permitAll()
     	    .anyRequest()
     	    .authenticated()

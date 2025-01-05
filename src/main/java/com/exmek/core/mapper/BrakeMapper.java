@@ -40,7 +40,7 @@ public class BrakeMapper extends AbstractProductMapper {
 		if (comprehensiveMapping) {
 			model.setMechanicalImagePaths(resourceContext.getBrakeMechanicalImagePaths(entity.getModel()));
 			model.setThreeDDrawingPaths(resourceContext.getBrake3DDrawingPaths(entity.getModel()));
-			model.setTechDocPaths(resourceContext.getBrakeTechDocPaths(entity.getModel()));
+			model.setTechDocPaths(resourceContext.getBrakeTechDocPaths(entity.getModel(), entity.getSeries()));
 		}
 		
 		return model;
