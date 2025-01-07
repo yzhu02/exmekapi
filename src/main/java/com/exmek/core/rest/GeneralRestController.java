@@ -165,7 +165,7 @@ public class GeneralRestController {
 		}
 	}
 
-	@GetMapping("/techdocs")
+	@GetMapping("/tech-docs")
 	public List<ResourceInfo> getAllTechDocInfos() {
 		return resourceContext.getAllTechDocInfos();
 	}
