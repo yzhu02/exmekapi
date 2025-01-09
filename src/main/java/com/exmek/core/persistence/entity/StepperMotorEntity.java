@@ -21,9 +21,11 @@ import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
@@ -32,6 +34,10 @@ import jakarta.persistence.Table;
 @Access(AccessType.FIELD)
 public class StepperMotorEntity extends AbstractMotorEntity {
 
+	@ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "CATEGORY", referencedColumnName = "CATEGORY", nullable = false, insertable = false, updatable = false)
+    private StepperMotorCategoryEntity motorCategory;
+	
 	@Searchable
 	@Column(name = "PHASE_CURRENT")
 	private BigDecimal phaseCurrent;
@@ -103,6 +109,15 @@ public class StepperMotorEntity extends AbstractMotorEntity {
 			joinColumns = @JoinColumn(name = "MOTOR_ID"), 
 			inverseJoinColumns = @JoinColumn(name = "LEAD_ID"))
 	private Set<LeadDefEntity> linearStepperMotorLeads;
+
+	@Override
+	public StepperMotorCategoryEntity getMotorCategory() {
+		return motorCategory;
+	}
+
+	public void setMotorCategory(StepperMotorCategoryEntity motorCategory) {
+		this.motorCategory = motorCategory;
+	}
 
 	public BigDecimal getPhaseCurrent() {
 		return phaseCurrent;

@@ -20,7 +20,9 @@ import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
@@ -28,6 +30,10 @@ import jakarta.persistence.Table;
 @Table(name = "DC_MOTOR")
 @Access(AccessType.FIELD)
 public class DCMotorEntity extends AbstractMotorEntity {
+
+	@ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "CATEGORY", referencedColumnName = "CATEGORY", nullable = false, insertable = false, updatable = false)
+    private DCMotorCategoryEntity motorCategory;
 
 	@Searchable
 	@Column(name = "RATED_CURRENT")
@@ -115,6 +121,15 @@ public class DCMotorEntity extends AbstractMotorEntity {
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinColumn(name = "MOTOR_ID")
 	private Set<DCMotorPerfMeasurementEntity> perfMeasurements;
+
+	@Override
+	public DCMotorCategoryEntity getMotorCategory() {
+		return motorCategory;
+	}
+
+	public void setMotorCategory(DCMotorCategoryEntity motorCategory) {
+		this.motorCategory = motorCategory;
+	}
 
 	public BigDecimal getRatedCurrent() {
 		return ratedCurrent;

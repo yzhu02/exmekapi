@@ -17,6 +17,8 @@ public abstract class AbstractMotor extends AbstractProduct {
 
 	private String category;
 
+	private MotorCategory motorCategory;
+	
 	private MeasuredValue<BigDecimal, VoltageUnit> ratedVoltage;
 
 	private List<? extends MotorPerfCurve> perfCurves;
