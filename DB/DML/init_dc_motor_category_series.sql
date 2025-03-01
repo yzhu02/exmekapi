@@ -1,5 +1,5 @@
 -- DC_MOTOR_CATEGORY --
-INSERT INTO MOTOR_CATEGORY (CATEGORY, TYPE, DISPLAY_NAME, DESCRIPTION, TECHNICAL_DATA)
+INSERT INTO DC_MOTOR_CATEGORY (CATEGORY, TYPE, DISPLAY_NAME, DESCRIPTION, TECHNICAL_DATA)
 VALUES 
 ('BLDC_INTERNAL_ROTOR', 'BLDC', 'Internal Rotor BLDC motor', '', ''),
 ('BLDC_EXTERNAL_ROTOR', 'BLDC', 'External Rotor BLDC motor', '', ''),
@@ -574,8 +574,8 @@ Door Opener application',
 
 (
 'INTEGRATED',
-'MDS075',
-'MDS075',
+'MDS057',
+'MDS057',
 '',
 '{"Rated Power": "47-188 W", "Rated Voltage": "36 VDC", "Rated Torque": "0.1-0.6 Nm", "Rated Speed": "3000 rpm", "Length": "88-148 mm"}'
 ),
@@ -663,7 +663,7 @@ Inductive encoder',
 'Multiple color rubber available
 Coating Thickness 2mm or customized',
 '{"Rated Power": "50-100 W", "Rated Voltage": "48 VDC", "Rated Torque": "1.5-2 Nm", "Rated Speed": "3500-1000 rpm"}'
-),
+)
 -- MATERIAL_HANDLING_SOLUTION End --
 
 ;
