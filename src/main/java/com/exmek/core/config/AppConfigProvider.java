@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.BooleanUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +35,8 @@ public class AppConfigProvider {
 	public static final String CONFIG_NAME_CONSUMERS									= "consumers";
 	
 	public static final String CONFIG_NAME_CORS_ALLOWED_ORIGINS							= "cors.allowedOrigins";
+	
+	public static final String CONFIG_NAME_SERVER_ALLOW_URL_ENCODE_SLASH				= "server.allowUrlEncodedSlash";
 	
 	public static final String CONFIG_NAME_SEARCH_DC_MOTOR_METACRITERIA_FIELDS			= "search.dcMotor.metaCriteria.fields";
 	
@@ -101,6 +104,11 @@ public class AppConfigProvider {
 		return JsonMapperUtils.readValue(confStr, new TypeReference<List<String>>() {});
 	}
 
+	public Boolean getAllowUrlEncodedSlash() {
+		String confStr = getConfigValue(CONFIG_NAME_SERVER_ALLOW_URL_ENCODE_SLASH, null);
+		return BooleanUtils.toBooleanObject(confStr);
+	}
+	
 	public List<String> getSearchDCMotorMetaCriteriaFields() {
 		String confStr = getConfigValue(CONFIG_NAME_SEARCH_DC_MOTOR_METACRITERIA_FIELDS, null);
 		return JsonMapperUtils.readValue(confStr, new TypeReference<List<String>>() {});

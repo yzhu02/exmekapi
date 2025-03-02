@@ -3,7 +3,10 @@ package com.exmek.core.springconfig;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.apache.catalina.connector.Connector;
+import org.apache.tomcat.util.buf.EncodedSolidusHandling;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.web.embedded.tomcat.TomcatConnectorCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
@@ -23,6 +26,8 @@ import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandler;
+import org.springframework.security.web.firewall.HttpFirewall;
+import org.springframework.security.web.firewall.StrictHttpFirewall;
 import org.springframework.web.cors.CorsConfiguration;
 
 import com.exmek.commons.utils.JsonMapperUtils;
@@ -136,4 +141,35 @@ public class SecurityConfiguration {
     PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+
+    
+    ////// Below are the configuration to setAllowUrlEncodedSlash
+//    @Override
+//    void configurePathMatch(PathMatchConfigurer configurer) {
+//    	UrlPathHelper urlPathHelper = new UrlPathHelper();
+//    	urlPathHelper.setUrlDecode(false);
+//    	configurer.setUrlPathHelper(urlPathHelper);
+//    }
+
+    @Bean
+    HttpFirewall allowUrlEncodedSlashHttpFirewall() {
+    	StrictHttpFirewall firewall = new StrictHttpFirewall();
+    	if (Boolean.TRUE.equals(appConfigProvider.getAllowUrlEncodedSlash())) {
+    		firewall.setAllowUrlEncodedSlash(true);
+    	}
+    	return firewall;
+    }
+
+    @Bean
+    TomcatConnectorCustomizer connectorCustomizer() {
+    	return new TomcatConnectorCustomizer() {
+    		@Override
+    		public void customize(Connector connector) {
+    			if (Boolean.TRUE.equals(appConfigProvider.getAllowUrlEncodedSlash())) {
+    				connector.setEncodedSolidusHandling(EncodedSolidusHandling.DECODE.getValue());
+    			}
+    		}
+    	};
+    }
+    //////Above are the configuration to setAllowUrlEncodedSlash
 }
