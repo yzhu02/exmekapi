@@ -1,5 +1,6 @@
 package com.exmek.commons.utils;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
@@ -64,6 +65,17 @@ public class MiscUtils {
 		}
 		return parsedValues;
 	}
+	
+	public static BigDecimal parseBigDecimalValue(String s) {
+		if (s == null || ObjectUtils.isEmpty(s)) {
+			return null;
+		}
+		if ("null".equals(s.trim().toLowerCase())) {
+			return null;
+		}
+		return new BigDecimal(s);
+	}
+
 
 	public static int findIndex(String[] sourceArray, String targetToFind) {
 		if (sourceArray == null || sourceArray.length < 1) {

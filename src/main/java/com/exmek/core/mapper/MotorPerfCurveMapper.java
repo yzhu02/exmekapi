@@ -58,7 +58,7 @@ public class MotorPerfCurveMapper {
 			String[] columnNames = MiscUtils.split(entity.getVariables(), ",");
 			String[] mConditions = MiscUtils.split(entity.getConditions(), ",");
 			BigDecimal[][] mValues = MiscUtils.parseCSVLikeValues(entity.getValues(),
-					rows -> new BigDecimal[rows][], cells -> new BigDecimal[cells], s -> ObjectUtils.isEmpty(s) ? null : new BigDecimal(s));
+					rows -> new BigDecimal[rows][], cells -> new BigDecimal[cells], s -> MiscUtils.parseBigDecimalValue(s));
 			List<CurveLine> curveLines = new ArrayList<>();
 			for (int i = 0; i < dcMotorCurveCoordinates.size(); i++) {
 				CurveCoordinate cc = dcMotorCurveCoordinates.get(i);
@@ -90,7 +90,7 @@ public class MotorPerfCurveMapper {
 		}
 		return perfCurve;
 	}
-
+	
 	//Example: 
 	// Speed(rpm) -> [Speed(rpm), Speed(rpm), null]
 	// Speed(rpm)[0] -> [Speed(rpm)[0], Speed(rpm), 0]
@@ -230,7 +230,7 @@ public class MotorPerfCurveMapper {
 		}
 		
 		BigDecimal[][] mValues = MiscUtils.parseCSVLikeValues(entity.getValues(),
-				rows -> new BigDecimal[rows][], cells -> new BigDecimal[cells], s -> ObjectUtils.isEmpty(s) ? null : new BigDecimal(s));
+				rows -> new BigDecimal[rows][], cells -> new BigDecimal[cells], s -> MiscUtils.parseBigDecimalValue(s));
 		List<CurveLine> curveLines = new ArrayList<>();
 		for (Map.Entry<String, Integer> entry : thrustColIndexMap.entrySet()) {
 			String colName = entry.getKey();
