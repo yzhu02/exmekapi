@@ -209,7 +209,14 @@ public abstract class BaseProductRestController<T extends AbstractProductEntity,
 		if (opEntity.isPresent()) {
 			return mapEntityToModel(opEntity.get());
 		} else {
-			return null;
+			if (model.contains("_")) {
+				opEntity = getProductRepository().findByModel(model.replace('_', '/'));
+			}
+			if (opEntity.isPresent()) {
+				return mapEntityToModel(opEntity.get());
+			} else {
+				return null;
+			}
 		}
 	}
 
