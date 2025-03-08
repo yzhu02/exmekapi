@@ -27,7 +27,7 @@ INSERT INTO MOTOR_CONFIG (
 )
 VALUES
 (
-	'EF045AS*', 'curve.coordinates', '[{"name": "", "x": "Torque(Nm)", "y": "Speed(rpm)"}, {"name": "", "x": "Torque(Nm)", "y": "Current(A)"}]'
+	'EF045AS*', 'curve.coordinates', '[{"name": "", "x": "Torque(Ncm)", "y": "Speed(rpm)"}, {"name": "", "x": "Torque(Ncm)", "y": "Current(A)"}]'
 )
 ;
 -- BLDC_EXTERNAL_ROTOR config end --
