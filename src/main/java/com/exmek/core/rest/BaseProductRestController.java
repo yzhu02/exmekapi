@@ -10,6 +10,7 @@ import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.ObjectUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,13 +19,14 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.util.Pair;
-import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 
 import com.exmek.commons.expr.LogicalOperator;
 import com.exmek.commons.utils.ReflectionUtils;
 import com.exmek.core.annotation.Searchable;
 import com.exmek.core.config.AppConfigProvider;
+import com.exmek.core.error.ErrorCode;
+import com.exmek.core.error.ValidationException;
 import com.exmek.core.mapper.AbstractSeriesMapper;
 import com.exmek.core.model.AbstractProduct;
 import com.exmek.core.model.AbstractSeries;
@@ -50,6 +52,8 @@ public abstract class BaseProductRestController<T extends AbstractProductEntity,
 	public static final String QRY_PARAM_NAME_PAGE_NUMBER	= "pageNumber";
 	
 	public static final String QRY_PARAM_NAME_PAGE_SIZE		= "pageSize";
+	
+	public static final String QRY_PARAM_NAME_FETCH_ALL		= "fetchAll";
 
 	protected Logger logger = LoggerFactory.getLogger(getClass());
 	
@@ -76,7 +80,7 @@ public abstract class BaseProductRestController<T extends AbstractProductEntity,
 	@PostConstruct
 	protected void initFieldMetaCriteria() {
 		List<String> searchMetaFieldNames = getSearchMetaCriteriaFields();
-		if (!ObjectUtils.isEmpty(searchMetaFieldNames)) {
+		if (ObjectUtils.isNotEmpty(searchMetaFieldNames)) {
 			this.fieldMetaCriteria = createFieldMetaCriteriaByConfig(searchMetaFieldNames);
 		} else {
 			this.fieldMetaCriteria = createFieldMetaCriteriaByAnnotation();
@@ -279,6 +283,9 @@ public abstract class BaseProductRestController<T extends AbstractProductEntity,
 					Predicate additionalCondition = pAdditionalCondition.getFirst();
 					LogicalOperator op = pAdditionalCondition.getSecond();
 					if (additionalCondition != null) {
+						if (pConditions == null) {
+							return additionalCondition;
+						}
 						if (op == null || op == LogicalOperator.AND) {
 							return builder.and(pConditions, additionalCondition);
 						} else if (op == LogicalOperator.OR) {
@@ -306,6 +313,27 @@ public abstract class BaseProductRestController<T extends AbstractProductEntity,
 		return dataResponse;
 	}
 		
+	protected void validateSearchRequest(ConditionClause conditionClause,
+			Integer pageNumber, Integer pageSize,
+			Boolean fetchAll) {
+		
+		if (pageNumber != null && pageSize == null || pageNumber == null && pageSize != null) {
+			throw new ValidationException("Must have both 'pageNumber' and 'pageSize' parameters for pagination",
+					ErrorCode.ERR_CODE_REQUIRE_BOTH_OR_NONE_PAGE_PARAMS);
+		}
+		if (Boolean.TRUE.equals(fetchAll)) {
+			if (conditionClause != null && ObjectUtils.isNotEmpty(conditionClause.getConditions())) {
+				throw new ValidationException("Cannot have search conditions specified along with 'fetchAll' flag as true.",
+						ErrorCode.ERR_CODE_SEARCH_CANNOT_HAVE_BOTH_CONDITION_AND_FETCHWITHOUTCONDITION);
+			}
+		} else {
+			if (conditionClause == null || ObjectUtils.isEmpty(conditionClause.getConditions())) {
+				throw new ValidationException("Require search conditions or 'fetchAll' flag as true.",
+						ErrorCode.ERR_CODE_SEARCH_REQUIRE_CONDITION_OR_FETCHWITHOUTCONDITION);
+			}
+		}
+	}
+
 	protected <MM, TT> void populatePageableListDataResponse(PageableListDataResponse<MM> dataResponse, Page<TT> page) {
 		dataResponse.setPageNumber(page.getNumber());
 		dataResponse.setPageSize(page.getSize());

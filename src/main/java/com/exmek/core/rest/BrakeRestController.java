@@ -95,7 +95,10 @@ public class BrakeRestController extends BaseProductRestController<BrakeEntity, 
 	@PostMapping("/search")
 	public PageableListDataResponse<Brake> searchBrakes(@RequestBody ConditionClause conditionClause,
 			@RequestParam(value = QRY_PARAM_NAME_PAGE_NUMBER, required = false) Integer pageNumber,
-			@RequestParam(value = QRY_PARAM_NAME_PAGE_SIZE, required = false) Integer pageSize) {
+			@RequestParam(value = QRY_PARAM_NAME_PAGE_SIZE, required = false) Integer pageSize,
+			@RequestParam(value = QRY_PARAM_NAME_FETCH_ALL, required = false) Boolean fetchAll) {
+		
+		validateSearchRequest(conditionClause, pageNumber, pageSize, fetchAll);
 		return super.searchWith(conditionClause, pageNumber, pageSize);
 	}
 
@@ -103,7 +106,10 @@ public class BrakeRestController extends BaseProductRestController<BrakeEntity, 
 	public PageableListDataResponse<Brake> searchBySeries(@RequestBody ConditionClause conditionClause,
 			@PathVariable(PARAM_NAME_SERIES) String series,
 			@RequestParam(value = QRY_PARAM_NAME_PAGE_NUMBER, required = false) Integer pageNumber,
-			@RequestParam(value = QRY_PARAM_NAME_PAGE_SIZE, required = false) Integer pageSize) {
+			@RequestParam(value = QRY_PARAM_NAME_PAGE_SIZE, required = false) Integer pageSize,
+			@RequestParam(value = QRY_PARAM_NAME_FETCH_ALL, required = false) Boolean fetchAll) {
+		
+		validateSearchRequest(conditionClause, pageNumber, pageSize, fetchAll);
 		return super.searchBySeries(conditionClause, series, pageNumber, pageSize);
 	}
 

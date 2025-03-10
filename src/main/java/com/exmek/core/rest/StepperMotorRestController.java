@@ -119,7 +119,10 @@ extends BaseMotorRestController<StepperMotorEntity, StepperMotor, StepperMotorCa
 	@PostMapping("/stepper/search")
 	public PageableListDataResponse<StepperMotor> searchMotors(@RequestBody ConditionClause conditionClause,
 			@RequestParam(value = QRY_PARAM_NAME_PAGE_NUMBER, required = false) Integer pageNumber,
-			@RequestParam(value = QRY_PARAM_NAME_PAGE_SIZE, required = false) Integer pageSize) {
+			@RequestParam(value = QRY_PARAM_NAME_PAGE_SIZE, required = false) Integer pageSize,
+			@RequestParam(value = QRY_PARAM_NAME_FETCH_ALL, required = false) Boolean fetchAll) {
+		
+		validateSearchRequest(conditionClause, pageNumber, pageSize, fetchAll);
 		return super.searchWith(conditionClause, pageNumber, pageSize);
 	}
 
@@ -127,17 +130,22 @@ extends BaseMotorRestController<StepperMotorEntity, StepperMotor, StepperMotorCa
 	public PageableListDataResponse<StepperMotor> searchMotorsByCategory(@RequestBody ConditionClause conditionClause,
 			@PathVariable(PARAM_NAME_CATEGORY) String category,
 			@RequestParam(value = QRY_PARAM_NAME_PAGE_NUMBER, required = false) Integer pageNumber,
-			@RequestParam(value = QRY_PARAM_NAME_PAGE_SIZE, required = false) Integer pageSize) {
+			@RequestParam(value = QRY_PARAM_NAME_PAGE_SIZE, required = false) Integer pageSize,
+			@RequestParam(value = QRY_PARAM_NAME_FETCH_ALL, required = false) Boolean fetchAll) {
+		
+		validateSearchRequest(conditionClause, pageNumber, pageSize, fetchAll);
 		return super.searchMotorsByCategoryBySeries(conditionClause, category, null, pageNumber, pageSize);
 	}
 	
-	@Override
 	@PostMapping("/stepper/{" + PARAM_NAME_CATEGORY + "}/{" + PARAM_NAME_SERIES + "}/search")
 	public PageableListDataResponse<StepperMotor> searchMotorsByCategoryBySeries(@RequestBody ConditionClause conditionClause,
 			@PathVariable(PARAM_NAME_CATEGORY) String category,
 			@PathVariable(PARAM_NAME_SERIES) String series,
 			@RequestParam(value = QRY_PARAM_NAME_PAGE_NUMBER, required = false) Integer pageNumber,
-			@RequestParam(value = QRY_PARAM_NAME_PAGE_SIZE, required = false) Integer pageSize) {
+			@RequestParam(value = QRY_PARAM_NAME_PAGE_SIZE, required = false) Integer pageSize,
+			@RequestParam(value = QRY_PARAM_NAME_FETCH_ALL, required = false) Boolean fetchAll) {
+		
+		validateSearchRequest(conditionClause, pageNumber, pageSize, fetchAll);
 		return super.searchMotorsByCategoryBySeries(conditionClause, category, series, pageNumber, pageSize);
 	}
 	

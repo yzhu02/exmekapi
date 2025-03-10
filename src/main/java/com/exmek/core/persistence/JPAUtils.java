@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang3.ObjectUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -126,7 +127,7 @@ public class JPAUtils {
 		}
 		List<String> conditions = conditionClause.getConditions();
 		List<ConditionClause> subConditionClauses = conditionClause.getSubConditionClauses();
-		if ((conditions == null || conditions.isEmpty()) && (subConditionClauses == null || subConditionClauses.isEmpty())) {
+		if (ObjectUtils.isEmpty(conditions) && ObjectUtils.isEmpty(subConditionClauses)) {
 			return null;
 		}
 		List<Predicate> predicates = new ArrayList<>();
