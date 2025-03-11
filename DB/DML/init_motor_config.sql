@@ -9,13 +9,10 @@ VALUES
 	'MB057GA*', 'curve.coordinates', '[{"name": "Tcont", "x": "Speed(Krpm)", "y": "Torque(oz-in)"}, {"name": "Tpeak", "x": "Speed(Krpm)", "y": "Torque(Ncm)"}]'
 ),
 (
-	'MB059AH*', 'curve.coordinates', '[{"name": "", "x": "Torque(Nm)", "y": "Speed(rpm)"}, {"name": "", "x": "Torque(Nm)", "y": "Current(A)"}]'
-),
-(
 	'MB082GA*', 'curve.coordinates', '[{"name": "Torque(oz-in)", "x": "Speed(Krpm)", "y": "Torque(oz-in)"}, {"name": "Torque(Ncm)", "x": "Speed(Krpm)", "y": "Torque(Ncm)"}]'
 ),
 (
-	'MDB56GS*,ME042AS*,ME042GS*,ME042WS*,ME042YS*,ME043AS*,ME057AH*,ME060AS*,MEO70AS*,ME080AS*,ME080RS*D,ME080AS*,ME110AS*,MEL57AH*', 'curve.coordinates', '[{"name": "", "x": "Torque(Nm)", "y": "Speed(rpm)"}, {"name": "", "x": "Torque(Nm)", "y": "Current(A)"}]'
+	'MB059AH*,MDB56GS*,ME042AS*,ME042GS*,ME042WS*,ME042YS*,ME043AS*,ME057AH*,ME060AS*,MEO70AS*,ME080AS*,ME080RS*D,ME080AS*,ME110AS*,MEL57AH*', 'curve.coordinates', '[{"name": "", "x": "Torque(Nm)", "y": "Speed(rpm)"}, {"name": "", "x": "Torque(Nm)", "y": "Current(A)"}]'
 )
 ;
 -- BLDC_INTERNAL_ROTOR config end --
@@ -27,7 +24,7 @@ INSERT INTO MOTOR_CONFIG (
 )
 VALUES
 (
-	'EF045AS*', 'curve.coordinates', '[{"name": "", "x": "Torque(Ncm)", "y": "Speed(rpm)"}, {"name": "", "x": "Torque(Ncm)", "y": "Current(A)"}]'
+	'EF045AS*', 'curve.coordinates', '[{"name": "Speed(rpm)", "x": "Torque(Ncm)", "y": "Speed(rpm)"}, {"name": "Current(A)", "x": "Torque(Ncm)", "y": "Current(A)"}]'
 )
 ;
 -- BLDC_EXTERNAL_ROTOR config end --
