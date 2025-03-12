@@ -6,6 +6,7 @@ import org.springframework.boot.SpringApplication;
 
 //@SpringBootApplication
 //@EnableCaching
+//@EnableScheduling
 public class ExmekApiService {
 
 	public static void main(String[] args) {
