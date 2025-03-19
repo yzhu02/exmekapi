@@ -1,9 +1,6 @@
 package com.exmek.core.rest;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -18,11 +15,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.util.Pair;
 
 import com.exmek.commons.expr.LogicalOperator;
-import com.exmek.core.annotation.Searchable;
 import com.exmek.core.commons.model.Range;
 import com.exmek.core.config.AppConfigProvider;
 import com.exmek.core.error.ErrorCode;
@@ -37,15 +32,17 @@ import com.exmek.core.persistence.entity.AbstractSeriesEntity;
 import com.exmek.core.persistence.repository.BaseProductRepository;
 import com.exmek.core.persistence.repository.BaseSeriesRepository;
 import com.exmek.core.resource.ResourceContext;
+import com.exmek.core.search.DbProductSearcher;
+import com.exmek.core.search.SearchMetaCriteriaBuilder;
 import com.exmek.core.service.ProductService;
-import com.exmek.core.utils.ExmekUtils;
-import com.exmek.core.utils.RelationalOperatorUtils;
+import com.exmek.core.utils.ContentUtils;
 
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 
-public abstract class BaseProductRestController<T extends AbstractProductEntity, M extends AbstractProduct, SE extends AbstractSeriesEntity, S extends AbstractSeries> implements ProductService<M> {
+public abstract class BaseProductRestController<T extends AbstractProductEntity, M extends AbstractProduct, SE extends AbstractSeriesEntity, S extends AbstractSeries> 
+implements ProductService<M> {
 
 	public static final String PARAM_NAME_SERIES			= "series";
 
@@ -77,10 +74,12 @@ public abstract class BaseProductRestController<T extends AbstractProductEntity,
 
 	protected abstract List<String> getSearchMetaCriteriaFields();
 
+	protected abstract Map<?, Range<? extends Number>> getMinMaxRangeByUnit(String fieldName, MetaCriteriaKey criteriaKey);
+
 	@Override
 	public SearchMetaCriteriaResponse getSearchMetaCriteria(MetaCriteriaKey criteriaKey) {
 		List<FieldMetaCriterion> fieldMetaCriteria = 
-				fieldMetaCriteriaMap.computeIfAbsent(criteriaKey, k -> createFieldMetaCriteria(criteriaKey));
+				fieldMetaCriteriaMap.computeIfAbsent(criteriaKey, this::createFieldMetaCriteria);
 		return SearchMetaCriteriaResponse.builder()
 				.domain(getEntityClass().getSimpleName())
 				.fieldMetaCriteria(fieldMetaCriteria)
@@ -89,94 +88,10 @@ public abstract class BaseProductRestController<T extends AbstractProductEntity,
 	}
 
 	protected List<FieldMetaCriterion> createFieldMetaCriteria(MetaCriteriaKey criteriaKey) {
-		List<String> searchMetaFieldNames = getSearchMetaCriteriaFields();
-		if (ObjectUtils.isNotEmpty(searchMetaFieldNames)) {
-			return createFieldMetaCriteriaByConfig(searchMetaFieldNames, criteriaKey);
-		} else {
-			return createFieldMetaCriteriaByAnnotation(criteriaKey);
-		}
+		SearchMetaCriteriaBuilder searchMetaCriteriaBuilder = new SearchMetaCriteriaBuilder();
+		return searchMetaCriteriaBuilder.createFieldMetaCriteria(criteriaKey, 
+				getSearchMetaCriteriaFields(), getEntityClass(), this::getMinMaxRangeByUnit);
 	}
-
-	List<FieldMetaCriterion> createFieldMetaCriteriaByConfig(List<String> searchMetaFieldNames, MetaCriteriaKey criteriaKey) {
-		List<FieldMetaCriterion> fieldMetaCriteria = new ArrayList<>();
-		
-		Class<?> clazz = getEntityClass();
-		if (clazz == null) {
-			throw new RuntimeException("Unable to initialize 'fieldMetaCriteria' as 'entityClass' is not defined.");
-		}
-		Map<String, Field> fieldsMap = collectFields(clazz);
-		for (String searchMetaFieldName : searchMetaFieldNames) {
-			if (!fieldsMap.containsKey(searchMetaFieldName)) {
-				continue;
-			}
-			FieldMetaCriterion c = createFieldMetaCriterion(searchMetaFieldName, fieldsMap, criteriaKey);
-			fieldMetaCriteria.add(c);
-		}
-		
-		return fieldMetaCriteria;
-	}
-	
-	List<FieldMetaCriterion> createFieldMetaCriteriaByAnnotation(MetaCriteriaKey criteriaKey) {
-		List<FieldMetaCriterion> fieldMetaCriteria = new ArrayList<>();
-		
-		Class<?> clazz = getEntityClass();
-		if (clazz == null) {
-			throw new RuntimeException("Unable to initialize 'fieldMetaCriteria' as 'entityClass' is not defined.");
-		}
-		Map<String, Field> fieldsMap = collectFields(clazz);
-		
-		clazz = getEntityClass();
-		while (clazz != null && clazz != Object.class) {
-			Field[] fields = clazz.getDeclaredFields();
-			for (Field field : fields) {
-				if (!field.isAnnotationPresent(Searchable.class)) {
-					continue;
-				}
-				FieldMetaCriterion c = createFieldMetaCriterion(field.getName(), fieldsMap, criteriaKey);
-				fieldMetaCriteria.add(c);
-			}
-			clazz = clazz.getSuperclass();
-		}
-		return fieldMetaCriteria;
-	}
-
-	private Map<String, Field> collectFields(Class<?> clazz) {
-		Map<String, Field> fieldsMap = new HashMap<>();
-		while (clazz != null && clazz != Object.class) {
-			Field[] fields = clazz.getDeclaredFields();
-			for (Field field : fields) {
-				if (Modifier.isStatic(field.getModifiers()) || Modifier.isTransient(field.getModifiers()) || Modifier.isVolatile(field.getModifiers())) {
-					continue;
-				}
-				fieldsMap.put(field.getName(), field);
-			}
-			clazz = clazz.getSuperclass();
-		}
-		return fieldsMap;
-	}
-
-	private FieldMetaCriterion createFieldMetaCriterion(String searchMetaFieldName, Map<String, Field> fieldsMap, MetaCriteriaKey criteriaKey) {
-		Field field = fieldsMap.get(searchMetaFieldName);
-		FieldMetaCriterion c = new FieldMetaCriterion();
-		String fieldName = field.getName();
-		c.setFieldName(fieldName);
-		c.setDisplayName(ExmekUtils.fieldNameToDisplayName(field.getName()));
-		c.setType(field.getType().getSimpleName());
-		String unitFieldName = field.getName() + AbstractProductEntity.UNIT_FIELD_SUFFIX;
-		if (fieldsMap.containsKey(unitFieldName)) {
-			c.setUnitFieldName(unitFieldName);
-		}
-		boolean isNumber = Number.class.isAssignableFrom(field.getType());
-		c.setIsNumber(isNumber);
-		if (isNumber) {
-			c.setMinMaxByUnits(getMinMaxRangeByUnit(fieldName, criteriaKey));
-			c.setSupportedOperators(RelationalOperatorUtils.getNumberSupportedRelationalOperators());
-		}
-		return c;
-	}
-	
-	protected abstract Map<?, Range<? extends Number>> getMinMaxRangeByUnit(String fieldName, MetaCriteriaKey criteriaKey);
-
 
 	protected M mapEntityToModel(T entity) {
 		return mapEntityToModel(entity, true);
@@ -264,51 +179,20 @@ public abstract class BaseProductRestController<T extends AbstractProductEntity,
 			}
 		}, pageNumber, pageSize);
 	}
-
-	protected PageableListDataResponse<M> searchBy(ConditionClause conditionClause,
-			BiFunction<Root<T>, CriteriaBuilder, Pair<Predicate, LogicalOperator>> funcAdditionalCondition,
+	
+	protected PageableListDataResponse<M> searchBy(
+			ConditionClause conditionClause,
+			BiFunction<Root<T>, CriteriaBuilder, Pair<Predicate, LogicalOperator>> fAdditionalCondition,
 			Integer pageNumber, Integer pageSize) {
 
-		PageableListDataResponse<M> dataResponse = new PageableListDataResponse<>();
-		
-		Specification<T> jpaSpec = (root, query, builder) -> {
-			Predicate pConditions = JPAUtils.buildPredicate(builder, root, conditionClause);
-			if (funcAdditionalCondition != null) {
-				Pair<Predicate, LogicalOperator> pAdditionalCondition = funcAdditionalCondition.apply(root, builder);
-				if (pAdditionalCondition != null) {
-					Predicate additionalCondition = pAdditionalCondition.getFirst();
-					LogicalOperator op = pAdditionalCondition.getSecond();
-					if (additionalCondition != null) {
-						if (pConditions == null) {
-							return additionalCondition;
-						}
-						if (op == null || op == LogicalOperator.AND) {
-							return builder.and(pConditions, additionalCondition);
-						} else if (op == LogicalOperator.OR) {
-							return builder.or(pConditions, additionalCondition);
-						}
-					}
-				}
-			}
-			return pConditions;
-		};
-		List<T> entities = null;
-		if (pageNumber == null || pageSize == null) {
-			entities = getProductRepository().findAll(jpaSpec, Sort.by(AbstractProductEntity.FIELD_NAME_MODEL));
-		} else {
-			Page<T> page = getProductRepository().findAll(jpaSpec, PageRequest.of(pageNumber, pageSize, Sort.by(AbstractProductEntity.FIELD_NAME_MODEL)));
-			entities = page.getContent();
-			populatePageableListDataResponse(dataResponse, page);
-		}
-		if (entities != null) {
-			List<M> products = entities.stream()
-					.map(entity -> mapEntityToModel(entity, false))
-					.collect(Collectors.toList());
-			dataResponse.setData(products);
-		}
-		return dataResponse;
+		DbProductSearcher searcher = new DbProductSearcher();
+		return searcher.search(getProductRepository(), 
+				conditionClause, 
+				fAdditionalCondition, 
+				pageNumber, pageSize, 
+				entity -> mapEntityToModel(entity, false));
 	}
-		
+
 	protected void validateSearchRequest(ConditionClause conditionClause,
 			Integer pageNumber, Integer pageSize,
 			Boolean fetchAll) {
@@ -330,14 +214,6 @@ public abstract class BaseProductRestController<T extends AbstractProductEntity,
 		}
 	}
 
-	protected <MM, TT> void populatePageableListDataResponse(PageableListDataResponse<MM> dataResponse, Page<TT> page) {
-		dataResponse.setPageNumber(page.getNumber());
-		dataResponse.setPageSize(page.getSize());
-		dataResponse.setTotalPages(page.getTotalPages());
-		dataResponse.setTotalElementsOfAllPages(Long.valueOf(page.getTotalElements()).intValue());
-		dataResponse.setTotalElementsOfCurrPage(page.getNumberOfElements());
-	}
-
 	protected String getModelDisplayName() {
 		return "Model";
 	}
@@ -351,7 +227,7 @@ public abstract class BaseProductRestController<T extends AbstractProductEntity,
 			Page<SE> page = getSeriesRepository().findAll(
 					PageRequest.of(pageNumber, pageSize, Sort.by(AbstractSeriesEntity.FIELD_NAME_SERIES)));
 			entities = page.getContent();
-			populatePageableListDataResponse(dataResponse, page);
+			ContentUtils.populatePageableListDataResponse(dataResponse, page);
 		}
 		if (entities != null) {
 			List<S> serieses = entities.stream()

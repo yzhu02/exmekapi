@@ -25,6 +25,7 @@ import com.exmek.core.persistence.entity.AbstractMotorSeriesEntity;
 import com.exmek.core.persistence.entity.AbstractSeriesEntity;
 import com.exmek.core.persistence.repository.BaseMotorCategoryRepository;
 import com.exmek.core.persistence.repository.BaseMotorSeriesRepository;
+import com.exmek.core.utils.ContentUtils;
 
 import jakarta.persistence.criteria.Join;
 
@@ -113,7 +114,7 @@ extends BaseProductRestController<T, M, SE, MotorSeries> {
 			Page<SE> page = getSeriesRepository().findAllByCategory(category,
 					PageRequest.of(pageNumber, pageSize, Sort.by(AbstractSeriesEntity.FIELD_NAME_SERIES)));
 			entities = page.getContent();
-			populatePageableListDataResponse(dataResponse, page);
+			ContentUtils.populatePageableListDataResponse(dataResponse, page);
 		}
 		if (entities != null) {
 			List<MotorSeries> serieses = entities.stream()

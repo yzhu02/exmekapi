@@ -108,7 +108,6 @@ public interface DCMotorRepository extends BaseProductRepository<DCMotorEntity>,
 	}
 	//
 	
-	
 	//ratedVoltage
 	@Query("""
 			SELECT MIN(m.ratedVoltage), MAX(m.ratedVoltage), m.ratedVoltageUnit 
