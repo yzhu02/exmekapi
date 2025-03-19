@@ -1,8 +1,10 @@
 package com.exmek.core.rest;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -11,7 +13,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.exmek.commons.utils.ReflectionUtils;
+import com.exmek.core.commons.model.Range;
 import com.exmek.core.consts.EndpointConsts;
+import com.exmek.core.helper.MetaCriteriaKey;
 import com.exmek.core.mapper.BrakeMapper;
 import com.exmek.core.mapper.BrakeSeriesMapper;
 import com.exmek.core.model.Brake;
@@ -113,17 +118,29 @@ public class BrakeRestController extends BaseProductRestController<BrakeEntity, 
 		return super.searchBySeries(conditionClause, series, pageNumber, pageSize);
 	}
 
-	
-	@Override
 	@GetMapping("/criteria")
-	public SearchMetaCriteriaResponse getSearchMetaCriteria() {
-		return super.getSearchMetaCriteria();
+	public SearchMetaCriteriaResponse getSearchMetaCriteriaByNone() {
+		MetaCriteriaKey key = MetaCriteriaKey.builder()
+				.build();
+		return super.getSearchMetaCriteria(key);
 	}
 	
 	@GetMapping("/{" + PARAM_NAME_SERIES + "}/criteria")
 	public SearchMetaCriteriaResponse getSearchMetaCriteriaBySeries(
 			@PathVariable(PARAM_NAME_SERIES) String series) {
-		return super.getSearchMetaCriteria();
+		MetaCriteriaKey key = MetaCriteriaKey.builder()
+				.series(series)
+				.build();
+		return super.getSearchMetaCriteria(key);
 	}
 
+	@SuppressWarnings("unchecked")
+	@Override
+	protected Map<?, Range<? extends Number>> getMinMaxRangeByUnit(String fieldName, MetaCriteriaKey key) {
+		return (Map<?, Range<? extends Number>>) ReflectionUtils.readValueFromMethod(
+				getProductRepository(),
+				"find" + StringUtils.capitalize(fieldName) + "MinMaxByUnits",
+				new Class[] {String.class},
+				key.getSeries());
+	}
 }

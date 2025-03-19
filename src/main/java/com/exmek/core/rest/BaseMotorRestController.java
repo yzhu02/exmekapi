@@ -53,10 +53,10 @@ extends BaseProductRestController<T, M, SE, MotorSeries> {
 	}
 
 	protected List<MotorCategory> getMotorCategories(
-			@RequestParam(value = QRY_PARAM_NAME_TYPE, required = false) MotorCategory.Type type) {
+			@RequestParam(value = QRY_PARAM_NAME_TYPE, required = false) String type) {
 		List<CE> entities = null;
 		if (!ObjectUtils.isEmpty(type)) {
-			entities = getMotorCategoryRepository().findByType(type);
+			entities = getMotorCategoryRepository().findByType(MotorCategory.Type.valueOf(type));
 		} else {
 			entities = getMotorCategoryRepository().findAll();
 		}

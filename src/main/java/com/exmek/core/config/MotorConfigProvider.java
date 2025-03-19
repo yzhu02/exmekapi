@@ -5,10 +5,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import com.exmek.commons.utils.JsonMapperUtils;
@@ -31,7 +33,8 @@ public class MotorConfigProvider {
 	private Map<String, Map<String, String>> perMotorConfigMap = new HashMap<>();
 
 	@PostConstruct
-	protected void init() {
+	@Scheduled(timeUnit = TimeUnit.MINUTES, fixedRate = 5)
+	protected void initialize() {
 		this.perMotorConfigMap = new HashMap<>();
 		this.motorConfigRepository.findAll().stream().forEach(motorConfigEntity -> {
 			String modelRefsStr = motorConfigEntity.getModelRefs();

@@ -2,9 +2,11 @@ package com.exmek.core.rest;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import com.exmek.commons.expr.RelationalOperator;
 import com.exmek.core.commons.model.MeasuredOptionsValue;
+import com.exmek.core.commons.model.Range;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import lombok.Data;
@@ -16,17 +18,14 @@ public class FieldMetaCriterion {
 	private String type;
 	private String fieldName;
 	private String displayName;
-	private String unitFieldName;
-	private String unit;
 	private Boolean isNumber;
+	private String unitFieldName;
+	private Map<?, Range<? extends Number>> minMaxByUnits;
 
 	private List<RelationalOperator> supportedOperators;
 	
 	private MeasuredOptionsValue<? super Object, ? super Object> availableOptionsValue;
-
-	private Number minValue;
-	private Number maxValue;
-
+	
 	public void addSupportedOperator(RelationalOperator... operators) {
 		if (operators == null) {
 			return;

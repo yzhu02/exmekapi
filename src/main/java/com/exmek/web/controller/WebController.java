@@ -154,10 +154,10 @@ public class WebController {
 	 * @return
 	 */
 	@GetMapping("/products/dc-motors")
-	public String landDCMotorsByType(@RequestParam(name = QRY_PARAM_NAME_TYPE, required = false) MotorCategory.Type type, Model model) {
+	public String landDCMotorsByType(@RequestParam(name = QRY_PARAM_NAME_TYPE, required = false) String type, Model model) {
 
 		Company exmekCompany = generalRestController.getExmekCompany();
-		SearchMetaCriteriaResponse searchMetaCriteria = dcMotorRestController.getSearchMetaCriteria(type);
+		SearchMetaCriteriaResponse searchMetaCriteria = dcMotorRestController.getSearchMetaCriteriaByType(type);
 		List<MotorCategory> motorCategories = dcMotorRestController.getMotorCategories(type);
 		model.addAttribute(PAGEMODEL_NAME_EXMEK_COMPANY, exmekCompany);
 		model.addAttribute(PAGEMODEL_NAME_TYPE, type);
@@ -210,7 +210,7 @@ public class WebController {
 	public String landStepperMotorsByType(Model model) {
 
 		Company exmekCompany = generalRestController.getExmekCompany();
-		SearchMetaCriteriaResponse searchMetaCriteria = stepperMotorRestController.getSearchMetaCriteria();
+		SearchMetaCriteriaResponse searchMetaCriteria = stepperMotorRestController.getSearchMetaCriteriaByNone();
 		List<MotorCategory> motorCategories = stepperMotorRestController.getMotorCategories();
 		model.addAttribute(PAGEMODEL_NAME_EXMEK_COMPANY, exmekCompany);
 		model.addAttribute(PAGEMODEL_NAME_CATEGORIES, motorCategories);
@@ -261,7 +261,7 @@ public class WebController {
 	public String landPlanetaryGearboxes(Model model) {
 
 		Company exmekCompany = generalRestController.getExmekCompany();
-		SearchMetaCriteriaResponse searchMetaCriteria = planetaryGearboxRestController.getSearchMetaCriteria();
+		SearchMetaCriteriaResponse searchMetaCriteria = planetaryGearboxRestController.getSearchMetaCriteriaByNone();
 		PageableListDataResponse<GearboxSeries> gearboxSeriesesPage = planetaryGearboxRestController.getSerieses(null, null);
 		model.addAttribute(PAGEMODEL_NAME_EXMEK_COMPANY, exmekCompany);
 		model.addAttribute(PAGEMODEL_NAME_SERIESES, gearboxSeriesesPage.getData());
@@ -298,7 +298,7 @@ public class WebController {
 	public String landBrakes(Model model) {
 
 		Company exmekCompany = generalRestController.getExmekCompany();
-		SearchMetaCriteriaResponse searchMetaCriteria = brakeRestController.getSearchMetaCriteria();
+		SearchMetaCriteriaResponse searchMetaCriteria = brakeRestController.getSearchMetaCriteriaByNone();
 		PageableListDataResponse<BrakeSeries> brakeSeriesesPage = brakeRestController.getSerieses(null, null);
 		model.addAttribute(PAGEMODEL_NAME_EXMEK_COMPANY, exmekCompany);
 		model.addAttribute(PAGEMODEL_NAME_SERIESES, brakeSeriesesPage.getData());

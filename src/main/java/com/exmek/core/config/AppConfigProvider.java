@@ -3,12 +3,14 @@ package com.exmek.core.config;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.BooleanUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import com.exmek.commons.utils.JsonMapperUtils;
@@ -56,6 +58,7 @@ public class AppConfigProvider {
 	private Map<String, String> configMap = new HashMap<>();
 
 	@PostConstruct
+	@Scheduled(timeUnit = TimeUnit.MINUTES, fixedRate = 5)
 	protected void initialize() {
 		List<ConfigEntity> configEntities = this.configRepository.findAll();
 		this.configMap = configEntities.stream()

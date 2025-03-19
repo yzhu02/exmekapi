@@ -2,6 +2,7 @@ package com.exmek.core.service;
 
 import java.util.List;
 
+import com.exmek.core.helper.MetaCriteriaKey;
 import com.exmek.core.rest.ConditionClause;
 import com.exmek.core.rest.SearchMetaCriteriaResponse;
 
@@ -13,5 +14,5 @@ public interface ProductService<T> {
 	
 	List<T> search(ConditionClause conditionExpr);
 
-	SearchMetaCriteriaResponse getSearchMetaCriteria();
+	SearchMetaCriteriaResponse getSearchMetaCriteria(MetaCriteriaKey criteriaKey);
 }
