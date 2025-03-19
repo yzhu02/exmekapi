@@ -14,12 +14,12 @@ public abstract class AbstractMotorCategoryEntity extends AbstractManagableEntit
 	
 	public static final String FIELD_NAME_TYPE		= "type";
 
-	@Column(name = "CATEGORY")
-	private String category;
-
 	@Column(name = "TYPE")
 	@Enumerated(EnumType.STRING)
 	private MotorCategory.Type type;
+
+	@Column(name = "CATEGORY")
+	private String category;
 	
 	@Column(name = "DISPLAY_NAME")
 	private String displayName;
@@ -30,20 +30,20 @@ public abstract class AbstractMotorCategoryEntity extends AbstractManagableEntit
 	@Column(name = "TECHNICAL_DATA")
 	private String technicalData;
 
-	public String getCategory() {
-		return category;
-	}
-
-	public void setCategory(String category) {
-		this.category = category;
-	}
-
 	public MotorCategory.Type getType() {
 		return type;
 	}
 
 	public void setType(MotorCategory.Type type) {
 		this.type = type;
+	}
+
+	public String getCategory() {
+		return category;
+	}
+
+	public void setCategory(String category) {
+		this.category = category;
 	}
 
 	public String getDisplayName() {

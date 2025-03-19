@@ -1,8 +1,10 @@
 package com.exmek.core.rest;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -11,7 +13,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.exmek.commons.utils.ReflectionUtils;
+import com.exmek.core.commons.model.Range;
 import com.exmek.core.consts.EndpointConsts;
+import com.exmek.core.helper.MetaCriteriaKey;
 import com.exmek.core.mapper.MotorMapper;
 import com.exmek.core.model.MotorCategory;
 import com.exmek.core.model.MotorSeries;
@@ -149,25 +154,43 @@ extends BaseMotorRestController<StepperMotorEntity, StepperMotor, StepperMotorCa
 		return super.searchMotorsByCategoryBySeries(conditionClause, category, series, pageNumber, pageSize);
 	}
 	
-	@Override
 	@GetMapping("/stepper/criteria")
-	public SearchMetaCriteriaResponse getSearchMetaCriteria() {
-		return super.getSearchMetaCriteria();
+	public SearchMetaCriteriaResponse getSearchMetaCriteriaByNone() {
+		MetaCriteriaKey key = MetaCriteriaKey.builder()
+				.build();
+		return super.getSearchMetaCriteria(key);
 	}
 
 	@GetMapping("/stepper/{" + PARAM_NAME_CATEGORY + "}/criteria")
 	public SearchMetaCriteriaResponse getSearchMetaCriteriaByCategory(
 			@PathVariable(PARAM_NAME_CATEGORY) String category) {
-		return super.getSearchMetaCriteria();
+		MetaCriteriaKey key = MetaCriteriaKey.builder()
+				.category(category)
+				.build();
+		return super.getSearchMetaCriteria(key);
 	}
 	
 	@GetMapping("/stepper/{" + PARAM_NAME_CATEGORY + "}/{" + PARAM_NAME_SERIES + "}/criteria")
 	public SearchMetaCriteriaResponse getSearchMetaCriteriaByCategoryBySeries(
 			@PathVariable(PARAM_NAME_CATEGORY) String category,
 			@PathVariable(PARAM_NAME_SERIES) String series) {
-		return super.getSearchMetaCriteria();
+		MetaCriteriaKey key = MetaCriteriaKey.builder()
+				.category(category)
+				.series(series)
+				.build();
+		return super.getSearchMetaCriteria(key);
 	}
 	
+	@SuppressWarnings("unchecked")
+	@Override
+	protected Map<?, Range<? extends Number>> getMinMaxRangeByUnit(String fieldName, MetaCriteriaKey key) {
+		return (Map<?, Range<? extends Number>>) ReflectionUtils.readValueFromMethod(
+				getProductRepository(),
+				"find" + StringUtils.capitalize(fieldName) + "MinMaxByUnits",
+				new Class[] {String.class, String.class},
+				key.getCategory(), key.getSeries());
+	}
+
 	@Override
 	protected String getModelDisplayName() {
 		return "P/N";

@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
@@ -19,14 +20,14 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.util.Pair;
-import org.springframework.util.StringUtils;
 
 import com.exmek.commons.expr.LogicalOperator;
-import com.exmek.commons.utils.ReflectionUtils;
 import com.exmek.core.annotation.Searchable;
+import com.exmek.core.commons.model.Range;
 import com.exmek.core.config.AppConfigProvider;
 import com.exmek.core.error.ErrorCode;
 import com.exmek.core.error.ValidationException;
+import com.exmek.core.helper.MetaCriteriaKey;
 import com.exmek.core.mapper.AbstractSeriesMapper;
 import com.exmek.core.model.AbstractProduct;
 import com.exmek.core.model.AbstractSeries;
@@ -40,7 +41,6 @@ import com.exmek.core.service.ProductService;
 import com.exmek.core.utils.ExmekUtils;
 import com.exmek.core.utils.RelationalOperatorUtils;
 
-import jakarta.annotation.PostConstruct;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
@@ -62,8 +62,8 @@ public abstract class BaseProductRestController<T extends AbstractProductEntity,
 	
 	@Autowired
 	protected AppConfigProvider appConfigProvider;
-
-	protected List<FieldMetaCriterion> fieldMetaCriteria;
+	
+	protected Map<MetaCriteriaKey, List<FieldMetaCriterion>> fieldMetaCriteriaMap = new ConcurrentHashMap<>();
 	
 	protected abstract Class<T> getEntityClass();
 
@@ -77,17 +77,27 @@ public abstract class BaseProductRestController<T extends AbstractProductEntity,
 
 	protected abstract List<String> getSearchMetaCriteriaFields();
 
-	@PostConstruct
-	protected void initFieldMetaCriteria() {
+	@Override
+	public SearchMetaCriteriaResponse getSearchMetaCriteria(MetaCriteriaKey criteriaKey) {
+		List<FieldMetaCriterion> fieldMetaCriteria = 
+				fieldMetaCriteriaMap.computeIfAbsent(criteriaKey, k -> createFieldMetaCriteria(criteriaKey));
+		return SearchMetaCriteriaResponse.builder()
+				.domain(getEntityClass().getSimpleName())
+				.fieldMetaCriteria(fieldMetaCriteria)
+				.build();
+		
+	}
+
+	protected List<FieldMetaCriterion> createFieldMetaCriteria(MetaCriteriaKey criteriaKey) {
 		List<String> searchMetaFieldNames = getSearchMetaCriteriaFields();
 		if (ObjectUtils.isNotEmpty(searchMetaFieldNames)) {
-			this.fieldMetaCriteria = createFieldMetaCriteriaByConfig(searchMetaFieldNames);
+			return createFieldMetaCriteriaByConfig(searchMetaFieldNames, criteriaKey);
 		} else {
-			this.fieldMetaCriteria = createFieldMetaCriteriaByAnnotation();
+			return createFieldMetaCriteriaByAnnotation(criteriaKey);
 		}
 	}
 
-	List<FieldMetaCriterion> createFieldMetaCriteriaByConfig(List<String> searchMetaFieldNames) {
+	List<FieldMetaCriterion> createFieldMetaCriteriaByConfig(List<String> searchMetaFieldNames, MetaCriteriaKey criteriaKey) {
 		List<FieldMetaCriterion> fieldMetaCriteria = new ArrayList<>();
 		
 		Class<?> clazz = getEntityClass();
@@ -99,14 +109,14 @@ public abstract class BaseProductRestController<T extends AbstractProductEntity,
 			if (!fieldsMap.containsKey(searchMetaFieldName)) {
 				continue;
 			}
-			FieldMetaCriterion c = createFieldMetaCriterion(searchMetaFieldName, fieldsMap);
+			FieldMetaCriterion c = createFieldMetaCriterion(searchMetaFieldName, fieldsMap, criteriaKey);
 			fieldMetaCriteria.add(c);
 		}
 		
 		return fieldMetaCriteria;
 	}
 	
-	List<FieldMetaCriterion> createFieldMetaCriteriaByAnnotation() {
+	List<FieldMetaCriterion> createFieldMetaCriteriaByAnnotation(MetaCriteriaKey criteriaKey) {
 		List<FieldMetaCriterion> fieldMetaCriteria = new ArrayList<>();
 		
 		Class<?> clazz = getEntityClass();
@@ -122,7 +132,7 @@ public abstract class BaseProductRestController<T extends AbstractProductEntity,
 				if (!field.isAnnotationPresent(Searchable.class)) {
 					continue;
 				}
-				FieldMetaCriterion c = createFieldMetaCriterion(field.getName(), fieldsMap);
+				FieldMetaCriterion c = createFieldMetaCriterion(field.getName(), fieldsMap, criteriaKey);
 				fieldMetaCriteria.add(c);
 			}
 			clazz = clazz.getSuperclass();
@@ -145,7 +155,7 @@ public abstract class BaseProductRestController<T extends AbstractProductEntity,
 		return fieldsMap;
 	}
 
-	private FieldMetaCriterion createFieldMetaCriterion(String searchMetaFieldName, Map<String, Field> fieldsMap) {
+	private FieldMetaCriterion createFieldMetaCriterion(String searchMetaFieldName, Map<String, Field> fieldsMap, MetaCriteriaKey criteriaKey) {
 		Field field = fieldsMap.get(searchMetaFieldName);
 		FieldMetaCriterion c = new FieldMetaCriterion();
 		String fieldName = field.getName();
@@ -155,32 +165,18 @@ public abstract class BaseProductRestController<T extends AbstractProductEntity,
 		String unitFieldName = field.getName() + AbstractProductEntity.UNIT_FIELD_SUFFIX;
 		if (fieldsMap.containsKey(unitFieldName)) {
 			c.setUnitFieldName(unitFieldName);
-			@SuppressWarnings("unchecked")
-			List<String> units = (List<String>) ReflectionUtils.readValueFromMethod("find" + StringUtils.capitalize(unitFieldName) + "s", getProductRepository());
-			if (!ObjectUtils.isEmpty(units)) {
-				if (units.size() > 1) {
-					logger.warn("There are multiple different units used for unit field {} ", unitFieldName);
-				}
-				c.setUnit(units.get(0)); //supposed to have only one unit
-			}
 		}
 		boolean isNumber = Number.class.isAssignableFrom(field.getType());
 		c.setIsNumber(isNumber);
 		if (isNumber) {
+			c.setMinMaxByUnits(getMinMaxRangeByUnit(fieldName, criteriaKey));
 			c.setSupportedOperators(RelationalOperatorUtils.getNumberSupportedRelationalOperators());
-			c.setMinValue((Number) ReflectionUtils.readValueFromMethod("findMin" + StringUtils.capitalize(fieldName), getProductRepository()));
-			c.setMaxValue((Number) ReflectionUtils.readValueFromMethod("findMax" + StringUtils.capitalize(fieldName), getProductRepository()));
 		}
 		return c;
 	}
+	
+	protected abstract Map<?, Range<? extends Number>> getMinMaxRangeByUnit(String fieldName, MetaCriteriaKey criteriaKey);
 
-	@Override
-	public SearchMetaCriteriaResponse getSearchMetaCriteria() {
-		SearchMetaCriteriaResponse response = new SearchMetaCriteriaResponse();
-		response.setDomain(getEntityClass().getSimpleName());
-		response.setFieldMetaCriteria(fieldMetaCriteria);
-		return response;
-	}
 
 	protected M mapEntityToModel(T entity) {
 		return mapEntityToModel(entity, true);

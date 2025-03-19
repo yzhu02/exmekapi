@@ -1,8 +1,10 @@
 package com.exmek.core.rest;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -11,7 +13,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.exmek.commons.utils.ReflectionUtils;
+import com.exmek.core.commons.model.Range;
 import com.exmek.core.consts.EndpointConsts;
+import com.exmek.core.helper.MetaCriteriaKey;
 import com.exmek.core.mapper.MotorMapper;
 import com.exmek.core.model.DCMotor;
 import com.exmek.core.model.MotorCategory;
@@ -79,7 +84,7 @@ extends BaseMotorRestController<DCMotorEntity, DCMotor, DCMotorCategoryEntity, D
 	
 	@Override
 	@GetMapping("/DC/categories")
-	public List<MotorCategory> getMotorCategories(@RequestParam(value = QRY_PARAM_NAME_TYPE, required = false) MotorCategory.Type type) {
+	public List<MotorCategory> getMotorCategories(@RequestParam(value = QRY_PARAM_NAME_TYPE, required = false) String type) {
 		return super.getMotorCategories(type);
 	}
 
@@ -174,25 +179,46 @@ extends BaseMotorRestController<DCMotorEntity, DCMotor, DCMotorCategoryEntity, D
 		validateSearchRequest(conditionClause, pageNumber, pageSize, fetchAll);
 		return super.searchMotorsByCategoryBySeries(conditionClause, category, series, pageNumber, pageSize);
 	}
-	
+		
 	@GetMapping("/DC/criteria")
-	public SearchMetaCriteriaResponse getSearchMetaCriteria(
-			@RequestParam(value = QRY_PARAM_NAME_TYPE, required = false) MotorCategory.Type type) {
-		return super.getSearchMetaCriteria();
+	public SearchMetaCriteriaResponse getSearchMetaCriteriaByType(
+			@RequestParam(value = QRY_PARAM_NAME_TYPE, required = false) String type) {
+		MetaCriteriaKey key = MetaCriteriaKey.builder()
+				.type(type != null ? MotorCategory.Type.valueOf(type) : null)
+				.build();
+		return super.getSearchMetaCriteria(key);
 	}
 	
 	@GetMapping("/DC/{" + PARAM_NAME_CATEGORY + "}/criteria")
 	public SearchMetaCriteriaResponse getSearchMetaCriteriaByCategory(
 			@PathVariable(PARAM_NAME_CATEGORY) String category) {
-		return super.getSearchMetaCriteria();
+		MetaCriteriaKey key = MetaCriteriaKey.builder()
+				.category(category)
+				.build();
+		return super.getSearchMetaCriteria(key);
 	}
 
 	@GetMapping("/DC/{" + PARAM_NAME_CATEGORY + "}/{" + PARAM_NAME_SERIES + "}/criteria")
 	public SearchMetaCriteriaResponse getSearchMetaCriteriaByCategoryBySeries(
 			@PathVariable(PARAM_NAME_CATEGORY) String category,
 			@PathVariable(PARAM_NAME_SERIES) String series) {
-		return super.getSearchMetaCriteria();
+		MetaCriteriaKey key = MetaCriteriaKey.builder()
+				.category(category)
+				.series(series)
+				.build();
+		return super.getSearchMetaCriteria(key);
 	}
+		
+	@SuppressWarnings("unchecked")
+	@Override
+	protected Map<?, Range<? extends Number>> getMinMaxRangeByUnit(String fieldName, MetaCriteriaKey key) {
+		return (Map<?, Range<? extends Number>>) ReflectionUtils.readValueFromMethod(
+				getProductRepository(),
+				"find" + StringUtils.capitalize(fieldName) + "MinMaxByUnits",
+				new Class[] {MotorCategory.Type.class, String.class, String.class},
+				key.getType(), key.getCategory(), key.getSeries());
+	}
+
 	
 	@Override
 	protected String getModelDisplayName() {

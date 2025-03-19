@@ -8,9 +8,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.apache.commons.lang3.ObjectUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.util.ObjectUtils;
 
 import com.fasterxml.jackson.annotation.JsonValue;
 
@@ -68,35 +68,45 @@ public class ReflectionUtils {
 		return resultFields;
 	}
 
-	public static Object readValueFromMethod(String methodName, Object fromObject) {
+	public static Object readValueFromMethod(Object fromObject, String methodName, Class<?>[] paramTypes, Object... paramValues) {
 		if (ObjectUtils.isEmpty(methodName) || fromObject == null) {
 			return null;
 		}
 		Method method = null;
 		try {
-			method = fromObject.getClass().getMethod(methodName);
-			if (method != null) {
-				Object value = method.invoke(fromObject);
-				if (value instanceof Optional) {
-					@SuppressWarnings("unchecked")
-					Optional<Object> op = (Optional<Object>) value;
-					if (op.isPresent()) {
-						return op.get();
-					} else {
-						return null;
-					}
-				}
-				return value;
+			if (ObjectUtils.isNotEmpty(paramTypes)) {
+				method = fromObject.getClass().getMethod(methodName, paramTypes);
 			} else {
+				method = fromObject.getClass().getMethod(methodName);
+			}
+			if (method == null) {
+				logger.error("Can't find method {} from object of {} ", methodName, fromObject.getClass());
 				return null;
 			}
+			logger.info("The method {} is invoked. ", method);
+			Object resultValue = null;
+			if (ObjectUtils.isNotEmpty(paramValues)) {
+				resultValue = method.invoke(fromObject, paramValues);
+			} else {
+				resultValue = method.invoke(fromObject);
+			}
+			if (resultValue instanceof Optional) {
+				@SuppressWarnings("unchecked")
+				Optional<Object> op = (Optional<Object>) resultValue;
+				if (op.isPresent()) {
+					return op.get();
+				} else {
+					return null;
+				}
+			}
+			return resultValue;
 		} catch (Exception e) {
 			logger.error("Unable to read value from method: {} ", methodName, e);
 			return null;
 		}
 	}
 
-	public static Object readValue(Method method, Object fromObject) {
+	public static Object readValue(Object fromObject, Method method) {
 		try {
 			return method.invoke(fromObject);
 		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
@@ -104,7 +114,7 @@ public class ReflectionUtils {
 		}
 	}
 	
-	public static Object readValue(Field field, Object fromObject) {
+	public static Object readValue(Object fromObject, Field field) {
 		field.setAccessible(true);
 		try {
 			return field.get(fromObject);
@@ -119,14 +129,14 @@ public class ReflectionUtils {
 		}
 		Method jsonValueMethod = ReflectionUtils.getMethodAnnotatedWith(enumObject.getClass(), JsonValue.class);
 		if (jsonValueMethod != null) {
-			Object unitVal = ReflectionUtils.readValue(jsonValueMethod, enumObject);
+			Object unitVal = ReflectionUtils.readValue(enumObject, jsonValueMethod);
 			if (unitVal != null) {
 				return unitVal.toString();
 			}
 		} else {
 			Field jsonValueField = ReflectionUtils.getFieldAnnotatedWith(enumObject.getClass(), JsonValue.class);
 			if (jsonValueField != null) {
-				Object unitVal = ReflectionUtils.readValue(jsonValueField, enumObject);
+				Object unitVal = ReflectionUtils.readValue(enumObject, jsonValueField);
 				if (unitVal != null) {
 					return unitVal.toString();
 				}

@@ -3,6 +3,9 @@ package com.exmek.core.persistence;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.function.BiFunction;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.ObjectUtils;
 import org.slf4j.Logger;
@@ -10,6 +13,10 @@ import org.slf4j.LoggerFactory;
 
 import com.exmek.commons.expr.LogicalOperator;
 import com.exmek.commons.expr.RelationalOperator;
+import com.exmek.commons.function.HexaFunction;
+import com.exmek.commons.function.QuadFunction;
+import com.exmek.core.commons.model.Range;
+import com.exmek.core.model.MotorCategory;
 import com.exmek.core.rest.ConditionClause;
 import com.exmek.core.rest.ConditionLine;
 
@@ -166,5 +173,50 @@ public class JPAUtils {
 			}
 		}
 		return JPAUtils.buildConjunctPredicate(builder, predicates, conditionClause.getOperator());
+	}
+	
+	@SuppressWarnings("unchecked")
+	public static <U, N extends Number> Map<U, Range<N>> findMinMaxByUnits(MotorCategory.Type type, String category, String series,
+			HexaFunction<Integer, MotorCategory.Type, Integer, String, Integer, String, List<Object[]>> delegate) {
+		int ignoreType = determineIgnore(type);
+		int ignoreCategory = determineIgnore(category);
+		int ignoreSeries = determineIgnore(series);
+		return delegate.apply(ignoreType, type, ignoreCategory, category, ignoreSeries, series).stream()
+				.collect(Collectors.toMap(
+						oo -> (U) oo[2],
+						oo -> buildMinMaxRange(oo[0], oo[1]))
+				);
+	}
+
+	@SuppressWarnings("unchecked")
+	public static <U, N extends Number> Map<U, Range<N>> findMinMaxByUnits(String category, String series,
+			QuadFunction<Integer, String, Integer, String, List<Object[]>> delegate) {
+		int ignoreCategory = determineIgnore(category);
+		int ignoreSeries = determineIgnore(series);
+		return delegate.apply(ignoreCategory, category, ignoreSeries, series).stream()
+				.collect(Collectors.toMap(
+						oo -> (U) oo[2],
+						oo -> buildMinMaxRange(oo[0], oo[1]))
+				);
+	}
+	
+	@SuppressWarnings("unchecked")
+	public static <U, N extends Number> Map<U, Range<N>> findMinMaxByUnits(String series,
+			BiFunction<Integer, String, List<Object[]>> delegate) {
+		int ignoreSeries = determineIgnore(series);
+		return delegate.apply(ignoreSeries, series).stream()
+				.collect(Collectors.toMap(
+						oo -> (U) oo[2],
+						oo -> buildMinMaxRange(oo[0], oo[1]))
+				);
+	}
+	
+	private static int determineIgnore(Object str) {
+		return ObjectUtils.isEmpty(str) ? 1 : 0;
+	}
+
+	@SuppressWarnings("unchecked")
+	private static <N extends Number> Range<N> buildMinMaxRange(Object min, Object max) {
+		return Range.<N>builder().min((N) min).max((N) max).build();
 	}
 }
