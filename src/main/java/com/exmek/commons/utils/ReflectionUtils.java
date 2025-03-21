@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.apache.commons.lang3.ObjectUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -68,6 +69,22 @@ public class ReflectionUtils {
 		return resultFields;
 	}
 
+	public static Field getField(Class<?> type, String fieldName) {
+		if (type == null || StringUtils.isEmpty(fieldName)) {
+			return null;
+		}
+		Class<?> clazz = type;
+		while (clazz != Object.class) {
+			for (final Field f : clazz.getDeclaredFields()) {
+				if (StringUtils.equals(f.getName(), fieldName)) {
+					return f;
+				}
+			}
+			clazz = clazz.getSuperclass();
+		}
+		return null;
+	}
+	
 	public static Object readValueFromMethod(Object fromObject, String methodName, Class<?>[] paramTypes, Object... paramValues) {
 		if (ObjectUtils.isEmpty(methodName) || fromObject == null) {
 			return null;
@@ -121,6 +138,26 @@ public class ReflectionUtils {
 		} catch (IllegalArgumentException | IllegalAccessException ex) {
 			throw new RuntimeException(ex);
 		}
+	}
+	
+	public static Enum<?> readEnumConstant(Class<? extends Enum<?>> enumClass, String enumConstName) {
+		if (enumClass == null || StringUtils.isEmpty(enumConstName)) {
+			return null;
+		}
+		Method valueOfMethod = null;
+		try {
+			valueOfMethod = enumClass.getMethod("valueOf", String.class);
+		} catch (Exception e) {
+			logger.error("Unable to find method of valueOf(String) from {} ", enumClass, e);
+			return null;
+		}
+		Enum<?> enumConstValue = null;
+		try {
+			enumConstValue = (Enum<?>) valueOfMethod.invoke(null, enumConstName);
+		} catch (Exception e) {
+			logger.error("Unable to read from {}.valueOf(String) ", enumClass, e);
+		}
+		return enumConstValue;
 	}
 
 	public static String getEnumJsonValue(Enum<?> enumObject) {

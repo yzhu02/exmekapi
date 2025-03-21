@@ -1,5 +1,6 @@
 package com.exmek.core.persistence;
 
+import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -7,7 +8,9 @@ import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
+import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang3.ObjectUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,8 +18,11 @@ import com.exmek.commons.expr.LogicalOperator;
 import com.exmek.commons.expr.RelationalOperator;
 import com.exmek.commons.function.HexaFunction;
 import com.exmek.commons.function.QuadFunction;
+import com.exmek.commons.utils.ReflectionUtils;
 import com.exmek.core.commons.model.Range;
+import com.exmek.core.commons.model.UnitBaseValuable;
 import com.exmek.core.model.MotorCategory;
+import com.exmek.core.persistence.entity.AbstractProductEntity;
 import com.exmek.core.rest.ConditionClause;
 import com.exmek.core.rest.ConditionLine;
 
@@ -64,7 +70,7 @@ public class JPAUtils {
 
 	public static <N extends Number> Predicate buildPredicateForNumber(CriteriaBuilder builder,
 			Path<N> attrPath, Class<? extends Object> fieldType, ConditionLine cl) {
-		Number nValue = getNumberValue(fieldType, cl.getValue());
+		Number nValue = getNumberValue(fieldType, cl.getNumberValue());
 		if (RelationalOperator.EQ == cl.getOperator()) {
 			return builder.equal(attrPath, nValue);
 		} else if (RelationalOperator.GT == cl.getOperator()) {
@@ -78,9 +84,90 @@ public class JPAUtils {
 		} else if (RelationalOperator.NE == cl.getOperator()) {
 			return builder.notEqual(attrPath, nValue);
 		} else if (RelationalOperator.BETWEEN == cl.getOperator()) {
-			return buildNumberBetween(builder, attrPath, fieldType, nValue, getNumberValue(fieldType, cl.getValue2()));
+			return buildNumberBetween(builder, attrPath, fieldType, nValue, getNumberValue(fieldType, cl.getNumberValue2()));
 		}
 		return null;
+	}
+
+	public static <T> Predicate buildUnitBasedPredicateForNumber(CriteriaBuilder builder, Root<T> root, 
+			Class<? extends Object> fieldType, ConditionLine cl) {
+
+		Predicate originPredicate = JPAUtils.buildPredicateForNumber(builder, root.get(cl.getFieldName()), fieldType, cl);
+		
+		Class<? extends T> entityClass = root.getJavaType();
+		String unitFieldName = cl.getFieldName() + AbstractProductEntity.UNIT_FIELD_SUFFIX;
+		Field unitField = null;
+		try {
+			unitField = ReflectionUtils.getField(entityClass, unitFieldName);
+		} catch (Exception e) {
+			logger.error("Unable to find unit field name {} from entity class {} ", unitField, entityClass);
+		}
+		if (unitField == null) {
+			return originPredicate;
+		}
+		Class<?> unitType = unitField.getType();
+		if (!unitType.isEnum()) {
+			return originPredicate;
+		}
+		@SuppressWarnings("unchecked")
+		Class<? extends Enum<?>> unitEnumClass = (Class<? extends Enum<?>>) unitType;
+		Enum<?> originUnitEnum = ReflectionUtils.readEnumConstant(unitEnumClass, cl.getUnit());
+		Enum<?>[] unitEnums = unitEnumClass.getEnumConstants();
+		if (unitEnums.length >= 1) {
+			originPredicate = builder.and(originPredicate, builder.equal(root.get(unitFieldName), originUnitEnum));
+		}
+		if (unitEnums.length == 1) {
+			return originPredicate;
+		}
+		
+		String baseValuePropName = "baseValue";
+		double originUnitBaseValue = 1;
+		if (originUnitEnum instanceof UnitBaseValuable) {
+			originUnitBaseValue = ((UnitBaseValuable) originUnitEnum).getBaseValue();
+		} else {
+			try {
+				originUnitBaseValue = (double) PropertyUtils.getProperty(originUnitEnum, baseValuePropName);
+			} catch (Exception ex) {
+				logger.warn("Unable to read {} from {} ", baseValuePropName, originUnitEnum, ex);
+			}
+		}
+		List<Predicate> combinedPredicates = new ArrayList<>();
+		combinedPredicates.add(originPredicate);
+		for (Enum<?> unitEnum : unitEnums) {
+			if (unitEnum == originUnitEnum) {
+				continue;
+			}
+			double uBaseValue = 1;
+			if (unitEnum instanceof UnitBaseValuable) {
+				uBaseValue = ((UnitBaseValuable) unitEnum).getBaseValue();
+			} else {
+				try {
+					uBaseValue = (double) PropertyUtils.getProperty(unitEnum, baseValuePropName);
+				} catch (Exception ex) {
+					logger.error("Unable to read {} from {} ", baseValuePropName, unitEnum, ex);
+					continue;
+				}
+			}
+			ConditionLine clonedCL = cl.clone();
+			clonedCL.setUnit(unitEnum.name());
+			double unitPropotion = originUnitBaseValue / uBaseValue;
+			String uNumberValue = calcNumberStringByPropotion(cl.getNumberValue(), unitPropotion);
+			clonedCL.setNumberValue(uNumberValue);
+			clonedCL.setValue(uNumberValue);
+			if (StringUtils.isNotEmpty(cl.getNumberValue2())) {
+				String uNumberValue2 = calcNumberStringByPropotion(cl.getNumberValue2(), unitPropotion);
+				clonedCL.setNumberValue2(uNumberValue2);
+				clonedCL.setValue2(uNumberValue2 + unitEnum.name());
+			}
+			Predicate clonedPredicate = JPAUtils.buildPredicateForNumber(builder, root.get(cl.getFieldName()), fieldType, clonedCL);
+			clonedPredicate = builder.and(clonedPredicate, builder.equal(root.get(unitFieldName), unitEnum));
+			combinedPredicates.add(clonedPredicate);
+		}
+		return JPAUtils.buildConjunctPredicate(builder, combinedPredicates, LogicalOperator.OR);
+	}
+	
+	private static String calcNumberStringByPropotion(String numberString, double proportion) {
+		return String.valueOf(new BigDecimal(numberString).multiply(BigDecimal.valueOf(proportion)));
 	}
 
 	public static Predicate buildPredicateForString(CriteriaBuilder builder, Path<String> attrPath, ConditionLine cl) {
@@ -144,7 +231,11 @@ public class JPAUtils {
 				ConditionLine cl = ConditionLine.parse(condition);
 				Class<? extends Object> fieldType = root.get(cl.getFieldName()).getJavaType();
 				if (Number.class.isAssignableFrom(fieldType)) {
-					predicate = JPAUtils.buildPredicateForNumber(builder, root.get(cl.getFieldName()), fieldType, cl);
+					if (StringUtils.isNotEmpty(cl.getUnit())) {
+						predicate = JPAUtils.buildUnitBasedPredicateForNumber(builder, root, fieldType, cl);
+					} else {
+						predicate = JPAUtils.buildPredicateForNumber(builder, root.get(cl.getFieldName()), fieldType, cl);
+					}
 				} else if (Boolean.class == fieldType) {
 					if (cl.getOperator() == RelationalOperator.EQ || cl.getOperator() == RelationalOperator.IS) {
 						Boolean booleanVal = Boolean.valueOf(cl.getValue());

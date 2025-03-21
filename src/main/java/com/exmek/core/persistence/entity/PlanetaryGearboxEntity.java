@@ -5,12 +5,10 @@ import java.math.BigDecimal;
 import com.exmek.core.annotation.Searchable;
 import com.exmek.core.commons.enums.ForceUnit;
 import com.exmek.core.commons.enums.TorqueUnit;
-import com.exmek.core.persistence.converter.ForceUnitConverter;
 
 import jakarta.persistence.Access;
 import jakarta.persistence.AccessType;
 import jakarta.persistence.Column;
-import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -55,21 +53,18 @@ public class PlanetaryGearboxEntity extends AbstractProductEntity {
 	private BigDecimal maxRadialLoad;
 	
 	@Column(name = "MAX_RADIAL_LOAD_UNIT")
-	@Convert(converter = ForceUnitConverter.class)
 	private ForceUnit maxRadialLoadUnit;
 	
 	@Column(name = "MAX_AXIAL_LOAD")
 	private BigDecimal maxAxialLoad;
 	
 	@Column(name = "MAX_AXIAL_LOAD_UNIT")
-	@Convert(converter = ForceUnitConverter.class)
 	private ForceUnit maxAxialLoadUnit;
 	
 	@Column(name = "MAX_SHAFT_PRESS")
 	private BigDecimal maxShaftPress;
 	
 	@Column(name = "MAX_SHAFT_PRESS_UNIT")
-	@Convert(converter = ForceUnitConverter.class)
 	private ForceUnit maxShaftPressUnit;
 	
 	@Column(name = "OPERATING_TEMPERATURE")

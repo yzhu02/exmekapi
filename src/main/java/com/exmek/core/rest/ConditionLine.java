@@ -3,14 +3,17 @@ package com.exmek.core.rest;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.exmek.commons.expr.RelationalOperator;
+import com.exmek.commons.utils.MiscUtils;
 
 import lombok.Data;
 
 @Data
-public class ConditionLine {
+public class ConditionLine implements Cloneable {
 
-	static final String CONDITION_LINE_REGEX = "(\\w+)\\s*(=|==|!=|>|>=|<|<=|\\sBETWEEN\\s|\\sCONTAINS\\s|\\sSTARTWITH\\s|\\sENDWITH\\s|\\sLIKE\\s|\\sIS\\s)\\s*([^=]+)";
+	static final String CONDITION_LINE_REGEX = "(\\w+)\\s*(=|==|!=|>|>=|<|<=|\\sBETWEEN\\s|\\sCONTAINS\\s|\\sSTARTWITH\\s|\\sENDWITH\\s|\\sLIKE\\s|\\sIS\\s)\\s*((\\-?\\d+\\.?\\d*)?\\s*([^=]*))";
 
 	private String fieldName;
 	
@@ -33,9 +36,13 @@ public class ConditionLine {
 	private RelationalOperator operator;
 	
 	private String value;
-
+	private String numberValue;
+	
 	private String value2;
+	private String numberValue2;
 
+	private String unit;
+	
 	public static ConditionLine parse(String conditionStr) {
 		if (conditionStr == null || conditionStr.length() == 0) {
 			return null;
@@ -50,16 +57,41 @@ public class ConditionLine {
 			c.setFieldName(fieldName);
 			c.setOperator(RelationalOperator.fromSymbol(op.trim()));
 			c.setValue(value);
+			c.setNumberValue(m.group(4));
+			if (StringUtils.isNotEmpty(c.getNumberValue()) && !StringUtils.equals(c.getValue(), c.getNumberValue()) && RelationalOperator.BETWEEN != c.getOperator()) {
+				c.setUnit(m.group(5));
+			}
 			if (RelationalOperator.BETWEEN == c.getOperator()) {
 				String AND = "AND";
 				int inx = value.indexOf(AND);
 				if (inx > 1) {
 					c.setValue(value.substring(0, inx - 1).trim());
-					c.setValue2(value.substring(inx + AND.length() + 1, value.length()).trim());
+					String value2 = value.substring(inx + AND.length() + 1, value.length()).trim();
+					c.setValue2(value2);
+					int lastDigitInx = MiscUtils.findLastDigitIndexBackward(value2);
+					if (lastDigitInx > -1) {
+						c.setNumberValue2(value2.substring(0, lastDigitInx + 1));
+						if (lastDigitInx < value2.length() - 1) {
+							c.setUnit(value2.substring(lastDigitInx + 1).trim());
+						}
+					}
 				}
 			}
 			return c;
 		}
 		return null;
+	}
+		
+	@Override
+	public ConditionLine clone() {
+		ConditionLine cl = new ConditionLine();
+		cl.fieldName = this.fieldName;
+		cl.operator = this.operator;
+		cl.value = this.value;
+		cl.numberValue = this.numberValue;
+		cl.unit = this.unit;
+		cl.value2 = this.value2;
+		cl.numberValue2 = this.numberValue2;
+		return cl;
 	}
 }

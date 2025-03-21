@@ -78,7 +78,7 @@ extends BaseProductRestController<T, M, SE, MotorSeries> {
 		}
 	}
 	
-	protected PageableListDataResponse<M> searchMotors(ConditionClause conditionClause,
+	protected PageableListDataResponse<M> searchMotorsByCategoryType(ConditionClause conditionClause,
 			String type, Integer pageNumber, Integer pageSize) {
 		if (ObjectUtils.isEmpty(type)) {
 			return super.searchBy(conditionClause, null, pageNumber, pageSize);

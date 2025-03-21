@@ -1,10 +1,19 @@
 package com.exmek.core.commons.enums;
 
-public enum TorqueUnit {
+import com.exmek.core.commons.model.UnitBaseValuable;
 
-	Nm,
-	Ncm,
+public enum TorqueUnit implements UnitBaseValuable {
+
+	Nm(1), Ncm(0.01), mNm(0.001), Nmm(0.001);
+
+	private double baseValue;
 	
-	// Nmm is equivalent to mNm
-	mNm
+	TorqueUnit(double baseValue) {
+		this.baseValue = baseValue;
+	}
+
+	@Override
+	public double getBaseValue() {
+		return baseValue;
+	}
 }

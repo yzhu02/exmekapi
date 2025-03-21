@@ -10,12 +10,12 @@ import java.util.function.BiFunction;
 
 import org.apache.commons.lang3.ObjectUtils;
 
+import com.exmek.commons.utils.MiscUtils;
 import com.exmek.core.annotation.Searchable;
 import com.exmek.core.commons.model.Range;
 import com.exmek.core.helper.MetaCriteriaKey;
 import com.exmek.core.persistence.entity.AbstractProductEntity;
 import com.exmek.core.rest.FieldMetaCriterion;
-import com.exmek.core.utils.ExmekUtils;
 import com.exmek.core.utils.RelationalOperatorUtils;
 
 public class SearchMetaCriteriaBuilder {
@@ -101,7 +101,7 @@ public class SearchMetaCriteriaBuilder {
 		FieldMetaCriterion c = new FieldMetaCriterion();
 		String fieldName = field.getName();
 		c.setFieldName(fieldName);
-		c.setDisplayName(ExmekUtils.fieldNameToDisplayName(field.getName()));
+		c.setDisplayName(MiscUtils.fieldNameToDisplayName(field.getName()));
 		c.setType(field.getType().getSimpleName());
 		String unitFieldName = field.getName() + AbstractProductEntity.UNIT_FIELD_SUFFIX;
 		if (fieldsMap.containsKey(unitFieldName)) {

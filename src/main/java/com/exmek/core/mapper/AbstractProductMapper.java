@@ -14,6 +14,7 @@ import org.apache.commons.lang3.tuple.Triple;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.ObjectUtils;
 
+import com.exmek.commons.utils.MiscUtils;
 import com.exmek.commons.utils.ReflectionUtils;
 import com.exmek.core.commons.model.MeasuredValue;
 import com.exmek.core.config.AppConfigProvider;
@@ -21,7 +22,6 @@ import com.exmek.core.model.AbstractProduct;
 import com.exmek.core.model.Spec;
 import com.exmek.core.persistence.entity.AbstractProductEntity;
 import com.exmek.core.resource.ResourceContext;
-import com.exmek.core.utils.ExmekUtils;
 
 public abstract class AbstractProductMapper {
 
@@ -104,7 +104,7 @@ public abstract class AbstractProductMapper {
 			}
 			String unitValue = readSuffixedFieldValue(entity, tSpecField.getMiddle());
 			String typeValue = readSuffixedFieldValue(entity, tSpecField.getRight());
-			models.add(createSpec(ExmekUtils.fieldNameToDisplayName(baseFieldName), specValue, unitValue, typeValue));
+			models.add(createSpec(MiscUtils.fieldNameToDisplayName(baseFieldName), specValue, unitValue, typeValue));
 		}
 				
 		return models;

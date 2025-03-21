@@ -132,7 +132,7 @@ extends BaseMotorRestController<DCMotorEntity, DCMotor, DCMotorCategoryEntity, D
 			@RequestParam(value = QRY_PARAM_NAME_FETCH_ALL, required = false) Boolean fetchAll) {
 
 		validateSearchRequest(conditionClause, pageNumber, pageSize, fetchAll);
-		return super.searchMotors(conditionClause, type, pageNumber, pageSize);
+		return super.searchMotorsByCategoryType(conditionClause, type, pageNumber, pageSize);
 	}
 
 	/**
