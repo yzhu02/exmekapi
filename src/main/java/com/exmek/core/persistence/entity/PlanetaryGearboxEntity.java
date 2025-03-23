@@ -53,18 +53,21 @@ public class PlanetaryGearboxEntity extends AbstractProductEntity {
 	private BigDecimal maxRadialLoad;
 	
 	@Column(name = "MAX_RADIAL_LOAD_UNIT")
+	@Enumerated(EnumType.STRING)
 	private ForceUnit maxRadialLoadUnit;
 	
 	@Column(name = "MAX_AXIAL_LOAD")
 	private BigDecimal maxAxialLoad;
 	
 	@Column(name = "MAX_AXIAL_LOAD_UNIT")
+	@Enumerated(EnumType.STRING)
 	private ForceUnit maxAxialLoadUnit;
 	
 	@Column(name = "MAX_SHAFT_PRESS")
 	private BigDecimal maxShaftPress;
 	
 	@Column(name = "MAX_SHAFT_PRESS_UNIT")
+	@Enumerated(EnumType.STRING)
 	private ForceUnit maxShaftPressUnit;
 	
 	@Column(name = "OPERATING_TEMPERATURE")
