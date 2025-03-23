@@ -5,23 +5,22 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import com.exmek.commons.utils.JsonMapperUtils;
 import com.exmek.commons.utils.MiscUtils;
 import com.exmek.core.persistence.repository.MotorConfigRepository;
+import com.exmek.core.scheduler.Scheduleable;
 import com.fasterxml.jackson.core.type.TypeReference;
 
 import jakarta.annotation.PostConstruct;
 
 @Component
-public class MotorConfigProvider {
+public class MotorConfigProvider implements Scheduleable {
 
 	private static final Logger logger = LoggerFactory.getLogger(MotorConfigProvider.class);
 
@@ -33,7 +32,6 @@ public class MotorConfigProvider {
 	private Map<String, Map<String, String>> perMotorConfigMap = new HashMap<>();
 
 	@PostConstruct
-	@Scheduled(timeUnit = TimeUnit.MINUTES, fixedRate = 5)
 	protected void initialize() {
 		this.perMotorConfigMap = new HashMap<>();
 		this.motorConfigRepository.findAll().stream().forEach(motorConfigEntity -> {
@@ -49,7 +47,12 @@ public class MotorConfigProvider {
 			}
 		});
 	}
-		
+
+	@Override
+	public void onSchedule() {
+		initialize();
+	}
+
 	public List<CurveCoordinate> getMotorCurveCoordinates(String model) {
 		if (model == null) {
 			return null;

@@ -3,26 +3,25 @@ package com.exmek.core.config;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.BooleanUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import com.exmek.commons.utils.JsonMapperUtils;
 import com.exmek.core.model.Company;
 import com.exmek.core.persistence.entity.ConfigEntity;
 import com.exmek.core.persistence.repository.ConfigRepository;
+import com.exmek.core.scheduler.Scheduleable;
 import com.fasterxml.jackson.core.type.TypeReference;
 
 import jakarta.annotation.PostConstruct;
 
 @Component
-public class AppConfigProvider {
+public class AppConfigProvider implements Scheduleable {
 
 	private static final Logger logger = LoggerFactory.getLogger(AppConfigProvider.class);
 
@@ -58,11 +57,15 @@ public class AppConfigProvider {
 	private Map<String, String> configMap = new HashMap<>();
 
 	@PostConstruct
-	@Scheduled(timeUnit = TimeUnit.MINUTES, fixedRate = 5)
 	protected void initialize() {
 		List<ConfigEntity> configEntities = this.configRepository.findAll();
 		this.configMap = configEntities.stream()
 				.collect(Collectors.toMap(ConfigEntity::getName, ConfigEntity::getValue));
+	}
+
+	@Override
+	public void onSchedule() {
+		initialize();
 	}
 
 	public String getConfigValue(String configName, String defaultValue) {

@@ -34,6 +34,7 @@ import com.exmek.core.persistence.entity.AbstractSeriesEntity;
 import com.exmek.core.persistence.repository.BaseProductRepository;
 import com.exmek.core.persistence.repository.BaseSeriesRepository;
 import com.exmek.core.resource.ResourceContext;
+import com.exmek.core.scheduler.Scheduleable;
 import com.exmek.core.search.DbProductSearcher;
 import com.exmek.core.search.SearchMetaCriteriaBuilder;
 import com.exmek.core.service.ProductService;
@@ -44,7 +45,7 @@ import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 
 public abstract class BaseProductRestController<T extends AbstractProductEntity, M extends AbstractProduct, SE extends AbstractSeriesEntity, S extends AbstractSeries> 
-implements ProductService<M> {
+implements ProductService<M>, Scheduleable {
 
 	public static final String PARAM_NAME_SERIES			= "series";
 
@@ -78,6 +79,11 @@ implements ProductService<M> {
 
 	protected abstract Map<?, Range<? extends Number>> getMinMaxRangeByUnit(String fieldName, MetaCriteriaKey criteriaKey);
 
+	@Override
+	public void onSchedule() {
+		fieldMetaCriteriaMap.clear();
+	}
+	
 	@Override
 	public SearchMetaCriteriaResponse getSearchMetaCriteria(MetaCriteriaKey criteriaKey) {
 		List<FieldMetaCriterion> fieldMetaCriteria = 
