@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
@@ -26,6 +27,7 @@ import com.exmek.core.helper.MetaCriteriaKey;
 import com.exmek.core.mapper.AbstractSeriesMapper;
 import com.exmek.core.model.AbstractProduct;
 import com.exmek.core.model.AbstractSeries;
+import com.exmek.core.model.MotorCategory;
 import com.exmek.core.persistence.JPAUtils;
 import com.exmek.core.persistence.entity.AbstractProductEntity;
 import com.exmek.core.persistence.entity.AbstractSeriesEntity;
@@ -93,6 +95,23 @@ implements ProductService<M> {
 				getSearchMetaCriteriaFields(), getEntityClass(), this::getMinMaxRangeByUnit);
 	}
 
+	@SuppressWarnings("unchecked")
+	protected Map<String, Set<Object>> getCachedUnitsOfFieldNames(String type, String category, String series) {
+		MetaCriteriaKey key = MetaCriteriaKey.builder()
+				.type(type != null ? MotorCategory.Type.valueOf(type) : null)
+				.category(category)
+				.series(series)
+				.build();
+		List<FieldMetaCriterion> fieldMetaCriterions = fieldMetaCriteriaMap.get(key);
+		Map<String, Set<Object>> unitsOfFieldNames = null;
+		if (fieldMetaCriterions != null) {
+			unitsOfFieldNames = fieldMetaCriterions.stream()
+					.filter(c -> c.getMinMaxByUnits() != null)
+					.collect(Collectors.toMap(FieldMetaCriterion::getFieldName, c -> (Set<Object>) c.getMinMaxByUnits().keySet()));
+		}
+		return unitsOfFieldNames;
+	}
+	
 	protected M mapEntityToModel(T entity) {
 		return mapEntityToModel(entity, true);
 	}
@@ -140,7 +159,8 @@ implements ProductService<M> {
 		if (!ObjectUtils.isEmpty(series)) {
 			additionalFieldMatching.add(Pair.of(AbstractProductEntity.FIELD_NAME_SERIES, series));
 		}
-		return searchWith(conditionClause, additionalFieldMatching, pageNumber, pageSize);
+		Map<String, Set<Object>> unitsOfFieldNames = getCachedUnitsOfFieldNames(null, null, series);
+		return searchWith(conditionClause, additionalFieldMatching, pageNumber, pageSize, unitsOfFieldNames);
 	}
 
 	/**
@@ -160,12 +180,13 @@ implements ProductService<M> {
 
 	protected PageableListDataResponse<M> searchWith(ConditionClause conditionClause,
 			Integer pageNumber, Integer pageSize) {
-		return searchWith(conditionClause, null, pageNumber, pageSize);
+		return searchWith(conditionClause, null, pageNumber, pageSize, null);
 	}
 
 	protected PageableListDataResponse<M> searchWith(ConditionClause conditionClause,
 			List<Pair<String, Object>> additionalFieldMatching,
-			Integer pageNumber, Integer pageSize) {
+			Integer pageNumber, Integer pageSize,
+			Map<String, Set<Object>> unitsOfFieldNames) {
 		return searchBy(conditionClause, (root, builder) -> {
 			if (!ObjectUtils.isEmpty(additionalFieldMatching)) {
 				List<Predicate> predicates = additionalFieldMatching.stream()
@@ -177,20 +198,22 @@ implements ProductService<M> {
 			} else {
 				return null;
 			}
-		}, pageNumber, pageSize);
+		}, pageNumber, pageSize, unitsOfFieldNames);
 	}
 	
 	protected PageableListDataResponse<M> searchBy(
 			ConditionClause conditionClause,
 			BiFunction<Root<T>, CriteriaBuilder, Pair<Predicate, LogicalOperator>> fAdditionalCondition,
-			Integer pageNumber, Integer pageSize) {
+			Integer pageNumber, Integer pageSize,
+			Map<String, Set<Object>> unitsOfFieldNames) {
 
 		DbProductSearcher searcher = new DbProductSearcher();
 		return searcher.search(getProductRepository(), 
 				conditionClause, 
 				fAdditionalCondition, 
 				pageNumber, pageSize, 
-				entity -> mapEntityToModel(entity, false));
+				entity -> mapEntityToModel(entity, false),
+				unitsOfFieldNames);
 	}
 
 	protected void validateSearchRequest(ConditionClause conditionClause,

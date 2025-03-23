@@ -1,6 +1,8 @@
 package com.exmek.core.search;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -31,12 +33,13 @@ public class DbProductSearcher {
 			ConditionClause conditionClause,
 			BiFunction<Root<T>, CriteriaBuilder, Pair<Predicate, LogicalOperator>> fAdditionalCondition,
 			Integer pageNumber, Integer pageSize,
-			Function<T, M> entityToModelMapper) {
+			Function<T, M> entityToModelMapper,
+			Map<String, Set<Object>> unitsOfFieldNames) {
 
 		PageableListDataResponse<M> dataResponse = new PageableListDataResponse<>();
 		
 		Specification<T> jpaSpec = (root, query, builder) -> {
-			Predicate pConditions = JPAUtils.buildPredicate(builder, root, conditionClause);
+			Predicate pConditions = JPAUtils.buildPredicate(builder, root, conditionClause, unitsOfFieldNames);
 			if (fAdditionalCondition != null) {
 				Pair<Predicate, LogicalOperator> pAdditionalCondition = fAdditionalCondition.apply(root, builder);
 				if (pAdditionalCondition != null) {

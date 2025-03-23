@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
@@ -90,7 +91,7 @@ public class JPAUtils {
 	}
 
 	public static <T> Predicate buildUnitBasedPredicateForNumber(CriteriaBuilder builder, Root<T> root, 
-			Class<? extends Object> fieldType, ConditionLine cl) {
+			Class<? extends Object> fieldType, ConditionLine cl, Enum<?>[] units) {
 
 		Predicate originPredicate = JPAUtils.buildPredicateForNumber(builder, root.get(cl.getFieldName()), fieldType, cl);
 		
@@ -111,45 +112,50 @@ public class JPAUtils {
 		}
 		@SuppressWarnings("unchecked")
 		Class<? extends Enum<?>> unitEnumClass = (Class<? extends Enum<?>>) unitType;
-		Enum<?> originUnitEnum = ReflectionUtils.readEnumConstant(unitEnumClass, cl.getUnit());
-		Enum<?>[] unitEnums = unitEnumClass.getEnumConstants();
-		if (unitEnums.length >= 1) {
-			originPredicate = builder.and(originPredicate, builder.equal(root.get(unitFieldName), originUnitEnum));
+		Enum<?> originUnit = ReflectionUtils.readEnumConstant(unitEnumClass, cl.getUnit());
+		if (units == null || units.length == 0) {
+			units = unitEnumClass.getEnumConstants();
 		}
-		if (unitEnums.length == 1) {
+		if (units == null || units.length == 0) {
+			return originPredicate;
+		}
+		if (units.length >= 1) {
+			originPredicate = builder.and(originPredicate, builder.equal(root.get(unitFieldName), originUnit));
+		}
+		if (units.length == 1) {
 			return originPredicate;
 		}
 		
 		String baseValuePropName = "baseValue";
 		double originUnitBaseValue = 1;
-		if (originUnitEnum instanceof UnitBaseValuable) {
-			originUnitBaseValue = ((UnitBaseValuable) originUnitEnum).getBaseValue();
+		if (originUnit instanceof UnitBaseValuable) {
+			originUnitBaseValue = ((UnitBaseValuable) originUnit).getBaseValue();
 		} else {
 			try {
-				originUnitBaseValue = (double) PropertyUtils.getProperty(originUnitEnum, baseValuePropName);
+				originUnitBaseValue = (double) PropertyUtils.getProperty(originUnit, baseValuePropName);
 			} catch (Exception ex) {
-				logger.warn("Unable to read {} from {} ", baseValuePropName, originUnitEnum, ex);
+				logger.warn("Unable to read {} from {} ", baseValuePropName, originUnit, ex);
 			}
 		}
 		List<Predicate> combinedPredicates = new ArrayList<>();
 		combinedPredicates.add(originPredicate);
-		for (Enum<?> unitEnum : unitEnums) {
-			if (unitEnum == originUnitEnum) {
+		for (Enum<?> unit : units) {
+			if (unit == originUnit) {
 				continue;
 			}
 			double uBaseValue = 1;
-			if (unitEnum instanceof UnitBaseValuable) {
-				uBaseValue = ((UnitBaseValuable) unitEnum).getBaseValue();
+			if (unit instanceof UnitBaseValuable) {
+				uBaseValue = ((UnitBaseValuable) unit).getBaseValue();
 			} else {
 				try {
-					uBaseValue = (double) PropertyUtils.getProperty(unitEnum, baseValuePropName);
+					uBaseValue = (double) PropertyUtils.getProperty(unit, baseValuePropName);
 				} catch (Exception ex) {
-					logger.error("Unable to read {} from {} ", baseValuePropName, unitEnum, ex);
+					logger.error("Unable to read {} from {} ", baseValuePropName, unit, ex);
 					continue;
 				}
 			}
 			ConditionLine clonedCL = cl.clone();
-			clonedCL.setUnit(unitEnum.name());
+			clonedCL.setUnit(unit.name());
 			double unitPropotion = originUnitBaseValue / uBaseValue;
 			String uNumberValue = calcNumberStringByPropotion(cl.getNumberValue(), unitPropotion);
 			clonedCL.setNumberValue(uNumberValue);
@@ -157,10 +163,10 @@ public class JPAUtils {
 			if (StringUtils.isNotEmpty(cl.getNumberValue2())) {
 				String uNumberValue2 = calcNumberStringByPropotion(cl.getNumberValue2(), unitPropotion);
 				clonedCL.setNumberValue2(uNumberValue2);
-				clonedCL.setValue2(uNumberValue2 + unitEnum.name());
+				clonedCL.setValue2(uNumberValue2 + unit.name());
 			}
 			Predicate clonedPredicate = JPAUtils.buildPredicateForNumber(builder, root.get(cl.getFieldName()), fieldType, clonedCL);
-			clonedPredicate = builder.and(clonedPredicate, builder.equal(root.get(unitFieldName), unitEnum));
+			clonedPredicate = builder.and(clonedPredicate, builder.equal(root.get(unitFieldName), unit));
 			combinedPredicates.add(clonedPredicate);
 		}
 		return JPAUtils.buildConjunctPredicate(builder, combinedPredicates, LogicalOperator.OR);
@@ -215,7 +221,9 @@ public class JPAUtils {
 		}
 	}
 
-	public static <T> Predicate buildPredicate(CriteriaBuilder builder, Root<T> root, ConditionClause conditionClause) {
+	public static <T> Predicate buildPredicate(CriteriaBuilder builder, Root<T> root, 
+			ConditionClause conditionClause, Map<String, Set<Object>> unitsOfFieldNames) {
+
 		if (conditionClause == null) {
 			return null;
 		}
@@ -232,7 +240,14 @@ public class JPAUtils {
 				Class<? extends Object> fieldType = root.get(cl.getFieldName()).getJavaType();
 				if (Number.class.isAssignableFrom(fieldType)) {
 					if (StringUtils.isNotEmpty(cl.getUnit())) {
-						predicate = JPAUtils.buildUnitBasedPredicateForNumber(builder, root, fieldType, cl);
+						Enum<?>[] units = null;
+						if (unitsOfFieldNames != null) {
+							Set<Object> unitObjects = unitsOfFieldNames.get(cl.getFieldName());
+							if (unitObjects != null) {
+								units = unitObjects.stream().filter(u -> u.getClass().isEnum()).toArray(Enum<?>[]::new);
+							}
+						}
+						predicate = JPAUtils.buildUnitBasedPredicateForNumber(builder, root, fieldType, cl, units);
 					} else {
 						predicate = JPAUtils.buildPredicateForNumber(builder, root.get(cl.getFieldName()), fieldType, cl);
 					}
@@ -257,7 +272,7 @@ public class JPAUtils {
 		}
 		if (subConditionClauses != null) {
 			for (ConditionClause subCond : subConditionClauses) {
-				Predicate subPredicate = buildPredicate(builder, root, subCond);
+				Predicate subPredicate = buildPredicate(builder, root, subCond, unitsOfFieldNames);
 				if (subPredicate != null) {
 					predicates.add(subPredicate);
 				}

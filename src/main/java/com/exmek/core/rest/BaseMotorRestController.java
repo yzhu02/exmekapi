@@ -2,7 +2,9 @@ package com.exmek.core.rest;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -80,13 +82,15 @@ extends BaseProductRestController<T, M, SE, MotorSeries> {
 	
 	protected PageableListDataResponse<M> searchMotorsByCategoryType(ConditionClause conditionClause,
 			String type, Integer pageNumber, Integer pageSize) {
+		
 		if (ObjectUtils.isEmpty(type)) {
-			return super.searchBy(conditionClause, null, pageNumber, pageSize);
+			return super.searchBy(conditionClause, null, pageNumber, pageSize, null);
 		}
+		Map<String, Set<Object>> unitsOfFieldNames = getCachedUnitsOfFieldNames(type, null, null);
 		return super.searchBy(conditionClause, (root, builder) -> {
 			Join<T, CE> categoryJoin = root.join(AbstractMotorEntity.FIELD_NAME_MOTOR_CATEGORY);
 			return Pair.of(builder.equal(categoryJoin.get(AbstractMotorCategoryEntity.FIELD_NAME_TYPE), type), LogicalOperator.AND);
-		}, pageNumber, pageSize);
+		}, pageNumber, pageSize, unitsOfFieldNames);
 	}
 	
 	protected PageableListDataResponse<M> searchMotorsByCategoryBySeries(ConditionClause conditionClause,
@@ -100,7 +104,8 @@ extends BaseProductRestController<T, M, SE, MotorSeries> {
 		if (!ObjectUtils.isEmpty(series)) {
 			additionalFieldMatching.add(Pair.of(AbstractMotorEntity.FIELD_NAME_SERIES, series));
 		}
-		return super.searchWith(conditionClause, additionalFieldMatching, pageNumber, pageSize);
+		Map<String, Set<Object>> unitsOfFieldNames = getCachedUnitsOfFieldNames(null, category, series);
+		return super.searchWith(conditionClause, additionalFieldMatching, pageNumber, pageSize, unitsOfFieldNames);
 	}
 
 	protected PageableListDataResponse<MotorSeries> searchMotorSeriesesByCategory(String category,
