@@ -122,7 +122,7 @@ public class JPAUtils {
 		if (units.length >= 1) {
 			originPredicate = builder.and(originPredicate, builder.equal(root.get(unitFieldName), originUnit));
 		}
-		if (units.length == 1) {
+		if (units.length == 1 && units[0] == originUnit) {
 			return originPredicate;
 		}
 		
@@ -222,7 +222,8 @@ public class JPAUtils {
 	}
 
 	public static <T> Predicate buildPredicate(CriteriaBuilder builder, Root<T> root, 
-			ConditionClause conditionClause, Map<String, Set<Object>> unitsOfFieldNames) {
+			ConditionClause conditionClause, 
+			Map<String, Set<Object>> dataAvailableUnitsOfFieldNames) {
 
 		if (conditionClause == null) {
 			return null;
@@ -241,8 +242,8 @@ public class JPAUtils {
 				if (Number.class.isAssignableFrom(fieldType)) {
 					if (StringUtils.isNotEmpty(cl.getUnit())) {
 						Enum<?>[] units = null;
-						if (unitsOfFieldNames != null) {
-							Set<Object> unitObjects = unitsOfFieldNames.get(cl.getFieldName());
+						if (dataAvailableUnitsOfFieldNames != null) {
+							Set<Object> unitObjects = dataAvailableUnitsOfFieldNames.get(cl.getFieldName());
 							if (unitObjects != null) {
 								units = unitObjects.stream().filter(u -> u.getClass().isEnum()).toArray(Enum<?>[]::new);
 							}
@@ -272,7 +273,7 @@ public class JPAUtils {
 		}
 		if (subConditionClauses != null) {
 			for (ConditionClause subCond : subConditionClauses) {
-				Predicate subPredicate = buildPredicate(builder, root, subCond, unitsOfFieldNames);
+				Predicate subPredicate = buildPredicate(builder, root, subCond, dataAvailableUnitsOfFieldNames);
 				if (subPredicate != null) {
 					predicates.add(subPredicate);
 				}

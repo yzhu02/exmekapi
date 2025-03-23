@@ -34,12 +34,12 @@ public class DbProductSearcher {
 			BiFunction<Root<T>, CriteriaBuilder, Pair<Predicate, LogicalOperator>> fAdditionalCondition,
 			Integer pageNumber, Integer pageSize,
 			Function<T, M> entityToModelMapper,
-			Map<String, Set<Object>> unitsOfFieldNames) {
+			Map<String, Set<Object>> dataAvailableUnitsOfFieldNames) {
 
 		PageableListDataResponse<M> dataResponse = new PageableListDataResponse<>();
 		
 		Specification<T> jpaSpec = (root, query, builder) -> {
-			Predicate pConditions = JPAUtils.buildPredicate(builder, root, conditionClause, unitsOfFieldNames);
+			Predicate pConditions = JPAUtils.buildPredicate(builder, root, conditionClause, dataAvailableUnitsOfFieldNames);
 			if (fAdditionalCondition != null) {
 				Pair<Predicate, LogicalOperator> pAdditionalCondition = fAdditionalCondition.apply(root, builder);
 				if (pAdditionalCondition != null) {

@@ -86,11 +86,11 @@ extends BaseProductRestController<T, M, SE, MotorSeries> {
 		if (ObjectUtils.isEmpty(type)) {
 			return super.searchBy(conditionClause, null, pageNumber, pageSize, null);
 		}
-		Map<String, Set<Object>> unitsOfFieldNames = getCachedUnitsOfFieldNames(type, null, null);
+		Map<String, Set<Object>> dataAvailableUnitsOfFieldNames = getCachedDataAvailableUnitsOfFieldNames();
 		return super.searchBy(conditionClause, (root, builder) -> {
 			Join<T, CE> categoryJoin = root.join(AbstractMotorEntity.FIELD_NAME_MOTOR_CATEGORY);
 			return Pair.of(builder.equal(categoryJoin.get(AbstractMotorCategoryEntity.FIELD_NAME_TYPE), type), LogicalOperator.AND);
-		}, pageNumber, pageSize, unitsOfFieldNames);
+		}, pageNumber, pageSize, dataAvailableUnitsOfFieldNames);
 	}
 	
 	protected PageableListDataResponse<M> searchMotorsByCategoryBySeries(ConditionClause conditionClause,
@@ -104,8 +104,8 @@ extends BaseProductRestController<T, M, SE, MotorSeries> {
 		if (!ObjectUtils.isEmpty(series)) {
 			additionalFieldMatching.add(Pair.of(AbstractMotorEntity.FIELD_NAME_SERIES, series));
 		}
-		Map<String, Set<Object>> unitsOfFieldNames = getCachedUnitsOfFieldNames(null, category, series);
-		return super.searchWith(conditionClause, additionalFieldMatching, pageNumber, pageSize, unitsOfFieldNames);
+		Map<String, Set<Object>> dataAvailableUnitsOfFieldNames = getCachedDataAvailableUnitsOfFieldNames();
+		return super.searchWith(conditionClause, additionalFieldMatching, pageNumber, pageSize, dataAvailableUnitsOfFieldNames);
 	}
 
 	protected PageableListDataResponse<MotorSeries> searchMotorSeriesesByCategory(String category,

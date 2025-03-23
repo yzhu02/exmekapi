@@ -95,6 +95,10 @@ implements ProductService<M> {
 				getSearchMetaCriteriaFields(), getEntityClass(), this::getMinMaxRangeByUnit);
 	}
 
+	protected Map<String, Set<Object>> getCachedDataAvailableUnitsOfFieldNames() {
+		return getCachedUnitsOfFieldNames(null, null, null);
+	}
+
 	@SuppressWarnings("unchecked")
 	protected Map<String, Set<Object>> getCachedUnitsOfFieldNames(String type, String category, String series) {
 		MetaCriteriaKey key = MetaCriteriaKey.builder()
@@ -159,8 +163,8 @@ implements ProductService<M> {
 		if (!ObjectUtils.isEmpty(series)) {
 			additionalFieldMatching.add(Pair.of(AbstractProductEntity.FIELD_NAME_SERIES, series));
 		}
-		Map<String, Set<Object>> unitsOfFieldNames = getCachedUnitsOfFieldNames(null, null, series);
-		return searchWith(conditionClause, additionalFieldMatching, pageNumber, pageSize, unitsOfFieldNames);
+		Map<String, Set<Object>> dataAvailableUnitsOfFieldNames = getCachedDataAvailableUnitsOfFieldNames();
+		return searchWith(conditionClause, additionalFieldMatching, pageNumber, pageSize, dataAvailableUnitsOfFieldNames);
 	}
 
 	/**
@@ -186,7 +190,7 @@ implements ProductService<M> {
 	protected PageableListDataResponse<M> searchWith(ConditionClause conditionClause,
 			List<Pair<String, Object>> additionalFieldMatching,
 			Integer pageNumber, Integer pageSize,
-			Map<String, Set<Object>> unitsOfFieldNames) {
+			Map<String, Set<Object>> dataAvailableUnitsOfFieldNames) {
 		return searchBy(conditionClause, (root, builder) -> {
 			if (!ObjectUtils.isEmpty(additionalFieldMatching)) {
 				List<Predicate> predicates = additionalFieldMatching.stream()
@@ -198,14 +202,14 @@ implements ProductService<M> {
 			} else {
 				return null;
 			}
-		}, pageNumber, pageSize, unitsOfFieldNames);
+		}, pageNumber, pageSize, dataAvailableUnitsOfFieldNames);
 	}
 	
 	protected PageableListDataResponse<M> searchBy(
 			ConditionClause conditionClause,
 			BiFunction<Root<T>, CriteriaBuilder, Pair<Predicate, LogicalOperator>> fAdditionalCondition,
 			Integer pageNumber, Integer pageSize,
-			Map<String, Set<Object>> unitsOfFieldNames) {
+			Map<String, Set<Object>> dataAvailableUnitsOfFieldNames) {
 
 		DbProductSearcher searcher = new DbProductSearcher();
 		return searcher.search(getProductRepository(), 
@@ -213,7 +217,7 @@ implements ProductService<M> {
 				fAdditionalCondition, 
 				pageNumber, pageSize, 
 				entity -> mapEntityToModel(entity, false),
-				unitsOfFieldNames);
+				dataAvailableUnitsOfFieldNames);
 	}
 
 	protected void validateSearchRequest(ConditionClause conditionClause,
