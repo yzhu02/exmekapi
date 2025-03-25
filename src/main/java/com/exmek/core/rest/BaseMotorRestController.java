@@ -20,6 +20,7 @@ import com.exmek.core.mapper.MotorCategoryMapper;
 import com.exmek.core.mapper.MotorSeriesMapper;
 import com.exmek.core.model.AbstractMotor;
 import com.exmek.core.model.MotorCategory;
+import com.exmek.core.model.MotorCategory.Type;
 import com.exmek.core.model.MotorSeries;
 import com.exmek.core.persistence.entity.AbstractMotorCategoryEntity;
 import com.exmek.core.persistence.entity.AbstractMotorEntity;
@@ -30,6 +31,7 @@ import com.exmek.core.persistence.repository.BaseMotorSeriesRepository;
 import com.exmek.core.utils.ContentUtils;
 
 import jakarta.persistence.criteria.Join;
+import jakarta.persistence.criteria.Predicate;
 
 public abstract class BaseMotorRestController<T extends AbstractMotorEntity, M extends AbstractMotor, CE extends AbstractMotorCategoryEntity, SE extends AbstractMotorSeriesEntity> 
 extends BaseProductRestController<T, M, SE, MotorSeries> {
@@ -59,7 +61,7 @@ extends BaseProductRestController<T, M, SE, MotorSeries> {
 			@RequestParam(value = QRY_PARAM_NAME_TYPE, required = false) String type) {
 		List<CE> entities = null;
 		if (!ObjectUtils.isEmpty(type)) {
-			entities = getMotorCategoryRepository().findByType(MotorCategory.Type.valueOf(type));
+			entities = getMotorCategoryRepository().findByType(Type.valueOf(type.toUpperCase()));
 		} else {
 			entities = getMotorCategoryRepository().findAll();
 		}
@@ -89,7 +91,8 @@ extends BaseProductRestController<T, M, SE, MotorSeries> {
 		Map<String, Set<Object>> dataAvailableUnitsOfFieldNames = getCachedDataAvailableUnitsOfFieldNames();
 		return super.searchBy(conditionClause, (root, builder) -> {
 			Join<T, CE> categoryJoin = root.join(AbstractMotorEntity.FIELD_NAME_MOTOR_CATEGORY);
-			return Pair.of(builder.equal(categoryJoin.get(AbstractMotorCategoryEntity.FIELD_NAME_TYPE), type), LogicalOperator.AND);
+			Predicate pType = builder.equal(categoryJoin.get(AbstractMotorCategoryEntity.FIELD_NAME_TYPE), Type.valueOf(type.toUpperCase()));
+			return Pair.of(pType, LogicalOperator.AND);
 		}, pageNumber, pageSize, dataAvailableUnitsOfFieldNames);
 	}
 	
