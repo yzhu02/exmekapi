@@ -101,7 +101,10 @@ public class MotorConfigProvider implements Scheduleable {
 	
 	private boolean matchKey(String keyPattern, String finding) {
 		if (keyPattern != null && keyPattern.contains("*")) {
-			keyPattern = keyPattern.replace("*", ".*");
+			keyPattern = keyPattern.replace("*", ".*")
+					.replace("(", "\\(")
+					.replace(")", "\\)");
+			
 			return finding.matches(keyPattern);
 		}
 		return Objects.equals(keyPattern, finding);
