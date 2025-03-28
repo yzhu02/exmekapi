@@ -21,7 +21,7 @@ import com.exmek.core.config.AppConfigProvider;
 import com.exmek.core.model.AbstractProduct;
 import com.exmek.core.model.Spec;
 import com.exmek.core.persistence.entity.AbstractProductEntity;
-import com.exmek.core.resource.ResourceContext;
+import com.exmek.core.resource.ResourceManager;
 
 public abstract class AbstractProductMapper {
 
@@ -29,7 +29,7 @@ public abstract class AbstractProductMapper {
 	protected AppConfigProvider appConfigProvider;
 
 	@Autowired
-	protected ResourceContext resourceContext;
+	protected ResourceManager resourceManager;
 
 	protected <T extends AbstractProduct, E extends AbstractProductEntity> T mapProduct(E entity, Supplier<T> modelCreator) {
 		T model = modelCreator.get();

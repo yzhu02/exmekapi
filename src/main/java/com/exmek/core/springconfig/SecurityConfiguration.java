@@ -38,7 +38,7 @@ import com.exmek.core.error.ErrorCode;
 import com.exmek.core.error.ErrorResponse;
 import com.exmek.core.persistence.entity.UserEntity;
 import com.exmek.core.persistence.repository.UserRepository;
-import com.exmek.core.resource.ResourceContext;
+import com.exmek.core.resource.ResourceManager;
 
 @Configuration
 @EnableWebSecurity
@@ -71,8 +71,8 @@ public class SecurityConfiguration {
     	    
     		auth
     	    .requestMatchers(
-    	    		UrlUtils.concatURL("/", ResourceContext.DIR_NAME_IMAGES, "**"),
-    	    		UrlUtils.concatURL("/", ResourceContext.DIR_NAME_MATERIALS, "**"))
+    	    		UrlUtils.concatURL("/", ResourceManager.DIR_NAME_IMAGES, "**"),
+    	    		UrlUtils.concatURL("/", ResourceManager.DIR_NAME_MATERIALS, "**"))
     	    .permitAll()
     	    .anyRequest()
     	    .authenticated()

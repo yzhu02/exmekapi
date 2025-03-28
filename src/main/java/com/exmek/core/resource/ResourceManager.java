@@ -23,11 +23,13 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.ObjectUtils;
 
 import com.exmek.commons.utils.UrlUtils;
+import com.exmek.core.config.AppConfigProvider;
+import com.exmek.core.scheduler.Scheduleable;
 
 import jakarta.annotation.PostConstruct;
 
 @Component
-public class ResourceContext {
+public class ResourceManager implements Scheduleable {
 	
 	////Directory names BEGIN
 	public static final String DIR_NAME_STATIC			= "static";
@@ -91,10 +93,13 @@ public class ResourceContext {
 	
 	private static final String RESOURCE_FILENAME_REGEX = "(\\w+)(\\[(\\d+)\\])*";
 
-	private static final Logger logger = LoggerFactory.getLogger(ResourceContext.class);
+	private static final Logger logger = LoggerFactory.getLogger(ResourceManager.class);
 
 	@Autowired
 	private ApplicationContext applicationContext;
+
+	@Autowired
+	private AppConfigProvider appConfigProvider;
 
 	private Map<String, List<String>> motorMechanicalImagePathsMap = new HashMap<>();
 	private Map<String, List<String>> gearboxMechanicalImagePathsMap = new HashMap<>();
@@ -112,38 +117,44 @@ public class ResourceContext {
 	protected void initialize() {
 		String resFileMatch = "*.*";
 		
-		initResourcePathMap(this.motorMechanicalImagePathsMap,
+		this.motorMechanicalImagePathsMap = initResourcePathMap(
 				UrlUtils.concatURL(IMAGES_MOTOR_MECHANICAL_FULL_LOCATION, resFileMatch),
 				IMAGES_MOTOR_MECHANICAL_REL_PATH);
-		initResourcePathMap(this.gearboxMechanicalImagePathsMap,
+		this.gearboxMechanicalImagePathsMap = initResourcePathMap(
 				UrlUtils.concatURL(IMAGES_GEARBOX_MECHANICAL_FULL_LOCATION, resFileMatch),
 				IMAGES_GEARBOX_MECHANICAL_REL_PATH);
-		initResourcePathMap(this.brakeMechanicalImagePathsMap,
+		this.brakeMechanicalImagePathsMap = initResourcePathMap(
 				UrlUtils.concatURL(IMAGES_BRAKE_MECHANICAL_FULL_LOCATION, resFileMatch),
 				IMAGES_BRAKE_MECHANICAL_REL_PATH);
 		
-		initResourcePathMap(this.motor3DDrawingPathsMap,
+		this.motor3DDrawingPathsMap = initResourcePathMap(
 				UrlUtils.concatURL(MATERIALS_MOTOR_3D_FULL_LOCATION, resFileMatch),
 				MATERIALS_MOTOR_3D_REL_PATH);
-		initResourcePathMap(this.gearbox3DDrawingPathsMap,
+		this.gearbox3DDrawingPathsMap = initResourcePathMap(
 				UrlUtils.concatURL(MATERIALS_GEARBOX_3D_FULL_LOCATION, resFileMatch),
 				MATERIALS_GEARBOX_3D_REL_PATH);
-		initResourcePathMap(this.brake3DDrawingPathsMap,
+		this.brake3DDrawingPathsMap = initResourcePathMap(
 				UrlUtils.concatURL(MATERIALS_BRAKE_3D_FULL_LOCATION, resFileMatch),
 				MATERIALS_BRAKE_3D_REL_PATH);
 		
-		initResourcePathMap(this.motorTechDocPathsMap,
+		this.motorTechDocPathsMap = initResourcePathMap(
 				UrlUtils.concatURL(MATERIALS_MOTOR_TECHDOC_FULL_LOCATION, resFileMatch),
 				MATERIALS_MOTOR_TECHDOC_REL_PATH);
-		initResourcePathMap(this.gearboxTechDocPathsMap,
+		this.gearboxTechDocPathsMap = initResourcePathMap(
 				UrlUtils.concatURL(MATERIALS_GEARBOX_TECHDOC_FULL_LOCATION, resFileMatch),
 				MATERIALS_GEARBOX_TECHDOC_REL_PATH);
-		initResourcePathMap(this.brakeTechDocPathsMap,
+		this.brakeTechDocPathsMap = initResourcePathMap(
 				UrlUtils.concatURL(MATERIALS_BRAKE_TECHDOC_FULL_LOCATION, resFileMatch),
 				MATERIALS_BRAKE_TECHDOC_REL_PATH);
 	}
 
-	private void initResourcePathMap(Map<String, List<String>> resourceMap, String resourceFullLocation, String resourceRelPath) {
+	@Override
+	public void onSchedule() {
+		initialize();
+	}
+	
+	private Map<String, List<String>> initResourcePathMap(String resourceFullLocation, String resourceRelPath) {
+		Map<String, List<String>> resourceMap = new HashMap<>();
 		Resource[] resources = null;
 		try {
 			resources = ResourcePatternUtils.getResourcePatternResolver(applicationContext).getResources(resourceFullLocation);
@@ -156,7 +167,7 @@ public class ResourceContext {
 			logger.error("Failed to load resources from {} ", resourceFullLocation, ex);
 		}
 		if (resources == null || resources.length == 0) {
-			return;
+			return resourceMap;
 		}
 		BiConsumer<String, String> putResourceCallback = (resName, filename) -> {
 			List<String> resourcePaths = resourceMap.get(resName);
@@ -186,24 +197,17 @@ public class ResourceContext {
 			putResourceCallback.accept(resName, filename);
 		}
 		logger.info("Resources are initialized successfully for parent path {} with size {} ", resourceRelPath, resourceMap.size());
+		return resourceMap;
 	}
 	
-	private List<String> getResourcePaths(
-			String model, String basePath, String productDirName, String resourceDirName, Map<String, List<String>> defaultResourceMap) {
-		String relModelResPath = UrlUtils.concatURL(basePath, productDirName, model, resourceDirName);
-		String resFileMatch = "*.*";
-		String resLocation = UrlUtils.concatURL(ResourcePatternResolver.CLASSPATH_ALL_URL_PREFIX, DIR_NAME_STATIC, relModelResPath, resFileMatch);
-		Resource[] resources = null;
-		try {
-			resources = ResourcePatternUtils.getResourcePatternResolver(applicationContext).getResources(resLocation);
-			if (resources == null || resources.length == 0) {
-				logger.warn("No resource loaded from {} for product {}. ", resLocation, model);
-			} else {
-				logger.info("Resources are loaded from {} successfully for product {}. ", resLocation, model);
-			}
-		} catch (IOException ex) {
-			logger.warn("Failed to load resource from {} for product {}. ", resLocation, model, ex);
+	private List<String> getResourcePaths(String model, String basePath, String productDirName, String resourceDirName, 
+			Map<String, List<String>> defaultResourceMap) {
+		
+		if (!"true".equalsIgnoreCase(appConfigProvider.getResourceReadIndividualFolder())) {
+			return defaultResourceMap.get(model);
 		}
+		String relModelResPath = UrlUtils.concatURL("/", basePath, productDirName, model, resourceDirName);
+		Resource[] resources = readIndividualResources(relModelResPath, model);
 		if (resources == null || resources.length == 0) {
 			return defaultResourceMap.get(model);
 		}
@@ -219,6 +223,23 @@ public class ResourceContext {
 		return resPaths;
 	}
 
+	private Resource[] readIndividualResources(String relModelResPath, String model) {
+		Resource[] resources = null;
+		String resFileMatch = "*.*";
+		String resLocation = UrlUtils.concatURL(ResourcePatternResolver.CLASSPATH_ALL_URL_PREFIX, DIR_NAME_STATIC, relModelResPath, resFileMatch);
+		try {
+			resources = ResourcePatternUtils.getResourcePatternResolver(applicationContext).getResources(resLocation);
+			if (resources == null || resources.length == 0) {
+				logger.warn("No resource loaded from {} for product {}. ", resLocation, model);
+			} else {
+				logger.info("Resources are loaded from {} successfully for product {}. ", resLocation, model);
+			}
+		} catch (IOException ex) {
+			logger.warn("Failed to load resource from {} for product {}. ", resLocation, model, ex);
+		}
+		return resources;
+	}
+	
 	private List<String> getMechanicalImageResourcePaths(
 			String model, String productDirName, Map<String, List<String>> defaultResourceMap) {
 		return getResourcePaths(model, DIR_NAME_IMAGES, productDirName, DIR_NAME_MICHANICAL, defaultResourceMap);

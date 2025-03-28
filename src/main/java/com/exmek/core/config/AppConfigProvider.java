@@ -47,6 +47,8 @@ public class AppConfigProvider implements Scheduleable {
 	
 	public static final String CONFIG_NAME_SEARCH_BRAKE_METACRITERIA_FIELDS				= "search.brake.metaCriteria.fields";
 	
+	public static final String CONFIG_NAME_RESOURCE_READ_INDIVIDUAL_FOLDER				= "resource.readIndividualFolder";
+	
 
 	private static final String DEFAULT_VALUE_SMTP_EXMEKSYS_							= "{\"host\": \"smtp.gmail.com\", \"port\": 587, \"user\": \"exmeksys@gmail.com\", \"password\": \"mzuhdzrzhyeostbe\", \"properties\": {\"mail.transport.protocol\": \"smtp\", \"mail.smtp.auth\": \"true\", \"mail.smtp.starttls.enable\": \"true\"}}";
 	private static final String DEFAULT_VALUE_EXTERNAL_LOOKUP_COUNTRY_SERVICE			= "{\"baseEndpoint\": \"https://api.country.is/\", \"countryPropertyName\": \"country\"}";
@@ -133,5 +135,9 @@ public class AppConfigProvider implements Scheduleable {
 	public List<String> getSearchBrakeMetaCriteriaFields() {
 		String confStr = getConfigValue(CONFIG_NAME_SEARCH_BRAKE_METACRITERIA_FIELDS, null);
 		return JsonMapperUtils.readValue(confStr, new TypeReference<List<String>>() {});
+	}
+
+	public String getResourceReadIndividualFolder() {
+		return getConfigValue(CONFIG_NAME_RESOURCE_READ_INDIVIDUAL_FOLDER, "false");
 	}
 }

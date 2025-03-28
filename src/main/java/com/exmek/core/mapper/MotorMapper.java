@@ -77,9 +77,9 @@ public class MotorMapper extends AbstractProductMapper {
 			motor.setAllSpecs(mapAllCombinedSpecs(entity, entity.getSpecs(), appConfigProvider.getSearchDCMotorMetaCriteriaFields(), DC_MOTOR_EXCLUDED_FIELDS_TO_SPECS));
 			motor.setPerfCurves(motorPerfCurveMapper.mapToPerfCurveModels(entity.getPerfMeasurements(), entity.getModel()));
 			
-			motor.setMechanicalImagePaths(resourceContext.getMotorMechanicalImagePaths(entity.getModel()));
-			motor.setThreeDDrawingPaths(resourceContext.getMotor3DDrawingPaths(entity.getModel()));
-			motor.setTechDocPaths(resourceContext.getMotorTechDocPaths(entity.getModel(), entity.getSeries()));
+			motor.setMechanicalImagePaths(resourceManager.getMotorMechanicalImagePaths(entity.getModel()));
+			motor.setThreeDDrawingPaths(resourceManager.getMotor3DDrawingPaths(entity.getModel()));
+			motor.setTechDocPaths(resourceManager.getMotorTechDocPaths(entity.getModel(), entity.getSeries()));
 		}
 		
 		return motor;
@@ -174,9 +174,9 @@ public class MotorMapper extends AbstractProductMapper {
 				motor.setPerfCurves(motorPerfCurveMapper.mapToPerfCurveModels(entity.getPerfMeasurements(), entity.getModel()));
 			}
 			
-			motor.setMechanicalImagePaths(resourceContext.getMotorMechanicalImagePaths(entity.getModel()));
-			motor.setThreeDDrawingPaths(resourceContext.getMotor3DDrawingPaths(entity.getModel()));
-			motor.setTechDocPaths(resourceContext.getMotorTechDocPaths(entity.getModel(), entity.getSeries()));
+			motor.setMechanicalImagePaths(resourceManager.getMotorMechanicalImagePaths(entity.getModel()));
+			motor.setThreeDDrawingPaths(resourceManager.getMotor3DDrawingPaths(entity.getModel()));
+			motor.setTechDocPaths(resourceManager.getMotorTechDocPaths(entity.getModel(), entity.getSeries()));
 		}
 
 		return motor;

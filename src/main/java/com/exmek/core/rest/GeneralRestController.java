@@ -35,7 +35,7 @@ import com.exmek.core.model.News;
 import com.exmek.core.news.NewsRepo;
 import com.exmek.core.persistence.entity.InquiryEntity;
 import com.exmek.core.persistence.repository.InquiryRepository;
-import com.exmek.core.resource.ResourceContext;
+import com.exmek.core.resource.ResourceManager;
 import com.exmek.core.resource.ResourceInfo;
 
 import jakarta.mail.MessagingException;
@@ -70,7 +70,7 @@ public class GeneralRestController {
 	private MailSenderService mailSenderService;
 	
 	@Autowired
-	private ResourceContext resourceContext;
+	private ResourceManager resourceManager;
 	
 	@GetMapping("/company/exmek")
 	public Company getExmekCompany() {
@@ -167,6 +167,6 @@ public class GeneralRestController {
 
 	@GetMapping("/tech-docs")
 	public List<ResourceInfo> getAllTechDocInfos() {
-		return resourceContext.getAllTechDocInfos();
+		return resourceManager.getAllTechDocInfos();
 	}
 }
