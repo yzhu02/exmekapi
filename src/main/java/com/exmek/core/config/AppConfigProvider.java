@@ -47,7 +47,9 @@ public class AppConfigProvider implements Scheduleable {
 	
 	public static final String CONFIG_NAME_SEARCH_BRAKE_METACRITERIA_FIELDS				= "search.brake.metaCriteria.fields";
 	
-	public static final String CONFIG_NAME_RESOURCE_READ_INDIVIDUAL_FOLDER				= "resource.readIndividualFolder";
+	public static final String CONFIG_NAME_SCHEDULE_ENABLED								= "scheduleEnabled";
+	
+	public static final String CONFIG_NAME_RESOURCE_READ_INDIVIDUAL_FOLDER_ENABLED		= "resource.readIndividualFolderEnabled";
 	
 
 	private static final String DEFAULT_VALUE_SMTP_EXMEKSYS_							= "{\"host\": \"smtp.gmail.com\", \"port\": 587, \"user\": \"exmeksys@gmail.com\", \"password\": \"mzuhdzrzhyeostbe\", \"properties\": {\"mail.transport.protocol\": \"smtp\", \"mail.smtp.auth\": \"true\", \"mail.smtp.starttls.enable\": \"true\"}}";
@@ -137,7 +139,11 @@ public class AppConfigProvider implements Scheduleable {
 		return JsonMapperUtils.readValue(confStr, new TypeReference<List<String>>() {});
 	}
 
-	public String getResourceReadIndividualFolder() {
-		return getConfigValue(CONFIG_NAME_RESOURCE_READ_INDIVIDUAL_FOLDER, "false");
+	public Boolean getScheduleEnabled() {
+		return BooleanUtils.toBoolean(getConfigValue(CONFIG_NAME_SCHEDULE_ENABLED, "false"));
+	}
+	
+	public Boolean getResourceReadIndividualFolderEnabled() {
+		return BooleanUtils.toBoolean(getConfigValue(CONFIG_NAME_RESOURCE_READ_INDIVIDUAL_FOLDER_ENABLED, "false"));
 	}
 }

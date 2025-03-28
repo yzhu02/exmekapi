@@ -204,7 +204,7 @@ public class ResourceManager implements Scheduleable {
 	private List<String> getResourcePaths(String model, String basePath, String productDirName, String resourceDirName, 
 			Map<String, List<String>> defaultResourceMap) {
 		
-		if (!"true".equalsIgnoreCase(appConfigProvider.getResourceReadIndividualFolder())) {
+		if (Boolean.FALSE.equals(appConfigProvider.getResourceReadIndividualFolderEnabled())) {
 			return defaultResourceMap.get(model);
 		}
 		String relModelResPath = UrlUtils.concatURL("/", basePath, productDirName, model, resourceDirName);
