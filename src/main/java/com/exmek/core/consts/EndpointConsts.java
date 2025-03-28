@@ -12,6 +12,8 @@ public class EndpointConsts {
 	public static final String ENDPOINT_API_GEARBOXES	= ENDPOINT_API_PREFIX + "/" + GEARBOXES;
 	public static final String ENDPOINT_API_BRAKES		= ENDPOINT_API_PREFIX + "/" + BRAKES;
 	
+	public static final String ENDPOINT_ADMIN			= "/admin";
+	
 	private EndpointConsts() {
 	}
 }

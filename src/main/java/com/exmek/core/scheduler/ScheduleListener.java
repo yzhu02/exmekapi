@@ -22,13 +22,16 @@ public class ScheduleListener {
     }
 
 	@Scheduled(timeUnit = TimeUnit.MINUTES, fixedRate = 10)
-	protected void schedule() {
+	public void schedule() {
 		if (Boolean.FALSE.equals(appConfigProvider.getScheduleEnabled())) {
 			return;
 		}
+		trigger();
+	}
+
+	public void trigger() {
 		if (scheduleables != null) {
 			scheduleables.forEach(Scheduleable::onSchedule);
 		}
 	}
-
 }
