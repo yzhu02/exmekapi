@@ -36,20 +36,21 @@ public class ResourceManager implements Scheduleable {
 
 	public static final String DIR_NAME_IMAGES				= "images";
 
+	public static final String DIR_NAME_MATERIALS			= "materials";
+	
 	public static final String DIR_NAME_MOTOR					= "motor";
 	public static final String DIR_NAME_GEARBOX					= "gearbox";
 	public static final String DIR_NAME_BRAKE					= "brake";
-	public static final String DIR_NAME_MICHANICAL					= "mechanical";
 
-	public static final String DIR_NAME_MATERIALS			= "materials";
+	public static final String DIR_NAME_MICHANICAL					= "mechanical";
 	public static final String DIR_NAME_3D							= "3d";
-	public static final String DIR_NAME_TECHDOC					= "techdoc";
+	public static final String DIR_NAME_TECHDOC						= "techdoc";
 	////Directory names END
 	
 	////Exposed relative paths BEGIN
-	public static final String IMAGES_MOTOR_MECHANICAL_REL_PATH		= UrlUtils.concatURL("/", DIR_NAME_IMAGES, DIR_NAME_MOTOR, DIR_NAME_MICHANICAL);
-	public static final String IMAGES_GEARBOX_MECHANICAL_REL_PATH	= UrlUtils.concatURL("/", DIR_NAME_IMAGES, DIR_NAME_GEARBOX, DIR_NAME_MICHANICAL);
-	public static final String IMAGES_BRAKE_MECHANICAL_REL_PATH		= UrlUtils.concatURL("/", DIR_NAME_IMAGES, DIR_NAME_BRAKE, DIR_NAME_MICHANICAL);
+	public static final String MATERIALS_MOTOR_MECHANICAL_REL_PATH	= UrlUtils.concatURL("/", DIR_NAME_MATERIALS, DIR_NAME_MOTOR, DIR_NAME_MICHANICAL);
+	public static final String MATERIALS_GEARBOX_MECHANICAL_REL_PATH= UrlUtils.concatURL("/", DIR_NAME_MATERIALS, DIR_NAME_GEARBOX, DIR_NAME_MICHANICAL);
+	public static final String MATERIALS_BRAKE_MECHANICAL_REL_PATH	= UrlUtils.concatURL("/", DIR_NAME_MATERIALS, DIR_NAME_BRAKE, DIR_NAME_MICHANICAL);
 
 	public static final String MATERIALS_MOTOR_3D_REL_PATH			= UrlUtils.concatURL("/", DIR_NAME_MATERIALS, DIR_NAME_MOTOR, DIR_NAME_3D);
 	public static final String MATERIALS_GEARBOX_3D_REL_PATH		= UrlUtils.concatURL("/", DIR_NAME_MATERIALS, DIR_NAME_GEARBOX, DIR_NAME_3D);
@@ -61,14 +62,14 @@ public class ResourceManager implements Scheduleable {
 	////Exposed relative paths END
 	
 	////Internal directory locations BEGIN
-	private static final String IMAGES_MOTOR_MECHANICAL_FULL_LOCATION = UrlUtils.concatURL(
-			ResourcePatternResolver.CLASSPATH_ALL_URL_PREFIX, DIR_NAME_STATIC, IMAGES_MOTOR_MECHANICAL_REL_PATH);
+	private static final String MATERIALS_MOTOR_MECHANICAL_FULL_LOCATION = UrlUtils.concatURL(
+			ResourcePatternResolver.CLASSPATH_ALL_URL_PREFIX, DIR_NAME_STATIC, MATERIALS_MOTOR_MECHANICAL_REL_PATH);
 
-	private static final String IMAGES_GEARBOX_MECHANICAL_FULL_LOCATION = UrlUtils.concatURL(
-			ResourcePatternResolver.CLASSPATH_ALL_URL_PREFIX, DIR_NAME_STATIC, IMAGES_GEARBOX_MECHANICAL_REL_PATH);
+	private static final String MATERIALS_GEARBOX_MECHANICAL_FULL_LOCATION = UrlUtils.concatURL(
+			ResourcePatternResolver.CLASSPATH_ALL_URL_PREFIX, DIR_NAME_STATIC, MATERIALS_GEARBOX_MECHANICAL_REL_PATH);
 	
-	private static final String IMAGES_BRAKE_MECHANICAL_FULL_LOCATION = UrlUtils.concatURL(
-			ResourcePatternResolver.CLASSPATH_ALL_URL_PREFIX, DIR_NAME_STATIC, IMAGES_BRAKE_MECHANICAL_REL_PATH);
+	private static final String MATERIALS_BRAKE_MECHANICAL_FULL_LOCATION = UrlUtils.concatURL(
+			ResourcePatternResolver.CLASSPATH_ALL_URL_PREFIX, DIR_NAME_STATIC, MATERIALS_BRAKE_MECHANICAL_REL_PATH);
 	
 
 	private static final String MATERIALS_MOTOR_3D_FULL_LOCATION = UrlUtils.concatURL(
@@ -118,14 +119,14 @@ public class ResourceManager implements Scheduleable {
 		String resFileMatch = "*.*";
 		
 		this.motorMechanicalImagePathsMap = initResourcePathMap(
-				UrlUtils.concatURL(IMAGES_MOTOR_MECHANICAL_FULL_LOCATION, resFileMatch),
-				IMAGES_MOTOR_MECHANICAL_REL_PATH);
+				UrlUtils.concatURL(MATERIALS_MOTOR_MECHANICAL_FULL_LOCATION, resFileMatch),
+				MATERIALS_MOTOR_MECHANICAL_REL_PATH);
 		this.gearboxMechanicalImagePathsMap = initResourcePathMap(
-				UrlUtils.concatURL(IMAGES_GEARBOX_MECHANICAL_FULL_LOCATION, resFileMatch),
-				IMAGES_GEARBOX_MECHANICAL_REL_PATH);
+				UrlUtils.concatURL(MATERIALS_GEARBOX_MECHANICAL_FULL_LOCATION, resFileMatch),
+				MATERIALS_GEARBOX_MECHANICAL_REL_PATH);
 		this.brakeMechanicalImagePathsMap = initResourcePathMap(
-				UrlUtils.concatURL(IMAGES_BRAKE_MECHANICAL_FULL_LOCATION, resFileMatch),
-				IMAGES_BRAKE_MECHANICAL_REL_PATH);
+				UrlUtils.concatURL(MATERIALS_BRAKE_MECHANICAL_FULL_LOCATION, resFileMatch),
+				MATERIALS_BRAKE_MECHANICAL_REL_PATH);
 		
 		this.motor3DDrawingPathsMap = initResourcePathMap(
 				UrlUtils.concatURL(MATERIALS_MOTOR_3D_FULL_LOCATION, resFileMatch),
@@ -242,7 +243,7 @@ public class ResourceManager implements Scheduleable {
 	
 	private List<String> getMechanicalImageResourcePaths(
 			String model, String productDirName, Map<String, List<String>> defaultResourceMap) {
-		return getResourcePaths(model, DIR_NAME_IMAGES, productDirName, DIR_NAME_MICHANICAL, defaultResourceMap);
+		return getResourcePaths(model, DIR_NAME_MATERIALS, productDirName, DIR_NAME_MICHANICAL, defaultResourceMap);
 	}
 	
 	private List<String> get3DDrawingResourcePaths(
