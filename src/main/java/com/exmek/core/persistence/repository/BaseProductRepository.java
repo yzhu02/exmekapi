@@ -20,4 +20,8 @@ public interface BaseProductRepository<T extends AbstractProductEntity> {
 	
 	Page<T> findAll(Specification<T> spec, Pageable pageable);
 
+
+	List<T> findByModelContaining(String keyword);
+	
+	List<T> findByDescriptionContaining(String keyword);
 }

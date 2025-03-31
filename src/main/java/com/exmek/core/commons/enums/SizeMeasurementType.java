@@ -27,7 +27,7 @@ public enum SizeMeasurementType {
 
     @JsonCreator
     public static SizeMeasurementType fromSymbol(String symbol) {
-    	if (DIAMETER.symbol.equals(symbol)) {
+    	if (DIAMETER.symbol.equals(symbol) || "Φ".equals(symbol)) {
     		return DIAMETER;
     	} else if (SIDE.symbol.equals(symbol))  {
     		return SIDE;

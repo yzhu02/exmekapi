@@ -9,6 +9,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
+import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.ObjectUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -88,11 +89,24 @@ implements ProductService<M>, Scheduleable {
 	public SearchMetaCriteriaResponse getSearchMetaCriteria(MetaCriteriaKey criteriaKey) {
 		List<FieldMetaCriterion> fieldMetaCriteria = 
 				fieldMetaCriteriaMap.computeIfAbsent(criteriaKey, this::createFieldMetaCriteria);
+		List<FieldMetaCriterion> resultCriteria = fieldMetaCriteria.stream()
+				.filter(c -> filterCriterion(c))
+				.collect(Collectors.toList());
 		return SearchMetaCriteriaResponse.builder()
 				.domain(getEntityClass().getSimpleName())
-				.fieldMetaCriteria(fieldMetaCriteria)
+				.fieldMetaCriteria(resultCriteria)
 				.build();
 		
+	}
+
+	private boolean filterCriterion(FieldMetaCriterion c) {
+		if (c == null) {
+			return false;
+		}
+		if (Boolean.TRUE.equals(c.getIsNumber())) {
+			return MapUtils.isNotEmpty(c.getMinMaxByUnits());
+		}
+		return true;
 	}
 
 	protected List<FieldMetaCriterion> createFieldMetaCriteria(MetaCriteriaKey criteriaKey) {

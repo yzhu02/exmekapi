@@ -1,5 +1,6 @@
 package com.exmek.core.rest;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -28,6 +30,8 @@ import com.exmek.core.email.MailSenderService;
 import com.exmek.core.error.ErrorCode;
 import com.exmek.core.error.ValidationException;
 import com.exmek.core.external.CountryLookupService;
+import com.exmek.core.gensearch.GeneralSearchItem;
+import com.exmek.core.gensearch.GeneralSearcher;
 import com.exmek.core.mapper.InquiryMapper;
 import com.exmek.core.model.Company;
 import com.exmek.core.model.Inquiry;
@@ -35,8 +39,8 @@ import com.exmek.core.model.News;
 import com.exmek.core.news.NewsRepo;
 import com.exmek.core.persistence.entity.InquiryEntity;
 import com.exmek.core.persistence.repository.InquiryRepository;
-import com.exmek.core.resource.ResourceManager;
 import com.exmek.core.resource.ResourceInfo;
+import com.exmek.core.resource.ResourceManager;
 
 import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -46,6 +50,8 @@ import jakarta.validation.constraints.NotNull;
 @RequestMapping(EndpointConsts.ENDPOINT_API_PREFIX)
 public class GeneralRestController {
 
+	public static final String QRY_PARAM_NAME_KEYWORD	= "keyword";
+	
 	private static final Logger logger = LoggerFactory.getLogger(GeneralRestController.class);
 
 	@Autowired
@@ -72,6 +78,9 @@ public class GeneralRestController {
 	@Autowired
 	private ResourceManager resourceManager;
 	
+	@Autowired
+	private GeneralSearcher generalSearcher;
+
 	@GetMapping("/company/exmek")
 	public Company getExmekCompany() {
 		return appConfigProvider.getExmekCompany();
@@ -168,5 +177,59 @@ public class GeneralRestController {
 	@GetMapping("/tech-docs")
 	public List<ResourceInfo> getAllTechDocInfos() {
 		return resourceManager.getAllTechDocInfos();
+	}
+
+	@GetMapping("/gensearch")
+	public PageableListDataResponse<GeneralSearchItem> generalSearch(
+			@RequestParam(value = QRY_PARAM_NAME_KEYWORD) String keyword,
+			@RequestParam(value = BaseProductRestController.QRY_PARAM_NAME_PAGE_NUMBER, required = false) Integer pageNumber,
+			@RequestParam(value = BaseProductRestController.QRY_PARAM_NAME_PAGE_SIZE, required = false) Integer pageSize) {
+		
+		if (pageNumber != null && pageSize == null || pageNumber == null && pageSize != null) {
+			throw new ValidationException("Must have both 'pageNumber' and 'pageSize' parameters for pagination",
+					ErrorCode.ERR_CODE_REQUIRE_BOTH_OR_NONE_PAGE_PARAMS);
+		}
+		PageableListDataResponse<GeneralSearchItem> response = new PageableListDataResponse<>();
+		List<GeneralSearchItem> searchResult = generalSearcher.priorityProductSearch(keyword);
+		if (ObjectUtils.isNotEmpty(searchResult)) {
+			populateGeneralSearchResponse(response, searchResult, pageNumber, pageSize);
+		} else {
+			searchResult = generalSearcher.alternativeProductSearch(keyword);
+			if (ObjectUtils.isNotEmpty(searchResult)) {
+				populateGeneralSearchResponse(response, searchResult, pageNumber, pageSize);
+			}
+		}
+		return response;
+	}
+	
+	private void populateGeneralSearchResponse(PageableListDataResponse<GeneralSearchItem> response, 
+			List<GeneralSearchItem> searchResult, Integer pageNumber, Integer pageSize) {
+
+		if (pageNumber != null && pageSize != null) {
+			response.setPageNumber(pageNumber);
+			response.setPageSize(pageSize);
+			if (ObjectUtils.isEmpty(searchResult)) {
+				response.setTotalPages(0);
+				response.setTotalElementsOfAllPages(0);
+				response.setTotalElementsOfCurrPage(0);
+				response.setData(new ArrayList<>());
+			} else {
+				int totalAll = searchResult.size();
+				response.setTotalElementsOfAllPages(totalAll);
+				response.setTotalPages((int) Math.ceil((double) totalAll / pageSize));
+				List<GeneralSearchItem> currPageData = new ArrayList<>();
+				int currPageStartInx = pageNumber * pageSize;
+				int currPageExclusiveEndInx = currPageStartInx + pageSize;
+				for (int i = currPageStartInx; i < currPageExclusiveEndInx && i < totalAll; i++) {
+					currPageData.add(searchResult.get(i));
+				}
+				response.setTotalElementsOfCurrPage(currPageData.size());
+				response.setData(currPageData);
+			}
+		} else {
+			response.setData(searchResult);
+			response.setTotalElementsOfAllPages(searchResult.size());
+			response.setTotalElementsOfCurrPage(searchResult.size());
+		}
 	}
 }
