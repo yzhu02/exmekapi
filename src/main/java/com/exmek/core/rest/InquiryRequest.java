@@ -25,7 +25,7 @@ public class InquiryRequest {
 		
 		private Integer quantity;
 		
-		private String content;
+		private String message;
 		
 		private String refLink;
 	}

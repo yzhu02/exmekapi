@@ -107,7 +107,7 @@ public class GeneralRestController {
 		}
 		InquiryResponse response = new InquiryResponse();
 //		HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
-		InquiryEntity entity = mapToEntity(reqInquiryPayload.getInquiry());
+		InquiryEntity entity = inquiryMapper.mapInquiryToEntity(reqInquiryPayload.getInquiry());
 		String clientIpAddr = headerClientIp;
 		if (ObjectUtils.isEmpty(clientIpAddr)) {
 			HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
@@ -130,18 +130,6 @@ public class GeneralRestController {
 			response.setStatus("KICK_INQUIRY_EMAIL_FAILED");
 		}
 		return response;
-	}
-
-	private InquiryEntity mapToEntity(InquiryRequest.Inquiry inquiry) {
-		InquiryEntity entity = new InquiryEntity();
-		entity.setContactName(inquiry.getContactName());
-		entity.setContactEmail(inquiry.getContactEmail());
-		entity.setContactPhone(inquiry.getContactPhone());
-		entity.setRefModel(inquiry.getRefModel());
-		entity.setQuantity(inquiry.getQuantity());
-		entity.setContent(inquiry.getContent());
-		entity.setRefLink(inquiry.getRefLink());
-		return entity;
 	}
 	
 	private String getCountryOrRegionName(String ipAddr) {

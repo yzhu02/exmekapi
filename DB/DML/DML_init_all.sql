@@ -50,7 +50,7 @@ VALUES
 )
 ;
 
--- UPDATE  CONFIG set VALUE = '{"to": ["test4yz@gmail.com"], "cc": [], "bcc": []}' WHERE NAME = 'email.inquiry_receivers';
+-- UPDATE  CONFIG set VALUE = '{"to": ["test4yz@gmail.com"], "cc": [], "bcc": []}' WHERE NAME = 'email.inquiryReceivers';
 
 
 

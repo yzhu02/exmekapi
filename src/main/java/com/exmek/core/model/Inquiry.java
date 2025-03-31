@@ -21,7 +21,7 @@ public class Inquiry extends AbstractModel {
 	
 	private Integer quantity;
 	
-	private String content;
+	private String message;
 	
 	private String refLink;
 	

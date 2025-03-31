@@ -30,8 +30,8 @@ public class InquiryEntity extends AbstractManagableEntity {
 	@Column(name = "QUANTITY")
 	private Integer quantity;
 	
-	@Column(name = "CONTENT")
-	private String content;
+	@Column(name = "MESSAGE")
+	private String message;
 	
 	@Column(name = "REF_LINK")
 	private String refLink;
@@ -86,12 +86,12 @@ public class InquiryEntity extends AbstractManagableEntity {
 		this.quantity = quantity;
 	}
 
-	public String getContent() {
-		return content;
+	public String getMessage() {
+		return message;
 	}
 
-	public void setContent(String content) {
-		this.content = content;
+	public void setMessage(String message) {
+		this.message = message;
 	}
 
 	public String getRefLink() {
