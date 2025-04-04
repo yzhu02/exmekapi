@@ -20,4 +20,6 @@ public class GeneralSearchItem {
 	
 	private String description;
 	
+	private String matchingField;
+	
 }

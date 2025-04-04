@@ -31,26 +31,30 @@ public class GeneralSearcher {
 
 	public List<GeneralSearchItem> priorityProductSearch(String keyword) {
 		List<GeneralSearchItem> result = new ArrayList<>();
-		findToAdd(keyword, k -> dcMotorRepository.findByModelContaining(k), GeneralSearchItem.Type.DC_MOTOR, result);
-		findToAdd(keyword, k -> stepperMotorRepository.findByModelContaining(k), GeneralSearchItem.Type.STEPPER_MOTOR, result);
-		findToAdd(keyword, k -> planetaryGearboxRepository.findByModelContaining(k), GeneralSearchItem.Type.PLANETARY_GEARBOX, result);
-		findToAdd(keyword, k -> brakeRepository.findByModelContaining(k), GeneralSearchItem.Type.BRAKE, result);
+		String matchingField = AbstractProductEntity.FIELD_NAME_MODEL;
+		findToAdd(keyword, k -> dcMotorRepository.findByModelContaining(k), GeneralSearchItem.Type.DC_MOTOR, matchingField, result);
+		findToAdd(keyword, k -> stepperMotorRepository.findByModelContaining(k), GeneralSearchItem.Type.STEPPER_MOTOR, matchingField, result);
+		findToAdd(keyword, k -> planetaryGearboxRepository.findByModelContaining(k), GeneralSearchItem.Type.PLANETARY_GEARBOX, matchingField, result);
+		findToAdd(keyword, k -> brakeRepository.findByModelContaining(k), GeneralSearchItem.Type.BRAKE, matchingField, result);
 		return result;
 	}
 
 	public List<GeneralSearchItem> alternativeProductSearch(String keyword) {
 		List<GeneralSearchItem> result = new ArrayList<>();
-		findToAdd(keyword, k -> dcMotorRepository.findByDescriptionContaining(k), GeneralSearchItem.Type.DC_MOTOR, result);
-		findToAdd(keyword, k -> stepperMotorRepository.findByDescriptionContaining(k), GeneralSearchItem.Type.STEPPER_MOTOR, result);
-		findToAdd(keyword, k -> planetaryGearboxRepository.findByDescriptionContaining(k), GeneralSearchItem.Type.PLANETARY_GEARBOX, result);
-		findToAdd(keyword, k -> brakeRepository.findByDescriptionContaining(k), GeneralSearchItem.Type.BRAKE, result);
+		String matchingField = AbstractProductEntity.FIELD_NAME_DESCRIPTION;
+		findToAdd(keyword, k -> dcMotorRepository.findByDescriptionContaining(k), GeneralSearchItem.Type.DC_MOTOR, matchingField, result);
+		findToAdd(keyword, k -> stepperMotorRepository.findByDescriptionContaining(k), GeneralSearchItem.Type.STEPPER_MOTOR, matchingField, result);
+		findToAdd(keyword, k -> planetaryGearboxRepository.findByDescriptionContaining(k), GeneralSearchItem.Type.PLANETARY_GEARBOX, matchingField, result);
+		findToAdd(keyword, k -> brakeRepository.findByDescriptionContaining(k), GeneralSearchItem.Type.BRAKE, matchingField, result);
 		return result;
 	}
 
 	private <T extends AbstractProductEntity> void findToAdd(
 			String keyword, 
 			Function<String, List<T>> finder, 
-			GeneralSearchItem.Type type, List<GeneralSearchItem> result) {
+			GeneralSearchItem.Type type,
+			String matchingField,
+			List<GeneralSearchItem> result) {
 
 		List<T> foundProducts = finder.apply(keyword);
 		if (ObjectUtils.isEmpty(foundProducts)) {
@@ -60,6 +64,7 @@ public class GeneralSearcher {
 				.type(GeneralSearchItem.Type.DC_MOTOR)
 				.model(p.getModel())
 				.description(p.getDescription())
+				.matchingField(matchingField)
 				.build())
 		);
 	}
