@@ -38,6 +38,10 @@ public class StepperMotorEntity extends AbstractMotorEntity {
     @JoinColumn(name = "CATEGORY", referencedColumnName = "CATEGORY", nullable = false, insertable = false, updatable = false)
     private StepperMotorCategoryEntity motorCategory;
 	
+	@ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "SERIES", referencedColumnName = "SERIES", nullable = false, insertable = false, updatable = false)
+    private StepperMotorSeriesEntity productSeries;
+	
 	@Searchable
 	@Column(name = "PHASE_CURRENT")
 	private BigDecimal phaseCurrent;
@@ -117,6 +121,14 @@ public class StepperMotorEntity extends AbstractMotorEntity {
 
 	public void setMotorCategory(StepperMotorCategoryEntity motorCategory) {
 		this.motorCategory = motorCategory;
+	}
+
+	public StepperMotorSeriesEntity getProductSeries() {
+		return productSeries;
+	}
+
+	public void setProductSeries(StepperMotorSeriesEntity productSeries) {
+		this.productSeries = productSeries;
 	}
 
 	public BigDecimal getPhaseCurrent() {

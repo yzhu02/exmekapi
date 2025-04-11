@@ -17,10 +17,9 @@ import com.exmek.core.commons.model.MeasuredValue;
 import com.exmek.core.model.DCMotor;
 import com.exmek.core.model.LeadDef;
 import com.exmek.core.model.LinearStepperMotor;
-import com.exmek.core.model.MotorCategory;
+import com.exmek.core.model.MotorSeries;
 import com.exmek.core.model.Spec;
 import com.exmek.core.model.StepperMotor;
-import com.exmek.core.persistence.entity.AbstractMotorCategoryEntity;
 import com.exmek.core.persistence.entity.AbstractMotorEntity;
 import com.exmek.core.persistence.entity.AbstractMotorSpecEntity;
 import com.exmek.core.persistence.entity.AbstractProductEntity;
@@ -73,7 +72,8 @@ public class MotorMapper extends AbstractProductMapper {
 		motor.setNoloadRotatingSpeed(MeasuredValue.of(entity.getNoloadRotatingSpeed(), entity.getNoloadRotatingSpeedUnit()));
 		
 		if (comprehensiveMapping) {
-			motor.setMotorCategory(mapToMotorCategoryModel(entity.getMotorCategory()));
+			motor.setMotorCategory(MotorCategoryMapper.mapEntityToCategory(entity.getMotorCategory(), false));
+			motor.setProductSeries(AbstractSeriesMapper.mapEntityToSeries(entity.getProductSeries(), MotorSeries::new, false));
 			motor.setAllSpecs(mapAllCombinedSpecs(entity, entity.getSpecs(), appConfigProvider.getSearchDCMotorMetaCriteriaFields(), DC_MOTOR_EXCLUDED_FIELDS_TO_SPECS));
 			motor.setPerfCurves(motorPerfCurveMapper.mapToPerfCurveModels(entity.getPerfMeasurements(), entity.getModel()));
 			
@@ -83,17 +83,6 @@ public class MotorMapper extends AbstractProductMapper {
 		}
 		
 		return motor;
-	}
-
-	private MotorCategory mapToMotorCategoryModel(AbstractMotorCategoryEntity entity) {
-		if (entity == null) {
-			return null;
-		}
-		MotorCategory mc = new MotorCategory();
-		mc.setCategory(entity.getCategory());
-		mc.setType(entity.getType());
-		mc.setDisplayName(entity.getDisplayName());
-		return mc;
 	}
 
 	List<Spec> mapAllCombinedSpecs(
@@ -166,7 +155,8 @@ public class MotorMapper extends AbstractProductMapper {
 		motor.setMaxThrust(MeasuredValue.of(entity.getMaxThrust(), entity.getMaxThrustUnit()));
 		
 		if (comprehensiveMapping) {
-			motor.setMotorCategory(mapToMotorCategoryModel(entity.getMotorCategory()));
+			motor.setMotorCategory(MotorCategoryMapper.mapEntityToCategory(entity.getMotorCategory(), false));
+			motor.setProductSeries(AbstractSeriesMapper.mapEntityToSeries(entity.getProductSeries(), MotorSeries::new, false));
 			motor.setAllSpecs(mapAllCombinedSpecs(entity, entity.getSpecs(), appConfigProvider.getSearchStepperMotorMetaCriteriaFields(), STEPPER_MOTOR_EXCLUDED_FIELDS_TO_SPECS));
 			if (motor instanceof LinearStepperMotor) {
 				motor.setPerfCurves(motorPerfCurveMapper.mapToLinearStepperMotorPerfCurveModels(entity.getPerfMeasurements(), entity.getModel()));

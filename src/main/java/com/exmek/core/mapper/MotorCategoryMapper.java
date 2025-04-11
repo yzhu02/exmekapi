@@ -13,6 +13,10 @@ import com.fasterxml.jackson.core.type.TypeReference;
 public class MotorCategoryMapper {
 
 	public MotorCategory mapToCategoryModel(AbstractMotorCategoryEntity entity) {
+		return mapEntityToCategory(entity, true);
+	}
+
+	static MotorCategory mapEntityToCategory(AbstractMotorCategoryEntity entity, boolean shouldMapTechnicalData) {
 		if (entity == null) {
 			return null;
 		}
@@ -22,8 +26,9 @@ public class MotorCategoryMapper {
 		mc.setType(entity.getType());
 		mc.setDisplayName(entity.getDisplayName());
 		mc.setDescription(entity.getDescription());
-		mc.setTechnicalData(JsonMapperUtils.readValue(entity.getTechnicalData(), new TypeReference<Map<String, String>>() {}));
+		if (shouldMapTechnicalData) {
+			mc.setTechnicalData(JsonMapperUtils.readValue(entity.getTechnicalData(), new TypeReference<Map<String, String>>() {}));
+		}
 		return mc;
 	}
-
 }

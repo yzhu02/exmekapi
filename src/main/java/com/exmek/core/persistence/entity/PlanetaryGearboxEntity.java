@@ -12,12 +12,19 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "PLANETARY_GEARBOX")
 @Access(AccessType.FIELD)
 public class PlanetaryGearboxEntity extends AbstractProductEntity {
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "SERIES", referencedColumnName = "SERIES", nullable = false, insertable = false, updatable = false)
+    private GearboxSeriesEntity productSeries;
 	
 	@Searchable
 	@Column(name = "NUM_OF_STAGES")
@@ -74,8 +81,16 @@ public class PlanetaryGearboxEntity extends AbstractProductEntity {
 	private String operatingTemperature;
 	
 	@Column(name = "RECOMMEND_INPUT_SPEED")
-	private String recommendInputSpeed;
-	
+	private String recommendInputSpeed;	
+
+	public GearboxSeriesEntity getProductSeries() {
+		return productSeries;
+	}
+
+	public void setProductSeries(GearboxSeriesEntity productSeries) {
+		this.productSeries = productSeries;
+	}
+
 	public Integer getNumOfStages() {
 		return numOfStages;
 	}

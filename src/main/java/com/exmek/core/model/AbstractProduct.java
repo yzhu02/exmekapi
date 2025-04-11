@@ -19,6 +19,8 @@ public abstract class AbstractProduct extends AbstractModel.Namable {
 
 	private String series;
 
+	private AbstractSeries productSeries;
+	
 	private String model;
 
 	private String description;

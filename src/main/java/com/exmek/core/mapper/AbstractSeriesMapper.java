@@ -12,16 +12,23 @@ public abstract class AbstractSeriesMapper<M extends AbstractSeries, E extends A
 
 	public abstract M mapToSeriesModel(E entity);
 	
-	protected  M mapToSeriesModel(E entity, Supplier<M> modelCreator) {
+	protected M mapToSeriesModel(E entity, Supplier<M> creator) {
+		return mapEntityToSeries(entity, creator, true);
+	}
+
+	static <M extends AbstractSeries, E extends AbstractSeriesEntity> M mapEntityToSeries(E entity, 
+			Supplier<M> modelCreator, boolean shouldMapTechnicalData) {
 		if (entity == null) {
 			return null;
 		}
-		M model = modelCreator.get();
-//		model.setId(entity.getId());
-		model.setSeries(entity.getSeries());
-		model.setDisplayName(entity.getDisplayName());
-		model.setDescription(entity.getDescription());
-		model.setTechnicalData(JsonMapperUtils.readValue(entity.getTechnicalData(), new TypeReference<Map<String, String>>() {}));
-		return model;
+		M series = modelCreator.get();
+//		series.setId(entity.getId());
+		series.setSeries(entity.getSeries());
+		series.setDisplayName(entity.getDisplayName());
+		series.setDescription(entity.getDescription());
+		if (shouldMapTechnicalData) {
+			series.setTechnicalData(JsonMapperUtils.readValue(entity.getTechnicalData(), new TypeReference<Map<String, String>>() {}));
+		}
+		return series;
 	}
 }

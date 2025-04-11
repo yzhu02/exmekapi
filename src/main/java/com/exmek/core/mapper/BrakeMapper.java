@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 
 import com.exmek.core.commons.model.MeasuredValue;
 import com.exmek.core.model.Brake;
+import com.exmek.core.model.BrakeSeries;
 import com.exmek.core.persistence.entity.AbstractProductEntity;
 import com.exmek.core.persistence.entity.BrakeEntity;
 
@@ -34,10 +35,9 @@ public class BrakeMapper extends AbstractProductMapper {
 		model.setStartVoltage(MeasuredValue.of(entity.getStartVoltage(), entity.getStartVoltageUnit()));
 		
 		if (comprehensiveMapping) {
+			model.setProductSeries(AbstractSeriesMapper.mapEntityToSeries(entity.getProductSeries(), BrakeSeries::new, false));
 			model.setAllSpecs(mapAllCombinedSpecs(entity, appConfigProvider.getSearchPlanetaryGearboxMetaCriteriaFields(), EXCLUDED_FIELDS_TO_SPECS));
-		}
-		
-		if (comprehensiveMapping) {
+			
 			model.setMechanicalImagePaths(resourceManager.getBrakeMechanicalImagePaths(entity.getModel()));
 			model.setThreeDDrawingPaths(resourceManager.getBrake3DDrawingPaths(entity.getModel()));
 			model.setTechDocPaths(resourceManager.getBrakeTechDocPaths(entity.getModel(), entity.getSeries()));
@@ -45,5 +45,4 @@ public class BrakeMapper extends AbstractProductMapper {
 		
 		return model;
 	}
-
 }

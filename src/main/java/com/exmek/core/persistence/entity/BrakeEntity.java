@@ -17,12 +17,19 @@ import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "BRAKE")
 @Access(AccessType.FIELD)
 public class BrakeEntity extends AbstractProductEntity {
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "SERIES", referencedColumnName = "SERIES", nullable = false, insertable = false, updatable = false)
+    private BrakeSeriesEntity productSeries;
 	
 	@Searchable
 	@Column(name = "RATED_VOLTAGE")
@@ -72,6 +79,14 @@ public class BrakeEntity extends AbstractProductEntity {
 	@Column(name = "START_VOLTAGE_UNIT")
 	@Enumerated(EnumType.STRING)
 	private VoltageUnit startVoltageUnit;
+
+	public BrakeSeriesEntity getProductSeries() {
+		return productSeries;
+	}
+
+	public void setProductSeries(BrakeSeriesEntity productSeries) {
+		this.productSeries = productSeries;
+	}
 
 	public BigDecimal getRatedVoltage() {
 		return ratedVoltage;

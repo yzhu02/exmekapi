@@ -155,5 +155,4 @@ public abstract class AbstractProductMapper {
 		spec.setType(type);
 		return spec;
 	}
-
 }

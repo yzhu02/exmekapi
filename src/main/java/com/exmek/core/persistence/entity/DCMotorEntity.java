@@ -35,6 +35,10 @@ public class DCMotorEntity extends AbstractMotorEntity {
     @JoinColumn(name = "CATEGORY", referencedColumnName = "CATEGORY", nullable = false, insertable = false, updatable = false)
     private DCMotorCategoryEntity motorCategory;
 
+	@ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "SERIES", referencedColumnName = "SERIES", nullable = false, insertable = false, updatable = false)
+    private DCMotorSeriesEntity productSeries;
+	
 	@Searchable
 	@Column(name = "RATED_CURRENT")
 	private BigDecimal ratedCurrent;
@@ -129,6 +133,14 @@ public class DCMotorEntity extends AbstractMotorEntity {
 
 	public void setMotorCategory(DCMotorCategoryEntity motorCategory) {
 		this.motorCategory = motorCategory;
+	}
+	
+	public DCMotorSeriesEntity getProductSeries() {
+		return productSeries;
+	}
+
+	public void setProductSeries(DCMotorSeriesEntity productSeries) {
+		this.productSeries = productSeries;
 	}
 
 	public BigDecimal getRatedCurrent() {
