@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import com.exmek.core.commons.enums.ForceUnit;
 import com.exmek.core.commons.enums.LengthUnit;
 import com.exmek.core.commons.enums.TorqueUnit;
 import com.exmek.core.commons.enums.WeightUnit;
@@ -150,6 +151,57 @@ public interface PlanetaryGearboxRepository extends BaseProductRepository<Planet
 	
 	default Map<TorqueUnit, Range<BigDecimal>> findMaxMomentaryTorqueMinMaxByUnits(String series) {
 		return JPAUtils.findMinMaxByUnits(series, this::findMaxMomentaryTorqueMinMaxByUnits);
+	}
+	//
+
+	//maxRadialLoad
+	@Query("""
+			SELECT MIN(m.maxRadialLoad), MAX(m.maxRadialLoad), m.maxRadialLoadUnit 
+			FROM PlanetaryGearboxEntity m 
+			WHERE (1 = :ignoreSeries OR m.series = :series)
+				AND m.maxRadialLoad IS NOT NULL AND m.maxRadialLoadUnit IS NOT NULL 
+			GROUP BY m.maxRadialLoadUnit 
+			"""
+			)
+	List<Object[]> findMaxRadialLoadMinMaxByUnits( 
+			@Param("ignoreSeries") int ignoreSeries, @Param("series") String series);
+
+	default Map<ForceUnit, Range<BigDecimal>> findMaxRadialLoadMinMaxByUnits(String series) {
+		return JPAUtils.findMinMaxByUnits(series, this::findMaxRadialLoadMinMaxByUnits);
+	}
+	//
+
+	//maxAxialLoad
+	@Query("""
+			SELECT MIN(m.maxAxialLoad), MAX(m.maxAxialLoad), m.maxAxialLoadUnit 
+			FROM PlanetaryGearboxEntity m 
+			WHERE (1 = :ignoreSeries OR m.series = :series)
+				AND m.maxAxialLoad IS NOT NULL AND m.maxAxialLoadUnit IS NOT NULL 
+			GROUP BY m.maxAxialLoadUnit 
+			"""
+			)
+	List<Object[]> findMaxAxialLoadMinMaxByUnits( 
+			@Param("ignoreSeries") int ignoreSeries, @Param("series") String series);
+
+	default Map<ForceUnit, Range<BigDecimal>> findMaxAxialLoadMinMaxByUnits(String series) {
+		return JPAUtils.findMinMaxByUnits(series, this::findMaxAxialLoadMinMaxByUnits);
+	}
+	//
+
+	//maxShaftPress
+	@Query("""
+			SELECT MIN(m.maxShaftPress), MAX(m.maxShaftPress), m.maxShaftPressUnit 
+			FROM PlanetaryGearboxEntity m 
+			WHERE (1 = :ignoreSeries OR m.series = :series)
+				AND m.maxShaftPress IS NOT NULL AND m.maxShaftPressUnit IS NOT NULL 
+			GROUP BY m.maxShaftPressUnit 
+			"""
+			)
+	List<Object[]> findMaxShaftPressMinMaxByUnits( 
+			@Param("ignoreSeries") int ignoreSeries, @Param("series") String series);
+
+	default Map<ForceUnit, Range<BigDecimal>> findMaxShaftPressMinMaxByUnits(String series) {
+		return JPAUtils.findMinMaxByUnits(series, this::findMaxShaftPressMinMaxByUnits);
 	}
 	//
 }

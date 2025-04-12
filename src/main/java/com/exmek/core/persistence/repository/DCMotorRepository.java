@@ -296,4 +296,46 @@ public interface DCMotorRepository extends BaseProductRepository<DCMotorEntity>,
 		return JPAUtils.findMinMaxByUnits(type, category, series, this::findMaxSortingWeightMinMaxByUnits);
 	}
 	//
+
+	//noloadCurrent
+	@Query("""
+			SELECT MIN(m.noloadCurrent), MAX(m.noloadCurrent), m.noloadCurrentUnit 
+			FROM DCMotorEntity m 
+			WHERE m.noloadCurrent IS NOT NULL AND m.noloadCurrentUnit IS NOT NULL
+				AND (1 = :ignoreType OR m.category IN (SELECT category FROM DCMotorCategoryEntity WHERE type = :type))
+				AND (1 = :ignoreCategory OR m.category = :category) 
+				AND (1 = :ignoreSeries OR m.series = :series)
+			GROUP BY m.noloadCurrentUnit 
+			"""
+			)
+	List<Object[]> findNoloadCurrentMinMaxByUnits(
+			@Param("ignoreType") int ignoreType, @Param("type") MotorCategory.Type type,
+			@Param("ignoreCategory") int ignoreCategory, @Param("category") String category, 
+			@Param("ignoreSeries") int ignoreSeries, @Param("series") String series);
+
+	default Map<CurrentUnit, Range<BigDecimal>> findNoloadCurrentMinMaxByUnits(MotorCategory.Type type, String category, String series) {
+		return JPAUtils.findMinMaxByUnits(type, category, series, this::findNoloadCurrentMinMaxByUnits);
+	}
+	//
+
+	//noloadRotatingSpeed
+	@Query("""
+			SELECT MIN(m.noloadRotatingSpeed), MAX(m.noloadRotatingSpeed), m.noloadRotatingSpeedUnit 
+			FROM DCMotorEntity m 
+			WHERE m.noloadRotatingSpeed IS NOT NULL AND m.noloadRotatingSpeedUnit IS NOT NULL
+				AND (1 = :ignoreType OR m.category IN (SELECT category FROM DCMotorCategoryEntity WHERE type = :type))
+				AND (1 = :ignoreCategory OR m.category = :category) 
+				AND (1 = :ignoreSeries OR m.series = :series)
+			GROUP BY m.noloadRotatingSpeedUnit 
+			"""
+			)
+	List<Object[]> findNoloadRotatingSpeedMinMaxByUnits(
+			@Param("ignoreType") int ignoreType, @Param("type") MotorCategory.Type type,
+			@Param("ignoreCategory") int ignoreCategory, @Param("category") String category, 
+			@Param("ignoreSeries") int ignoreSeries, @Param("series") String series);
+
+	default Map<RotatingSpeedUnit, Range<BigDecimal>> findNoloadRotatingSpeedMinMaxByUnits(MotorCategory.Type type, String category, String series) {
+		return JPAUtils.findMinMaxByUnits(type, category, series, this::findNoloadRotatingSpeedMinMaxByUnits);
+	}
+	//
 }

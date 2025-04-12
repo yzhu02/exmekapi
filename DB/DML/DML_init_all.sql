@@ -37,13 +37,13 @@ VALUES
 	'server.allowUrlEncodedSlash', 'true' 
 ),
 (
-	'search.dcMotor.metaCriteria.fields', '["frameSize", "length", "ratedVoltage", "ratedCurrent", "ratedPower", "ratedTorque", "ratedRotatingSpeed", "ratedLinearSpeed", "peakCurrent", "peakTorque", "maxSortingWeight", "weight", "model"]'
+	'search.dcMotor.metaCriteria.fields', '["frameSize", "length", "ratedVoltage", "ratedCurrent", "ratedPower", "ratedTorque", "ratedRotatingSpeed", "ratedLinearSpeed", "peakCurrent", "peakTorque", "maxSortingWeight", "noloadCurrent", "noloadRotatingSpeed", "weight", "model"]'
 ),
 (
 	'search.stepperMotor.metaCriteria.fields', '["frameSize", "length", "ratedVoltage", "phaseCurrent", "phaseResistance", "holdingTorque", "detentTorque", "maxThrust", "stepAngle", "weight", "model"]'
 ),
 (
-	'search.planetaryGearbox.metaCriteria.fields', '["frameSize", "length", "numOfStages", "efficiency", "ratedContinuousTorque", "maxMomentaryTorque", "weight", "model"]'
+	'search.planetaryGearbox.metaCriteria.fields', '["frameSize", "length", "numOfStages", "efficiency", "ratedContinuousTorque", "maxMomentaryTorque", "maxRadialLoad", "maxAxialLoad", "maxShaftPress", "weight", "model"]'
 ),
 (
 	'search.brake.metaCriteria.fields', '["frameSize", "length", "ratedVoltage", "resistance", "current", "staticTorque", "ratedPower", "startVoltage", "weight", "model"]'
