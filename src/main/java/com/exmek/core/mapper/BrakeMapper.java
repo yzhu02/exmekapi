@@ -17,6 +17,7 @@ public class BrakeMapper extends AbstractProductMapper {
 
 	static final Set<String> EXCLUDED_FIELDS_TO_SPECS = new HashSet<>(Arrays.asList(
 			AbstractProductEntity.FIELD_NAME_SERIES,
+			AbstractProductEntity.FIELD_NAME_PRODUCT_SERIES,
 			AbstractProductEntity.FIELD_NAME_MODEL,
 			AbstractProductEntity.FIELD_NAME_NAME,
 			AbstractProductEntity.FIELD_NAME_DESCRIPTION

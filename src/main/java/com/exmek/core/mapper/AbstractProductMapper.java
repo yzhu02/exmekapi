@@ -50,7 +50,7 @@ public abstract class AbstractProductMapper {
 			return null;
 		}
 		List<Spec> models = new ArrayList<>();
-		Set<String> allFieldNames = new HashSet<>();
+		Set<String> trackingFieldNames = new HashSet<>();
 		Class<?> entityClass = entity.getClass();
 		while (AbstractProductEntity.class.isAssignableFrom(entityClass)) {
 			Field[] declaredFields = entityClass.getDeclaredFields();
@@ -58,8 +58,14 @@ public abstract class AbstractProductMapper {
 				if (Modifier.isStatic(f.getModifiers()) || Modifier.isTransient(f.getModifiers()) || Modifier.isVolatile(f.getModifiers())) {
 					continue;
 				}
-				String fieldName = f.getName();
-				allFieldNames.add(fieldName);
+				Class<?> fieldType = f.getType();
+				if (fieldType.isPrimitive() 
+						|| Number.class.isAssignableFrom(fieldType) 
+						|| CharSequence.class.isAssignableFrom(fieldType) 
+						|| fieldType.isEnum() 
+						|| fieldType.isArray()) {
+					trackingFieldNames.add(f.getName());
+				}
 			}
 			entityClass = entityClass.getSuperclass();
 		}
@@ -69,23 +75,23 @@ public abstract class AbstractProductMapper {
 			if (excludedFieldNames.contains(baseFieldName)) {
 				continue;
 			}
-			determinedSpecFields.add(combineSpecFieldNames(baseFieldName, allFieldNames));
+			determinedSpecFields.add(combineSpecFieldNamesAndRemoveFromTracking(baseFieldName, trackingFieldNames));
 		}
 		
-		List<String> baseFieldNames = new ArrayList<>();
-		for (String fName : allFieldNames) {
+		List<String> additionalBaseFieldNames = new ArrayList<>();
+		for (String fName : trackingFieldNames) {
 			if (excludedFieldNames.contains(fName)) {
 				continue;
 			}
 			if (!fName.endsWith(AbstractProductEntity.UNIT_FIELD_SUFFIX) && !fName.endsWith(AbstractProductEntity.TYPE_FIELD_SUFFIX)) {
-				baseFieldNames.add(fName);
+				additionalBaseFieldNames.add(fName);
 			}
 		}
-		for (String baseFieldName : baseFieldNames) {
-			determinedSpecFields.add(combineSpecFieldNames(baseFieldName, allFieldNames));
+		for (String baseFieldName : additionalBaseFieldNames) {
+			determinedSpecFields.add(combineSpecFieldNamesAndRemoveFromTracking(baseFieldName, trackingFieldNames));
 		}
 		
-		for (String fName : allFieldNames) {
+		for (String fName : trackingFieldNames) {
 			if (excludedFieldNames.contains(fName)) {
 				continue;
 			}
@@ -110,14 +116,15 @@ public abstract class AbstractProductMapper {
 		return models;
 	}
 	
-	private Triple<String, String, String> combineSpecFieldNames(String baseFieldName, Set<String> allFieldNames) {
-		allFieldNames.remove(baseFieldName);
+	private Triple<String, String, String> combineSpecFieldNamesAndRemoveFromTracking(
+			String baseFieldName, Set<String> dynamicTrackingFieldNames) {
+		dynamicTrackingFieldNames.remove(baseFieldName);
 		String unitFieldName = baseFieldName + AbstractProductEntity.UNIT_FIELD_SUFFIX;
-		if (!allFieldNames.remove(unitFieldName)) {
+		if (!dynamicTrackingFieldNames.remove(unitFieldName)) {
 			unitFieldName = null;
 		}
 		String typeFieldName = baseFieldName + AbstractProductEntity.TYPE_FIELD_SUFFIX;
-		if (!allFieldNames.remove(typeFieldName)) {
+		if (!dynamicTrackingFieldNames.remove(typeFieldName)) {
 			typeFieldName = null;
 		}
 		return Triple.of(baseFieldName, unitFieldName, typeFieldName);
