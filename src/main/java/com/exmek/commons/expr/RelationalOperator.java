@@ -24,10 +24,10 @@ public enum RelationalOperator {
 
 	BETWEEN("BETWEEN"),
 
-	REGEX("=~"),
+	REGEX("=~"), //TODO: Not supported currently
 
 	CONTAINS("CONTAINS"),
-    MATCHES("MATCHES"),
+    MATCHES("MATCHES"), //TODO: Not supported currently
     STARTWITH("STARTWITH"),
     ENDWITH("ENDWITH"),
     LIKE("LIKE"),

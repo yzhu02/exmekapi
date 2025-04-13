@@ -190,7 +190,11 @@ public class JPAUtils {
 		} else if (RelationalOperator.NE == cl.getOperator()) {
 			return builder.notEqual(attrPath, cl.getValue());
 		} else if (RelationalOperator.LIKE == cl.getOperator()) {
-			return builder.like(attrPath, cl.getValue());
+			String likeValue = cl.getValue();
+			if (likeValue != null) {
+				likeValue = likeValue.replace('*', '%');
+			}
+			return builder.like(attrPath, likeValue);
 		} else if (RelationalOperator.CONTAINS == cl.getOperator()) {
 			return builder.like(attrPath, "%" + cl.getValue() + "%");
 		} else if (RelationalOperator.STARTWITH == cl.getOperator()) {
