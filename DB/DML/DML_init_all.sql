@@ -47,6 +47,15 @@ VALUES
 ),
 (
 	'search.brake.metaCriteria.fields', '["frameSize", "length", "ratedVoltage", "resistance", "current", "staticTorque", "ratedPower", "startVoltage", "weight", "model"]'
+),
+(
+	'search.defaultPageSize', '20'
+),
+(
+	'schedule.enabled', 'false'
+),
+(
+	'resource.readIndividualFolderEnabled', 'false'
 )
 ;
 

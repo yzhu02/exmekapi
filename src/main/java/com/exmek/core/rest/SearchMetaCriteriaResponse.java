@@ -15,4 +15,6 @@ public class SearchMetaCriteriaResponse {
 	private String domain;
 	
 	private List<FieldMetaCriterion> fieldMetaCriteria;
+	
+	private Integer defaultPageSize;
 }

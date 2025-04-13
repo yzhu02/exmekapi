@@ -46,8 +46,10 @@ public class AppConfigProvider implements Scheduleable {
 	public static final String CONFIG_NAME_SEARCH_PLANETARY_GEARBOX_METACRITERIA_FIELDS	= "search.planetaryGearbox.metaCriteria.fields";
 	
 	public static final String CONFIG_NAME_SEARCH_BRAKE_METACRITERIA_FIELDS				= "search.brake.metaCriteria.fields";
-	
-	public static final String CONFIG_NAME_SCHEDULE_ENABLED								= "scheduleEnabled";
+
+	public static final String CONFIG_NAME_SEARCH_DEFAULT_PAGESIZE						= "search.defaultPageSize";
+
+	public static final String CONFIG_NAME_SCHEDULE_ENABLED								= "schedule.enabled";
 	
 	public static final String CONFIG_NAME_RESOURCE_READ_INDIVIDUAL_FOLDER_ENABLED		= "resource.readIndividualFolderEnabled";
 	
@@ -139,6 +141,10 @@ public class AppConfigProvider implements Scheduleable {
 		return JsonMapperUtils.readValue(confStr, new TypeReference<List<String>>() {});
 	}
 
+	public Integer getSearchDefaultPageSize() {
+		return Integer.valueOf(getConfigValue(CONFIG_NAME_SEARCH_DEFAULT_PAGESIZE, "20"));
+	}
+	
 	public Boolean getScheduleEnabled() {
 		return BooleanUtils.toBoolean(getConfigValue(CONFIG_NAME_SCHEDULE_ENABLED, "false"));
 	}

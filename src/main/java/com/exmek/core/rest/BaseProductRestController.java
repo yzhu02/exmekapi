@@ -95,6 +95,7 @@ implements ProductService<M>, Scheduleable {
 		return SearchMetaCriteriaResponse.builder()
 				.domain(getEntityClass().getSimpleName())
 				.fieldMetaCriteria(resultCriteria)
+				.defaultPageSize(appConfigProvider.getSearchDefaultPageSize())
 				.build();
 		
 	}
