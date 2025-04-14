@@ -8,7 +8,6 @@ import java.util.Set;
 
 import org.springframework.stereotype.Component;
 
-import com.exmek.core.commons.model.MeasuredValue;
 import com.exmek.core.model.GearboxSeries;
 import com.exmek.core.model.PlanetaryGearbox;
 import com.exmek.core.persistence.entity.AbstractProductEntity;
@@ -32,12 +31,12 @@ public class PlanetaryGearboxMapper extends AbstractProductMapper {
 		PlanetaryGearbox model = super.mapProduct(entity, PlanetaryGearbox::new);
 		model.setNumOfStages(entity.getNumOfStages());
 		model.setReductionRatios(parseReductionRatios(entity.getReductionRatios()));
-		model.setEfficiency(MeasuredValue.of(entity.getEfficiency(), entity.getEfficiencyUnit()));
-		model.setRatedContinuousTorque(MeasuredValue.of(entity.getRatedContinuousTorque(), entity.getRatedContinuousTorqueUnit()));
-		model.setMaxMomentaryTorque(MeasuredValue.of(entity.getMaxMomentaryTorque(), entity.getMaxMomentaryTorqueUnit()));
-		model.setMaxRadialLoad(MeasuredValue.of(entity.getMaxRadialLoad(), entity.getMaxRadialLoadUnit()));
-		model.setMaxAxialLoad(MeasuredValue.of(entity.getMaxAxialLoad(), entity.getMaxAxialLoadUnit()));
-		model.setMaxShaftPress(MeasuredValue.of(entity.getMaxShaftPress(), entity.getMaxShaftPressUnit()));
+		model.setEfficiency(toMeasuredValue(entity.getEfficiency(), entity.getEfficiencyUnit()));
+		model.setRatedContinuousTorque(toMeasuredValue(entity.getRatedContinuousTorque(), entity.getRatedContinuousTorqueUnit()));
+		model.setMaxMomentaryTorque(toMeasuredValue(entity.getMaxMomentaryTorque(), entity.getMaxMomentaryTorqueUnit()));
+		model.setMaxRadialLoad(toMeasuredValue(entity.getMaxRadialLoad(), entity.getMaxRadialLoadUnit()));
+		model.setMaxAxialLoad(toMeasuredValue(entity.getMaxAxialLoad(), entity.getMaxAxialLoadUnit()));
+		model.setMaxShaftPress(toMeasuredValue(entity.getMaxShaftPress(), entity.getMaxShaftPressUnit()));
 		model.setOperatingTemperature(entity.getOperatingTemperature());
 		model.setRecommendInputSpeed(entity.getRecommendInputSpeed());
 		

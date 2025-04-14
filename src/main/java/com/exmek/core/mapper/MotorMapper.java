@@ -13,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ObjectUtils;
 
-import com.exmek.core.commons.model.MeasuredValue;
 import com.exmek.core.model.DCMotor;
 import com.exmek.core.model.LeadDef;
 import com.exmek.core.model.LinearStepperMotor;
@@ -60,17 +59,17 @@ public class MotorMapper extends AbstractProductMapper {
 		}
 		DCMotor motor = super.mapProduct(entity, DCMotor::new);
 		motor.setCategory(entity.getCategory());
-		motor.setRatedVoltage(MeasuredValue.of(entity.getRatedVoltage(), entity.getRatedVoltageUnit()));
-		motor.setRatedCurrent(MeasuredValue.of(entity.getRatedCurrent(), entity.getRatedCurrentUnit()));
-		motor.setRatedPower(MeasuredValue.of(entity.getRatedPower(), entity.getRatedPowerUnit()));
-		motor.setRatedTorque(MeasuredValue.of(entity.getRatedTorque(), entity.getRatedTorqueUnit()));
-		motor.setRatedRotatingSpeed(MeasuredValue.of(entity.getRatedRotatingSpeed(), entity.getRatedRotatingSpeedUnit()));
-		motor.setRatedLinearSpeed(MeasuredValue.of(entity.getRatedLinearSpeed(), entity.getRatedLinearSpeedUnit()));
-		motor.setPeakCurrent(MeasuredValue.of(entity.getPeakCurrent(), entity.getPeakCurrentUnit()));
-		motor.setPeakTorque(MeasuredValue.of(entity.getPeakTorque(), entity.getPeakTorqueUnit()));
-		motor.setMaxSortingWeight(MeasuredValue.of(entity.getMaxSortingWeight(), entity.getMaxSortingWeightUnit()));
-		motor.setNoloadCurrent(MeasuredValue.of(entity.getNoloadCurrent(), entity.getNoloadCurrentUnit()));
-		motor.setNoloadRotatingSpeed(MeasuredValue.of(entity.getNoloadRotatingSpeed(), entity.getNoloadRotatingSpeedUnit()));
+		motor.setRatedVoltage(toMeasuredValue(entity.getRatedVoltage(), entity.getRatedVoltageUnit()));
+		motor.setRatedCurrent(toMeasuredValue(entity.getRatedCurrent(), entity.getRatedCurrentUnit()));
+		motor.setRatedPower(toMeasuredValue(entity.getRatedPower(), entity.getRatedPowerUnit()));
+		motor.setRatedTorque(toMeasuredValue(entity.getRatedTorque(), entity.getRatedTorqueUnit()));
+		motor.setRatedRotatingSpeed(toMeasuredValue(entity.getRatedRotatingSpeed(), entity.getRatedRotatingSpeedUnit()));
+		motor.setRatedLinearSpeed(toMeasuredValue(entity.getRatedLinearSpeed(), entity.getRatedLinearSpeedUnit()));
+		motor.setPeakCurrent(toMeasuredValue(entity.getPeakCurrent(), entity.getPeakCurrentUnit()));
+		motor.setPeakTorque(toMeasuredValue(entity.getPeakTorque(), entity.getPeakTorqueUnit()));
+		motor.setMaxSortingWeight(toMeasuredValue(entity.getMaxSortingWeight(), entity.getMaxSortingWeightUnit()));
+		motor.setNoloadCurrent(toMeasuredValue(entity.getNoloadCurrent(), entity.getNoloadCurrentUnit()));
+		motor.setNoloadRotatingSpeed(toMeasuredValue(entity.getNoloadRotatingSpeed(), entity.getNoloadRotatingSpeedUnit()));
 		
 		if (comprehensiveMapping) {
 			motor.setMotorCategory(MotorCategoryMapper.mapEntityToCategory(entity.getMotorCategory(), false));
@@ -146,14 +145,14 @@ public class MotorMapper extends AbstractProductMapper {
 			}
 		});
 		motor.setCategory(entity.getCategory());
-		motor.setRatedVoltage(MeasuredValue.of(entity.getRatedVoltage(), entity.getRatedVoltageUnit()));
-		motor.setPhaseCurrent(MeasuredValue.of(entity.getPhaseCurrent(), entity.getPhaseCurrentUnit()));
-		motor.setPhaseResistance(MeasuredValue.of(entity.getPhaseResistance(), entity.getPhaseResistanceUnit()));
-		motor.setPhaseInductance(MeasuredValue.of(entity.getPhaseInductance(), entity.getPhaseInductanceUnit()));
-		motor.setHoldingTorque(MeasuredValue.of(entity.getHoldingTorque(), entity.getHoldingTorqueUnit()));
-		motor.setDetentTorque(MeasuredValue.of(entity.getDetentTorque(), entity.getDetentTorqueUnit()));
-		motor.setStepAngle(MeasuredValue.of(entity.getStepAngle(), entity.getStepAngleUnit()));
-		motor.setMaxThrust(MeasuredValue.of(entity.getMaxThrust(), entity.getMaxThrustUnit()));
+		motor.setRatedVoltage(toMeasuredValue(entity.getRatedVoltage(), entity.getRatedVoltageUnit()));
+		motor.setPhaseCurrent(toMeasuredValue(entity.getPhaseCurrent(), entity.getPhaseCurrentUnit()));
+		motor.setPhaseResistance(toMeasuredValue(entity.getPhaseResistance(), entity.getPhaseResistanceUnit()));
+		motor.setPhaseInductance(toMeasuredValue(entity.getPhaseInductance(), entity.getPhaseInductanceUnit()));
+		motor.setHoldingTorque(toMeasuredValue(entity.getHoldingTorque(), entity.getHoldingTorqueUnit()));
+		motor.setDetentTorque(toMeasuredValue(entity.getDetentTorque(), entity.getDetentTorqueUnit()));
+		motor.setStepAngle(toMeasuredValue(entity.getStepAngle(), entity.getStepAngleUnit()));
+		motor.setMaxThrust(toMeasuredValue(entity.getMaxThrust(), entity.getMaxThrustUnit()));
 		
 		if (comprehensiveMapping) {
 			motor.setMotorCategory(MotorCategoryMapper.mapEntityToCategory(entity.getMotorCategory(), false));

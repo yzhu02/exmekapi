@@ -6,7 +6,6 @@ import java.util.Set;
 
 import org.springframework.stereotype.Component;
 
-import com.exmek.core.commons.model.MeasuredValue;
 import com.exmek.core.model.Brake;
 import com.exmek.core.model.BrakeSeries;
 import com.exmek.core.persistence.entity.AbstractProductEntity;
@@ -28,12 +27,12 @@ public class BrakeMapper extends AbstractProductMapper {
 			return null;
 		}
 		Brake model = super.mapProduct(entity, Brake::new);
-		model.setRatedVoltage(MeasuredValue.of(entity.getRatedVoltage(), entity.getRatedVoltageUnit()));
-		model.setResistance(MeasuredValue.of(entity.getResistance(), entity.getResistanceUnit()));
-		model.setCurrent(MeasuredValue.of(entity.getCurrent(), entity.getCurrentUnit()));
-		model.setStaticTorque(MeasuredValue.of(entity.getStaticTorque(), entity.getStaticTorqueUnit()));
-		model.setRatedPower(MeasuredValue.of(entity.getRatedPower(), entity.getRatedPowerUnit()));
-		model.setStartVoltage(MeasuredValue.of(entity.getStartVoltage(), entity.getStartVoltageUnit()));
+		model.setRatedVoltage(toMeasuredValue(entity.getRatedVoltage(), entity.getRatedVoltageUnit()));
+		model.setResistance(toMeasuredValue(entity.getResistance(), entity.getResistanceUnit()));
+		model.setCurrent(toMeasuredValue(entity.getCurrent(), entity.getCurrentUnit()));
+		model.setStaticTorque(toMeasuredValue(entity.getStaticTorque(), entity.getStaticTorqueUnit()));
+		model.setRatedPower(toMeasuredValue(entity.getRatedPower(), entity.getRatedPowerUnit()));
+		model.setStartVoltage(toMeasuredValue(entity.getStartVoltage(), entity.getStartVoltageUnit()));
 		
 		if (comprehensiveMapping) {
 			model.setProductSeries(AbstractSeriesMapper.mapEntityToSeries(entity.getProductSeries(), BrakeSeries::new, false));

@@ -3,6 +3,8 @@ package com.exmek.core.mapper;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -38,9 +40,9 @@ public abstract class AbstractProductMapper {
 		model.setModel(entity.getModel());
 		model.setName(entity.getName());
 		model.setDescription(entity.getDescription());
-		model.setLength(MeasuredValue.of(entity.getLength(), entity.getLengthUnit()));
-		model.setWeight(MeasuredValue.of(entity.getWeight(), entity.getWeightUnit()));
-		model.setFrameSize(MeasuredValue.Typed.of(entity.getFrameSize(), entity.getFrameSizeUnit(), entity.getFrameSizeType()));
+		model.setLength(toMeasuredValue(entity.getLength(), entity.getLengthUnit()));
+		model.setWeight(toMeasuredValue(entity.getWeight(), entity.getWeightUnit()));
+		model.setFrameSize(MeasuredValue.Typed.of(formatBigDecimalValue(entity.getFrameSize()), entity.getFrameSizeUnit(), entity.getFrameSizeType()));
 		model.setNemaSize(entity.getNemaSize());
 		return model;
 	}
@@ -108,6 +110,9 @@ public abstract class AbstractProductMapper {
 			if (specValue == null) {
 				continue;
 			}
+			if (specValue instanceof BigDecimal) {
+				specValue = formatBigDecimalValue((BigDecimal) specValue);
+			}
 			String unitValue = readSuffixedFieldValue(entity, tSpecField.getMiddle());
 			String typeValue = readSuffixedFieldValue(entity, tSpecField.getRight());
 			models.add(createSpec(MiscUtils.fieldNameToDisplayName(baseFieldName), specValue, unitValue, typeValue));
@@ -161,5 +166,20 @@ public abstract class AbstractProductMapper {
 		spec.setValue(String.valueOf(value));
 		spec.setType(type);
 		return spec;
+	}
+
+	@SuppressWarnings("unchecked")
+	protected <V extends Number, U> MeasuredValue<V, U> toMeasuredValue(V value, U unit) {
+		if (value == null) {
+			return null;
+		}
+		if (value instanceof BigDecimal) {
+			value = (V) formatBigDecimalValue((BigDecimal) value);
+		}
+		return MeasuredValue.of(value, unit);
+	}
+	
+	private BigDecimal formatBigDecimalValue(BigDecimal value) {
+		return new BigDecimal(new DecimalFormat("#.####").format(value));
 	}
 }
