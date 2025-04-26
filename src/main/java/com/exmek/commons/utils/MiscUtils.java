@@ -2,13 +2,17 @@ package com.exmek.commons.utils;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
+
+import com.exmek.core.config.AppConfigProvider;
 
 public class MiscUtils {
 	
@@ -124,10 +128,17 @@ public class MiscUtils {
 		return quote != null ? quote + s + quote : s;
 	}
 
-	public static String fieldNameToDisplayName(String fieldName) {
+	public static String fieldNameToDisplayName(String fieldName, AppConfigProvider appConfigProvider) {
 		//Example: ratedVoltage -> Rated Voltage
 		if (ObjectUtils.isEmpty(fieldName)) {
 			return fieldName;
+		}
+		if (appConfigProvider != null) {
+			Map<String, String> fieldDisplayNameMappings = appConfigProvider.getMetaFieldDisplayNameMappings();
+			String displayName = fieldDisplayNameMappings.get(fieldName);
+			if (StringUtils.isNotEmpty(displayName)) {
+				return displayName;
+			}
 		}
 		StringBuilder sb = new StringBuilder();
 		int prevUppercaseInx = 0;

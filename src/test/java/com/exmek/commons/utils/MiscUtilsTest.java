@@ -7,11 +7,11 @@ class MiscUtilsTest {
 
 	@Test
 	void testFieldNameToDisplayName() {
-		Assertions.assertEquals("Rated Voltage", MiscUtils.fieldNameToDisplayName("ratedVoltage"));
-		Assertions.assertEquals("Rated Voltage", MiscUtils.fieldNameToDisplayName("ratedVoltage"));
-		Assertions.assertEquals("Rated Rotating Speed", MiscUtils.fieldNameToDisplayName("ratedRotatingSpeed"));
-		Assertions.assertEquals("Rated DC Voltage", MiscUtils.fieldNameToDisplayName("ratedDCVoltage"));
-		Assertions.assertEquals("Rated VDC", MiscUtils.fieldNameToDisplayName("ratedVDC"));
+		Assertions.assertEquals("Rated Voltage", MiscUtils.fieldNameToDisplayName("ratedVoltage", null));
+		Assertions.assertEquals("Rated Voltage", MiscUtils.fieldNameToDisplayName("ratedVoltage", null));
+		Assertions.assertEquals("Rated Rotating Speed", MiscUtils.fieldNameToDisplayName("ratedRotatingSpeed", null));
+		Assertions.assertEquals("Rated DC Voltage", MiscUtils.fieldNameToDisplayName("ratedDCVoltage", null));
+		Assertions.assertEquals("Rated VDC", MiscUtils.fieldNameToDisplayName("ratedVDC", null));
 	}
 
 

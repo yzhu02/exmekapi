@@ -9,7 +9,6 @@ import java.util.Map;
 import java.util.function.BiFunction;
 
 import org.apache.commons.lang3.ObjectUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -109,13 +108,7 @@ public class SearchMetaCriteriaBuilder {
 		FieldMetaCriterion c = new FieldMetaCriterion();
 		String fieldName = field.getName();
 		c.setFieldName(fieldName);
-		Map<String, String> fieldDisplayNameMappings = appConfigProvider.getMetaFieldDisplayNameMappings();
-		String displayName = fieldDisplayNameMappings.get(fieldName);
-		if (StringUtils.isNotEmpty(displayName)) {
-			c.setDisplayName(displayName);
-		} else {
-			c.setDisplayName(MiscUtils.fieldNameToDisplayName(field.getName()));
-		}
+		c.setDisplayName(MiscUtils.fieldNameToDisplayName(field.getName(), appConfigProvider));
 		c.setType(field.getType().getSimpleName());
 		String unitFieldName = field.getName() + AbstractProductEntity.UNIT_FIELD_SUFFIX;
 		if (fieldsMap.containsKey(unitFieldName)) {

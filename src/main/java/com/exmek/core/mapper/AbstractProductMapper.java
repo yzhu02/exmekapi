@@ -115,7 +115,7 @@ public abstract class AbstractProductMapper {
 			}
 			String unitValue = readSuffixedFieldValue(entity, tSpecField.getMiddle());
 			String typeValue = readSuffixedFieldValue(entity, tSpecField.getRight());
-			models.add(createSpec(MiscUtils.fieldNameToDisplayName(baseFieldName), specValue, unitValue, typeValue));
+			models.add(createSpec(MiscUtils.fieldNameToDisplayName(baseFieldName, appConfigProvider), specValue, unitValue, typeValue));
 		}
 				
 		return models;
