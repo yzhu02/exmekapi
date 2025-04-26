@@ -48,6 +48,8 @@ public class AppConfigProvider implements Scheduleable {
 	public static final String CONFIG_NAME_SEARCH_BRAKE_METACRITERIA_FIELDS				= "search.brake.metaCriteria.fields";
 
 	public static final String CONFIG_NAME_SEARCH_DEFAULT_PAGESIZE						= "search.defaultPageSize";
+	
+	public static final String CONFIG_NAME_META_FIELD_DISPLAY_NAME_MAPPINGS				= "meta.fieldDisplayNameMappings";
 
 	public static final String CONFIG_NAME_SCHEDULE_ENABLED								= "schedule.enabled";
 	
@@ -141,6 +143,11 @@ public class AppConfigProvider implements Scheduleable {
 		return JsonMapperUtils.readValue(confStr, new TypeReference<List<String>>() {});
 	}
 
+	public Map<String, String> getMetaFieldDisplayNameMappings() {
+		String confStr = getConfigValue(CONFIG_NAME_META_FIELD_DISPLAY_NAME_MAPPINGS, null);
+		return JsonMapperUtils.readValue(confStr, new TypeReference<Map<String, String>>() {});
+	}
+	
 	public Integer getSearchDefaultPageSize() {
 		return Integer.valueOf(getConfigValue(CONFIG_NAME_SEARCH_DEFAULT_PAGESIZE, "20"));
 	}

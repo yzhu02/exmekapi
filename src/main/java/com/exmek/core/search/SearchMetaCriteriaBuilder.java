@@ -9,16 +9,24 @@ import java.util.Map;
 import java.util.function.BiFunction;
 
 import org.apache.commons.lang3.ObjectUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import com.exmek.commons.utils.MiscUtils;
 import com.exmek.core.annotation.Searchable;
 import com.exmek.core.commons.model.Range;
+import com.exmek.core.config.AppConfigProvider;
 import com.exmek.core.helper.MetaCriteriaKey;
 import com.exmek.core.persistence.entity.AbstractProductEntity;
 import com.exmek.core.rest.FieldMetaCriterion;
 import com.exmek.core.utils.RelationalOperatorUtils;
 
+@Component
 public class SearchMetaCriteriaBuilder {
+
+	@Autowired
+	protected AppConfigProvider appConfigProvider;
 
 	public List<FieldMetaCriterion> createFieldMetaCriteria(MetaCriteriaKey criteriaKey, 
 			List<String> searchMetaFieldNames, Class<?> entityClass, 
@@ -101,7 +109,13 @@ public class SearchMetaCriteriaBuilder {
 		FieldMetaCriterion c = new FieldMetaCriterion();
 		String fieldName = field.getName();
 		c.setFieldName(fieldName);
-		c.setDisplayName(MiscUtils.fieldNameToDisplayName(field.getName()));
+		Map<String, String> fieldDisplayNameMappings = appConfigProvider.getMetaFieldDisplayNameMappings();
+		String displayName = fieldDisplayNameMappings.get(fieldName);
+		if (StringUtils.isNotEmpty(displayName)) {
+			c.setDisplayName(displayName);
+		} else {
+			c.setDisplayName(MiscUtils.fieldNameToDisplayName(field.getName()));
+		}
 		c.setType(field.getType().getSimpleName());
 		String unitFieldName = field.getName() + AbstractProductEntity.UNIT_FIELD_SUFFIX;
 		if (fieldsMap.containsKey(unitFieldName)) {

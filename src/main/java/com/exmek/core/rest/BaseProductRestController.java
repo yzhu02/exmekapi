@@ -62,6 +62,9 @@ implements ProductService<M>, Scheduleable {
 	protected ResourceManager resourceManager;
 	
 	@Autowired
+	protected SearchMetaCriteriaBuilder searchMetaCriteriaBuilder;
+
+	@Autowired
 	protected AppConfigProvider appConfigProvider;
 	
 	protected Map<MetaCriteriaKey, List<FieldMetaCriterion>> fieldMetaCriteriaMap = new ConcurrentHashMap<>();
@@ -111,7 +114,6 @@ implements ProductService<M>, Scheduleable {
 	}
 
 	protected List<FieldMetaCriterion> createFieldMetaCriteria(MetaCriteriaKey criteriaKey) {
-		SearchMetaCriteriaBuilder searchMetaCriteriaBuilder = new SearchMetaCriteriaBuilder();
 		return searchMetaCriteriaBuilder.createFieldMetaCriteria(criteriaKey, 
 				getSearchMetaCriteriaFields(), getEntityClass(), this::getMinMaxRangeByUnit);
 	}
