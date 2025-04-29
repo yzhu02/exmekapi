@@ -8,6 +8,9 @@ import org.springframework.web.bind.annotation.RestController;
 import com.exmek.core.consts.EndpointConsts;
 import com.exmek.core.scheduler.ScheduleListener;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @RestController
 @RequestMapping(EndpointConsts.ENDPOINT_ADMIN)
 public class AdminRestController {
@@ -17,6 +20,7 @@ public class AdminRestController {
 	
 	@PostMapping("/refresh")
 	public void triggerSchedule() {
+		log.info("Triggering scheduler registered to the listeners...");
 		scheduleListener.trigger();
 	}
 

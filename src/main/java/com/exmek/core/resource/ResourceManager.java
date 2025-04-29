@@ -12,8 +12,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.io.Resource;
@@ -27,7 +25,9 @@ import com.exmek.core.config.AppConfigProvider;
 import com.exmek.core.scheduler.Scheduleable;
 
 import jakarta.annotation.PostConstruct;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Component
 public class ResourceManager implements Scheduleable {
 	
@@ -94,8 +94,6 @@ public class ResourceManager implements Scheduleable {
 	
 	private static final String RESOURCE_FILENAME_REGEX = "(\\w+)(\\[(\\d+)\\])*";
 
-	private static final Logger logger = LoggerFactory.getLogger(ResourceManager.class);
-
 	@Autowired
 	private ApplicationContext applicationContext;
 
@@ -160,12 +158,12 @@ public class ResourceManager implements Scheduleable {
 		try {
 			resources = ResourcePatternUtils.getResourcePatternResolver(applicationContext).getResources(resourceFullLocation);
 			if (resources == null || resources.length == 0) {
-				logger.info("No resource loaded from {} ", resourceFullLocation);
+				log.info("No resource loaded from {} ", resourceFullLocation);
 			} else {
-				logger.info("Resources are loaded from {} successfully. ", resourceFullLocation);
+				log.info("Resources are loaded from {} successfully. ", resourceFullLocation);
 			}
 		} catch (IOException ex) {
-			logger.error("Failed to load resources from {} ", resourceFullLocation, ex);
+			log.error("Failed to load resources from {} ", resourceFullLocation, ex);
 		}
 		if (resources == null || resources.length == 0) {
 			return resourceMap;
@@ -197,7 +195,7 @@ public class ResourceManager implements Scheduleable {
 			}
 			putResourceCallback.accept(resName, filename);
 		}
-		logger.info("Resources are initialized successfully for parent path {} with size {} ", resourceRelPath, resourceMap.size());
+		log.info("Resources are initialized successfully for parent path {} with size {} ", resourceRelPath, resourceMap.size());
 		return resourceMap;
 	}
 	
@@ -231,12 +229,12 @@ public class ResourceManager implements Scheduleable {
 		try {
 			resources = ResourcePatternUtils.getResourcePatternResolver(applicationContext).getResources(resLocation);
 			if (resources == null || resources.length == 0) {
-				logger.warn("No resource loaded from {} for product {}. ", resLocation, model);
+				log.warn("No resource loaded from {} for product {}. ", resLocation, model);
 			} else {
-				logger.info("Resources are loaded from {} successfully for product {}. ", resLocation, model);
+				log.info("Resources are loaded from {} successfully for product {}. ", resLocation, model);
 			}
 		} catch (IOException ex) {
-			logger.warn("Failed to load resource from {} for product {}. ", resLocation, model, ex);
+			log.warn("Failed to load resource from {} for product {}. ", resLocation, model, ex);
 		}
 		return resources;
 	}
@@ -305,10 +303,10 @@ public class ResourceManager implements Scheduleable {
 		try {
 			resources = ResourcePatternUtils.getResourcePatternResolver(applicationContext).getResources(techDocPathPattern);
 		} catch (IOException ex) {
-			logger.error("Failed to load techdoc resources from {} ", DIR_NAME_STATIC, ex);
+			log.error("Failed to load techdoc resources from {} ", DIR_NAME_STATIC, ex);
 		}
 		if (resources == null || resources.length == 0) {
-			logger.info("No techdoc resources loaded from {} ", DIR_NAME_STATIC);
+			log.info("No techdoc resources loaded from {} ", DIR_NAME_STATIC);
 			return null;
 		}
 		return Arrays.stream(resources)
@@ -339,7 +337,7 @@ public class ResourceManager implements Scheduleable {
 		try {
 			fullPath = res.getURL().getPath();
 		} catch (IOException e) {
-			logger.warn("Failed to get URL from file resource {} ", res.getFilename());
+			log.warn("Failed to get URL from file resource {} ", res.getFilename());
 		}
 		if (fullPath != null) {
 			String basePath = contextDirName + "/" + baseDirName;
@@ -348,7 +346,7 @@ public class ResourceManager implements Scheduleable {
 		try {
 			resInfo.setSize(res.contentLength());
 		} catch (IOException e) {
-			logger.warn("Failed to get contentLength from file resource {} ", res.getFilename());
+			log.warn("Failed to get contentLength from file resource {} ", res.getFilename());
 		}
 		return resInfo;
 	}

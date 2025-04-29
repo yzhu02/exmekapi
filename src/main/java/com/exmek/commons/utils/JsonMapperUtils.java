@@ -1,7 +1,5 @@
 package com.exmek.commons.utils;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.util.ObjectUtils;
 
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
@@ -9,9 +7,10 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-public class JsonMapperUtils {
+import lombok.extern.slf4j.Slf4j;
 
-	private static final Logger logger = LoggerFactory.getLogger(JsonMapperUtils.class);
+@Slf4j
+public class JsonMapperUtils {
 
 	private static ObjectMapper objectMapper = new ObjectMapper();
 	
@@ -29,7 +28,7 @@ public class JsonMapperUtils {
 		try {
 			return objectMapper.readValue(valueStr, typeRef);
 		} catch (JsonProcessingException e) {
-			logger.error("Failed to deserialize to {} object mapping from json string: {} ", typeRef.getType(), valueStr, e);
+			log.error("Failed to deserialize to {} object mapping from json string: {} ", typeRef.getType(), valueStr, e);
 			return null;
 		}
 	}
@@ -41,7 +40,7 @@ public class JsonMapperUtils {
 		try {
 			return objectMapper.writeValueAsString(obj);
 		} catch (JsonProcessingException e) {
-			logger.error("Failed to serialize to json string from given object", e);
+			log.error("Failed to serialize to json string from given object", e);
 			return null;
 		}
 	}

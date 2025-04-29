@@ -219,10 +219,4 @@ extends BaseMotorRestController<DCMotorEntity, DCMotor, DCMotorCategoryEntity, D
 				key.getType(), key.getCategory(), key.getSeries());
 	}
 
-	
-	@Override
-	protected String getModelDisplayName() {
-		return "P/N";
-	}
-
 }

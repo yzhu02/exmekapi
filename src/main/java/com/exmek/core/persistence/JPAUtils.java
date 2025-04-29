@@ -12,8 +12,6 @@ import java.util.stream.Collectors;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.exmek.commons.expr.LogicalOperator;
 import com.exmek.commons.expr.RelationalOperator;
@@ -31,10 +29,10 @@ import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.Path;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class JPAUtils {
-	
-	private static final Logger logger = LoggerFactory.getLogger(JPAUtils.class);
 
 	public static Number getNumberValue(Class<? extends Object> fieldType, String strValue) {
 		Number nValue = null;
@@ -101,7 +99,7 @@ public class JPAUtils {
 		try {
 			unitField = ReflectionUtils.getField(entityClass, unitFieldName);
 		} catch (Exception e) {
-			logger.error("Unable to find unit field name {} from entity class {} ", unitField, entityClass);
+			log.error("Unable to find unit field name {} from entity class {} ", unitField, entityClass);
 		}
 		if (unitField == null) {
 			return originPredicate;
@@ -134,7 +132,7 @@ public class JPAUtils {
 			try {
 				originUnitBaseValue = (double) PropertyUtils.getProperty(originUnit, baseValuePropName);
 			} catch (Exception ex) {
-				logger.warn("Unable to read {} from {} ", baseValuePropName, originUnit, ex);
+				log.warn("Unable to read {} from {} ", baseValuePropName, originUnit, ex);
 			}
 		}
 		List<Predicate> combinedPredicates = new ArrayList<>();
@@ -150,7 +148,7 @@ public class JPAUtils {
 				try {
 					uBaseValue = (double) PropertyUtils.getProperty(unit, baseValuePropName);
 				} catch (Exception ex) {
-					logger.error("Unable to read {} from {} ", baseValuePropName, unit, ex);
+					log.error("Unable to read {} from {} ", baseValuePropName, unit, ex);
 					continue;
 				}
 			}
@@ -237,6 +235,9 @@ public class JPAUtils {
 		if (ObjectUtils.isEmpty(conditions) && ObjectUtils.isEmpty(subConditionClauses)) {
 			return null;
 		}
+		if (log.isDebugEnabled()) {
+			log.debug("Building query {} ", conditionClause);
+		}
 		List<Predicate> predicates = new ArrayList<>();
 		if (conditions != null) {
 			for (String condition : conditions) {
@@ -265,7 +266,7 @@ public class JPAUtils {
 							predicate = builder.isFalse(root.get(cl.getFieldName()));
 						}
 					} else {
-						logger.error("Unable to parse boolean condition {} ", condition);
+						log.error("Unable to parse boolean condition {} ", condition);
 					}
 				} else {
 					predicate = JPAUtils.buildPredicateForString(builder, root.get(cl.getFieldName()), cl);

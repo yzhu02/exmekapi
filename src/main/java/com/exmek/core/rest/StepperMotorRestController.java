@@ -191,9 +191,4 @@ extends BaseMotorRestController<StepperMotorEntity, StepperMotor, StepperMotorCa
 				key.getCategory(), key.getSeries());
 	}
 
-	@Override
-	protected String getModelDisplayName() {
-		return "P/N";
-	}
-	
 }

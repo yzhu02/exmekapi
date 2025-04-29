@@ -9,6 +9,9 @@ import org.springframework.stereotype.Component;
 
 import com.exmek.core.config.AppConfigProvider;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Component
 public class ScheduleListener {
 
@@ -30,6 +33,7 @@ public class ScheduleListener {
 	}
 
 	public void trigger() {
+		log.info("ScheduleListener is trigged...");
 		if (scheduleables != null) {
 			scheduleables.forEach(Scheduleable::onSchedule);
 		}

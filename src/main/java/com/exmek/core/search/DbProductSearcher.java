@@ -12,6 +12,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.util.Pair;
+import org.springframework.stereotype.Component;
 
 import com.exmek.commons.expr.LogicalOperator;
 import com.exmek.core.model.AbstractProduct;
@@ -25,7 +26,10 @@ import com.exmek.core.utils.ContentUtils;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
+@Component
 public class DbProductSearcher {
 
 	public <T extends AbstractProductEntity, M extends AbstractProduct> PageableListDataResponse<M> search(
@@ -38,6 +42,7 @@ public class DbProductSearcher {
 
 		PageableListDataResponse<M> dataResponse = new PageableListDataResponse<>();
 		
+		log.info("Searching product with query {} and pageNumber {}, pageSize {} ", conditionClause, pageNumber, pageSize);
 		Specification<T> jpaSpec = (root, query, builder) -> {
 			Predicate pConditions = JPAUtils.buildPredicate(builder, root, conditionClause, dataAvailableUnitsOfFieldNames);
 			if (fAdditionalCondition != null) {

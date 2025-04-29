@@ -9,12 +9,14 @@ import org.springframework.util.ObjectUtils;
 
 import com.exmek.commons.net.ContentType;
 
-import jakarta.mail.MessagingException;
 import jakarta.mail.Message.RecipientType;
+import jakarta.mail.MessagingException;
 import jakarta.mail.internet.AddressException;
 import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Service
 public class MailSenderService {
 
@@ -25,6 +27,7 @@ public class MailSenderService {
 //        SimpleMailMessage message = new SimpleMailMessage();
         
     	MimeMessage message = createMimeMessage(to, cc, bcc, subject, content, contentType);
+    	log.info("Sending email [{}] to {}", subject, cc);
 		mailSender.send(message);
         
     }

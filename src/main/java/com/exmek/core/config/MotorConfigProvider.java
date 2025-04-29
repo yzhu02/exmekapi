@@ -6,8 +6,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -18,11 +16,11 @@ import com.exmek.core.scheduler.Scheduleable;
 import com.fasterxml.jackson.core.type.TypeReference;
 
 import jakarta.annotation.PostConstruct;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Component
 public class MotorConfigProvider implements Scheduleable {
-
-	private static final Logger logger = LoggerFactory.getLogger(MotorConfigProvider.class);
 
 	public static final String CONFIG_NAME_MOTOR_CURVE_COORDINATES	= "curve.coordinates";
 
@@ -58,7 +56,7 @@ public class MotorConfigProvider implements Scheduleable {
 			return null;
 		}
 		if (perMotorConfigMap == null) {
-			logger.error("Unable to getMotorCurveCoordinates for model '{}' as the 'perMotorConfigMap' is null. ", model);
+			log.error("Unable to getMotorCurveCoordinates for model '{}' as the 'perMotorConfigMap' is null. ", model);
 			return null;
 		}
 		
@@ -88,12 +86,12 @@ public class MotorConfigProvider implements Scheduleable {
 		}
 		
 		if (mConfigMap == null) {
-			logger.error("Unable to getMotorCurveCoordinates for model '{}' as the submap from 'perMotorConfigMap[{}]' is null. ", model, model);
+			log.error("Unable to getMotorCurveCoordinates for model '{}' as the submap from 'perMotorConfigMap[{}]' is null. ", model, model);
 			return null;
 		}
 		String configValue = mConfigMap.get(CONFIG_NAME_MOTOR_CURVE_COORDINATES);
 		if (configValue == null) {
-			logger.error("Unable to getMotorCurveCoordinates as the config value is null. ");
+			log.error("Unable to getMotorCurveCoordinates as the config value is null. ");
 			return null;
 		}
 		return JsonMapperUtils.readValue(configValue, new TypeReference<List<CurveCoordinate>>() {});

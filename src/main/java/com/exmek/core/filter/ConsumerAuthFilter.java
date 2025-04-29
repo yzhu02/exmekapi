@@ -1,28 +1,18 @@
 package com.exmek.core.filter;
 
-import java.io.IOException;
-
-import org.springframework.web.filter.OncePerRequestFilter;
-
-import jakarta.servlet.FilterChain;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-
 /**
  * Deprecated but just keep as placeholder for future
  */
 //@Component
-public class ConsumerAuthFilter extends OncePerRequestFilter {
-
-//	private static final Logger logger = LoggerFactory.getLogger(ConsumerAuthFilter.class);
+public class ConsumerAuthFilter { 
+//extends OncePerRequestFilter {
 	
 //	@Autowired
 //	private AppConfig appConfig;
 
-	@Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
-    		throws ServletException, IOException {
+//	@Override
+//    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+//    		throws ServletException, IOException {
 
 //		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 //		if (auth != null) {
@@ -53,6 +43,6 @@ public class ConsumerAuthFilter extends OncePerRequestFilter {
 //        
 //        SecurityContextHolder.getContext().setAuthentication(authentication);
         
-        filterChain.doFilter(request, response);
-    }
+//        filterChain.doFilter(request, response);
+//    }
 }

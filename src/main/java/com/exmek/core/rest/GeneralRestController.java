@@ -5,8 +5,6 @@ import java.util.List;
 import java.util.Locale;
 
 import org.apache.commons.lang3.ObjectUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -45,14 +43,14 @@ import com.exmek.core.resource.ResourceManager;
 import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.constraints.NotNull;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @RestController
 @RequestMapping(EndpointConsts.ENDPOINT_API_PREFIX)
 public class GeneralRestController {
 
 	public static final String QRY_PARAM_NAME_KEYWORD	= "keyword";
-	
-	private static final Logger logger = LoggerFactory.getLogger(GeneralRestController.class);
 
 	@Autowired
 	private AppConfigProvider appConfigProvider; 
@@ -119,7 +117,7 @@ public class GeneralRestController {
 			entity = inquiryRepository.save(entity);
 			response.setStatus("SAVED");
 		} catch (Exception ex) {
-			logger.error("Failed to save InquiryEntity to db.", ex);
+			log.error("Failed to save InquiryEntity to db.", ex);
 			response.setStatus("SAVE_FAILED");
 		}
 		Inquiry inquiry = inquiryMapper.mapInquiryToModel(entity);
@@ -157,7 +155,7 @@ public class GeneralRestController {
 			mailSenderService.sendMail(irEmailConf.getTo(), irEmailConf.getCc(), irEmailConf.getBcc(), subject, htmlContent, ContentType.TEXT_HTML);
 			return true;
 		} catch (MessagingException ex) {
-			logger.error("Failed to send email of inquiry for {} ", inquiry.getRefModel());
+			log.error("Failed to send email of inquiry for {} ", inquiry.getRefModel());
 			return false;
 		}
 	}

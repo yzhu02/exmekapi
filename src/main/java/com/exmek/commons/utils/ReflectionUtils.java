@@ -10,14 +10,13 @@ import java.util.Optional;
 
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.annotation.JsonValue;
 
-public class ReflectionUtils {
+import lombok.extern.slf4j.Slf4j;
 
-	private static final Logger logger = LoggerFactory.getLogger(ReflectionUtils.class);
+@Slf4j
+public class ReflectionUtils {
 	
 	private ReflectionUtils() {
 	}
@@ -97,10 +96,12 @@ public class ReflectionUtils {
 				method = fromObject.getClass().getMethod(methodName);
 			}
 			if (method == null) {
-				logger.error("Can't find method {} from object of {} ", methodName, fromObject.getClass());
+				log.error("Can't find method {} from object of {} ", methodName, fromObject.getClass());
 				return null;
 			}
-			logger.info("The method {} is invoked. ", method);
+			if (log.isDebugEnabled()) {
+				log.debug("The method {} is invoked. ", method);
+			}
 			Object resultValue = null;
 			if (ObjectUtils.isNotEmpty(paramValues)) {
 				resultValue = method.invoke(fromObject, paramValues);
@@ -118,7 +119,7 @@ public class ReflectionUtils {
 			}
 			return resultValue;
 		} catch (Exception e) {
-			logger.error("Unable to read value from method: {} ", methodName, e);
+			log.error("Unable to read value from method: {} ", methodName, e);
 			return null;
 		}
 	}
@@ -148,14 +149,14 @@ public class ReflectionUtils {
 		try {
 			valueOfMethod = enumClass.getMethod("valueOf", String.class);
 		} catch (Exception e) {
-			logger.error("Unable to find method of valueOf(String) from {} ", enumClass, e);
+			log.error("Unable to find method of valueOf(String) from {} ", enumClass, e);
 			return null;
 		}
 		Enum<?> enumConstValue = null;
 		try {
 			enumConstValue = (Enum<?>) valueOfMethod.invoke(null, enumConstName);
 		} catch (Exception e) {
-			logger.error("Unable to read from {}.valueOf(String) ", enumClass, e);
+			log.error("Unable to read from {}.valueOf(String) ", enumClass, e);
 		}
 		return enumConstValue;
 	}

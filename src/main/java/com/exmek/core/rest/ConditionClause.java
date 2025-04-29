@@ -5,8 +5,10 @@ import java.util.List;
 import com.exmek.commons.expr.LogicalOperator;
 
 import lombok.Data;
+import lombok.ToString;
 
 @Data
+@ToString
 public class ConditionClause {
 
 	private LogicalOperator operator;
@@ -22,4 +24,5 @@ public class ConditionClause {
 	private List<String> conditions;
 	
 	private List<ConditionClause> subConditionClauses;
+
 }

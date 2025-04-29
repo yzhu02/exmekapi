@@ -11,8 +11,6 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.ObjectUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -56,16 +54,17 @@ implements ProductService<M>, Scheduleable {
 	
 	public static final String QRY_PARAM_NAME_FETCH_ALL		= "fetchAll";
 
-	protected Logger logger = LoggerFactory.getLogger(getClass());
-	
+	@Autowired
+	protected AppConfigProvider appConfigProvider;
+
 	@Autowired
 	protected ResourceManager resourceManager;
 	
 	@Autowired
-	protected SearchMetaCriteriaBuilder searchMetaCriteriaBuilder;
+	protected DbProductSearcher productSearcher;
 
 	@Autowired
-	protected AppConfigProvider appConfigProvider;
+	protected SearchMetaCriteriaBuilder searchMetaCriteriaBuilder;
 	
 	protected Map<MetaCriteriaKey, List<FieldMetaCriterion>> fieldMetaCriteriaMap = new ConcurrentHashMap<>();
 	
@@ -234,8 +233,7 @@ implements ProductService<M>, Scheduleable {
 			Integer pageNumber, Integer pageSize,
 			Map<String, Set<Object>> dataAvailableUnitsOfFieldNames) {
 
-		DbProductSearcher searcher = new DbProductSearcher();
-		return searcher.search(getProductRepository(), 
+		return productSearcher.search(getProductRepository(), 
 				conditionClause, 
 				fAdditionalCondition, 
 				pageNumber, pageSize, 
@@ -262,10 +260,6 @@ implements ProductService<M>, Scheduleable {
 						ErrorCode.ERR_CODE_SEARCH_REQUIRE_CONDITION_OR_FETCHWITHOUTCONDITION);
 			}
 		}
-	}
-
-	protected String getModelDisplayName() {
-		return "Model";
 	}
 
 	protected PageableListDataResponse<S> getSerieses(Integer pageNumber, Integer pageSize) {

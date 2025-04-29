@@ -6,8 +6,6 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.BooleanUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -19,11 +17,11 @@ import com.exmek.core.scheduler.Scheduleable;
 import com.fasterxml.jackson.core.type.TypeReference;
 
 import jakarta.annotation.PostConstruct;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Component
 public class AppConfigProvider implements Scheduleable {
-
-	private static final Logger logger = LoggerFactory.getLogger(AppConfigProvider.class);
 
 	public static final String CONFIG_NAME_COMPANY_EXMEK								= "company.exmek";
 	
@@ -78,7 +76,7 @@ public class AppConfigProvider implements Scheduleable {
 
 	public String getConfigValue(String configName, String defaultValue) {
 		if (configMap == null) {
-			logger.error("Unable to get config for name '{}' as the 'configMap' is null. ", configName);
+			log.error("Unable to get config for name '{}' as the 'configMap' is null. ", configName);
 			return defaultValue;
 		}
 		String value = configMap.get(configName);

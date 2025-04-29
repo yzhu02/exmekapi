@@ -14,6 +14,9 @@ import com.exmek.core.persistence.repository.DCMotorRepository;
 import com.exmek.core.persistence.repository.PlanetaryGearboxRepository;
 import com.exmek.core.persistence.repository.StepperMotorRepository;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Component
 public class GeneralSearcher {
 
@@ -32,6 +35,7 @@ public class GeneralSearcher {
 	public List<GeneralSearchItem> priorityProductSearch(String keyword) {
 		List<GeneralSearchItem> result = new ArrayList<>();
 		String matchingField = AbstractProductEntity.FIELD_NAME_MODEL;
+		log.info("Searching product by model for keyword {} ", keyword);
 		findToAdd(keyword, k -> dcMotorRepository.findByModelContaining(k), GeneralSearchItem.Type.DC_MOTOR, matchingField, result);
 		findToAdd(keyword, k -> stepperMotorRepository.findByModelContaining(k), GeneralSearchItem.Type.STEPPER_MOTOR, matchingField, result);
 		findToAdd(keyword, k -> planetaryGearboxRepository.findByModelContaining(k), GeneralSearchItem.Type.PLANETARY_GEARBOX, matchingField, result);
@@ -42,6 +46,7 @@ public class GeneralSearcher {
 	public List<GeneralSearchItem> alternativeProductSearch(String keyword) {
 		List<GeneralSearchItem> result = new ArrayList<>();
 		String matchingField = AbstractProductEntity.FIELD_NAME_DESCRIPTION;
+		log.info("Searching product by description for keyword {} ", keyword);
 		findToAdd(keyword, k -> dcMotorRepository.findByDescriptionContaining(k), GeneralSearchItem.Type.DC_MOTOR, matchingField, result);
 		findToAdd(keyword, k -> stepperMotorRepository.findByDescriptionContaining(k), GeneralSearchItem.Type.STEPPER_MOTOR, matchingField, result);
 		findToAdd(keyword, k -> planetaryGearboxRepository.findByDescriptionContaining(k), GeneralSearchItem.Type.PLANETARY_GEARBOX, matchingField, result);
