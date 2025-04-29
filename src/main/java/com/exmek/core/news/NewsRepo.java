@@ -12,8 +12,6 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
@@ -24,14 +22,15 @@ import com.exmek.commons.utils.UrlUtils;
 import com.exmek.core.model.News;
 import com.fasterxml.jackson.core.type.TypeReference;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Component
 public class NewsRepo {
 
 	public static final String NEWSREPO_NAME	= "newsrepo";
 	
 	public static final String NEWS_FILE_NAME	= "news.json";
-
-	private static final Logger logger = LoggerFactory.getLogger(NewsRepo.class);
 
 	@Autowired
 	private ResourceLoader resourceLoader;
@@ -49,16 +48,22 @@ public class NewsRepo {
 		}
 	}
 
-	private List<News> loadNewsBy(Predicate<News> filter, boolean isSingle) {		
-		Resource resource = resourceLoader.getResource("classpath:" + NEWSREPO_NAME);
-		if (!resource.exists()) {
-			return null;
-		}
-		File newsrepoDir = null;
-		try {
-			newsrepoDir = resource.getFile();
-		} catch (IOException e) {
-			logger.error("Unable to load news repo directory from newsrepo ", e);
+	private List<News> loadNewsBy(Predicate<News> filter, boolean isSingle) {
+		String userDir = System.getProperty("user.dir");
+		String newsrepoLocation = userDir + File.separator + NEWSREPO_NAME;
+		File newsrepoDir = new File(newsrepoLocation);
+		log.info("Loading news from {} ", newsrepoLocation);
+		if (!newsrepoDir.exists()) {
+			log.warn("newsrepoLocation: {} doesn't exist. ", newsrepoLocation);
+			Resource resource = resourceLoader.getResource("classpath:" + NEWSREPO_NAME);
+			if (!resource.exists()) {
+				return null;
+			}
+			try {
+				newsrepoDir = resource.getFile();
+			} catch (Exception e) {
+				log.error("Unable to load news repo directory from newsrepo ", e);
+			}
 		}
 		if (newsrepoDir == null) {
 			return null;
@@ -79,7 +84,7 @@ public class NewsRepo {
 				String newsRecordStr = Files.readString(newsFile.toPath());
 				aNews = JsonMapperUtils.readValue(newsRecordStr, new TypeReference<News>() {});
 			} catch (IOException e) {
-				logger.error("Unable to read news file at {} ", newsFile.getPath(), e);
+				log.error("Unable to read news file at {} ", newsFile.getPath(), e);
 			}
 			if (aNews == null) {
 				continue;
