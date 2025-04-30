@@ -4,14 +4,15 @@ import org.springframework.http.HttpStatus;
 
 public interface ErrorCode {
 
-	String ERR_CODE_UNAUTHORIZED =
-			String.valueOf(HttpStatus.UNAUTHORIZED.value());
+	String ERR_CODE_UNAUTHORIZED				= String.valueOf(HttpStatus.UNAUTHORIZED.value());
 	
-	String ERR_CODE_FORBIDDEN =
-			String.valueOf(HttpStatus.FORBIDDEN.value());
+	String ERR_CODE_FORBIDDEN					= String.valueOf(HttpStatus.FORBIDDEN.value());
 	
-	String ERR_CODE_UNCAUGHT_EXCEPTION =
-			String.valueOf(HttpStatus.INTERNAL_SERVER_ERROR.value());
+	String ERR_CODE_UNCAUGHT_EXCEPTION			= String.valueOf(HttpStatus.INTERNAL_SERVER_ERROR.value());
+	
+	String ERR_CODE_HEALTHCHECK_DB_QUERY_FAILED			= String.valueOf(HttpStatus.SERVICE_UNAVAILABLE.value()) + ".db_query_failed";
+	
+	String ERR_CODE_HEALTHCHECK_MISSING_MOTOR_CONFIG	= String.valueOf(HttpStatus.SERVICE_UNAVAILABLE.value()) + ".missing_motor_config";
 	
 	String ERR_CODE_LINEAR_STEPPER_MOTOR_PERF_CURVE_DATA_MALFORMED =
 			String.valueOf(HttpStatus.INTERNAL_SERVER_ERROR.value()) + ".stepper_motor.linear.perf_curve_data.malformed";

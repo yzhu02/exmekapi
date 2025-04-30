@@ -107,4 +107,8 @@ public class MotorConfigProvider implements Scheduleable {
 		}
 		return Objects.equals(keyPattern, finding);
 	}
+	
+	public int getMotorCurveCoordinateCount() {
+		return perMotorConfigMap.size();
+	}
 }

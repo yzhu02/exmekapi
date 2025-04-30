@@ -66,7 +66,9 @@ public class SecurityConfiguration {
     	.authorizeHttpRequests(auth -> {
     	    auth
     	    .requestMatchers(
-    	    		UrlUtils.concatURL(EndpointConsts.ENDPOINT_API_PREFIX, "**"))
+    	    		UrlUtils.concatURL(EndpointConsts.ENDPOINT_API_PREFIX, "**"),
+    	    		UrlUtils.concatURL(EndpointConsts.ENDPOINT_ADMIN_PREFIX, "**")
+    	    		)
     	    .authenticated()
     	    ;
     	    
@@ -74,11 +76,10 @@ public class SecurityConfiguration {
     	    .requestMatchers(
     	    		UrlUtils.concatURL("/", ResourceManager.DIR_NAME_IMAGES, "**"),
     	    		UrlUtils.concatURL("/", ResourceManager.DIR_NAME_MATERIALS, "**"),
-    	    		UrlUtils.concatURL("/", NewsRepo.NEWSREPO_NAME, "**")
+    	    		UrlUtils.concatURL("/", NewsRepo.NEWSREPO_NAME, "**"),
+    	    		EndpointConsts.ENDPOINT_HEALTH
     	    		)
     	    .permitAll()
-//    	    .anyRequest()
-//    	    .authenticated()
     	    ;
     	})
     	.exceptionHandling(exceptions -> exceptions

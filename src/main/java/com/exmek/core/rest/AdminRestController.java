@@ -12,7 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RestController
-@RequestMapping(EndpointConsts.ENDPOINT_ADMIN)
+@RequestMapping(EndpointConsts.ENDPOINT_ADMIN_PREFIX)
 public class AdminRestController {
 
 	@Autowired
@@ -23,5 +23,4 @@ public class AdminRestController {
 		log.info("Triggering scheduler registered to the listeners...");
 		scheduleListener.trigger();
 	}
-
 }
