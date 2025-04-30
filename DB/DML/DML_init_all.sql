@@ -1093,6 +1093,13 @@ VALUES
 ),
 
 (
+'PL060GE',
+'PL060GE',
+'',
+'{"Efficiency": "66-90%", "No. of Stages": "1-4", "Ratio": "1/3.6-1/307", "Continuous Torque": "4-45 Nm", "Peak Torque": "12-110 Nm", "Length": "40.3-80.6 mm"}'
+),
+
+(
 'PL062GE',
 'PL062GE',
 '',
