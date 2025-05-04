@@ -1,11 +1,9 @@
 package com.exmek.core.filter;
 
-import org.springframework.stereotype.Component;
-
 /**
  * Deprecated but just keep as placeholder for future
  */
-@Component
+//@Component
 public class RequestLogFilter { 
 //extends OncePerRequestFilter {
 
