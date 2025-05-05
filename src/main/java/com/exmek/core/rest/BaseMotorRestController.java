@@ -33,8 +33,8 @@ import com.exmek.core.utils.ContentUtils;
 import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.Predicate;
 
-public abstract class BaseMotorRestController<T extends AbstractMotorEntity, M extends AbstractMotor, CE extends AbstractMotorCategoryEntity, SE extends AbstractMotorSeriesEntity> 
-extends BaseProductRestController<T, M, SE, MotorSeries> {
+public abstract class BaseMotorRestController<T extends AbstractMotorEntity, L extends AbstractMotorEntity, M extends AbstractMotor, SE extends AbstractMotorSeriesEntity, CE extends AbstractMotorCategoryEntity> 
+extends BaseProductRestController<T, L, M, SE, MotorSeries> {
 
 	public static final String PARAM_NAME_CATEGORY	= "category";
 	

@@ -19,6 +19,20 @@ import jakarta.persistence.Table;
 @Access(AccessType.FIELD)
 public class StepperMotorEntity extends AbstractStepperMotorEntity {
 
+	@Entity
+	@Table(name = "STEPPER_MOTOR")
+	@Access(AccessType.FIELD)
+	public static class Light extends AbstractStepperMotorEntity {
+
+		@Override
+		public DCMotorCategoryEntity getMotorCategory() {
+			DCMotorCategoryEntity c = new DCMotorCategoryEntity();
+			c.setCategory(getCategory());
+			c.setDisplayName(getCategory());
+			return c;
+		}
+	}
+	
 	@ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "CATEGORY", referencedColumnName = "CATEGORY", nullable = false, insertable = false, updatable = false)
     private StepperMotorCategoryEntity motorCategory;

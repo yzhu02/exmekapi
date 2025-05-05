@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 
 import com.exmek.core.model.GearboxSeries;
 import com.exmek.core.model.PlanetaryGearbox;
+import com.exmek.core.persistence.entity.AbstractPlanetaryGearboxEntity;
 import com.exmek.core.persistence.entity.AbstractProductEntity;
 import com.exmek.core.persistence.entity.PlanetaryGearboxEntity;
 
@@ -24,7 +25,7 @@ public class PlanetaryGearboxMapper extends AbstractProductMapper {
 			AbstractProductEntity.FIELD_NAME_DESCRIPTION
 			));
 	
-	public PlanetaryGearbox mapPlanetaryGearboxToModel(PlanetaryGearboxEntity entity, boolean comprehensiveMapping) {
+	public PlanetaryGearbox mapPlanetaryGearboxToModel(AbstractPlanetaryGearboxEntity entity) {
 		if (entity == null) {
 			return null;
 		}
@@ -40,8 +41,9 @@ public class PlanetaryGearboxMapper extends AbstractProductMapper {
 		model.setOperatingTemperature(entity.getOperatingTemperature());
 		model.setRecommendInputSpeed(entity.getRecommendInputSpeed());
 		
-		if (comprehensiveMapping) {
-			model.setProductSeries(AbstractSeriesMapper.mapEntityToSeries(entity.getProductSeries(), GearboxSeries::new, false));
+		if (entity instanceof PlanetaryGearboxEntity) {
+			PlanetaryGearboxEntity fullEntity = (PlanetaryGearboxEntity) entity;
+			model.setProductSeries(AbstractSeriesMapper.mapEntityToSeries(fullEntity.getProductSeries(), GearboxSeries::new, false));
 			model.setAllSpecs(mapAllCombinedSpecs(entity, appConfigProvider.getSearchPlanetaryGearboxMetaCriteriaFields(), EXCLUDED_FIELDS_TO_SPECS));
 			
 			model.setMechanicalImagePaths(resourceManager.getGearboxMechanicalImagePaths(entity.getModel()));

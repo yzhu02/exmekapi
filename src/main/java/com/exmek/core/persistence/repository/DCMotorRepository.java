@@ -24,7 +24,6 @@ import com.exmek.core.persistence.entity.DCMotorEntity;
 
 public interface DCMotorRepository extends BaseProductRepository<DCMotorEntity>, JpaRepository<DCMotorEntity, Long>, JpaSpecificationExecutor<DCMotorEntity> {
 
-	
 	//length	
 	@Query("""
 			SELECT MIN(m.length), MAX(m.length), m.lengthUnit 

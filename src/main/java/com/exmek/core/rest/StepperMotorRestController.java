@@ -24,7 +24,7 @@ import com.exmek.core.model.StepperMotor;
 import com.exmek.core.persistence.entity.StepperMotorCategoryEntity;
 import com.exmek.core.persistence.entity.StepperMotorEntity;
 import com.exmek.core.persistence.entity.StepperMotorSeriesEntity;
-import com.exmek.core.persistence.repository.BaseProductRepository;
+import com.exmek.core.persistence.repository.LightStepperMotorRepository;
 import com.exmek.core.persistence.repository.StepperMotorCategoryRepository;
 import com.exmek.core.persistence.repository.StepperMotorRepository;
 import com.exmek.core.persistence.repository.StepperMotorSeriesRepository;
@@ -35,7 +35,7 @@ import jakarta.validation.constraints.NotNull;
 @RestController
 @RequestMapping(EndpointConsts.ENDPOINT_API_MOTORS)
 public class StepperMotorRestController 
-extends BaseMotorRestController<StepperMotorEntity, StepperMotor, StepperMotorCategoryEntity, StepperMotorSeriesEntity> implements ProductService<StepperMotor> {
+extends BaseMotorRestController<StepperMotorEntity, StepperMotorEntity.Light, StepperMotor, StepperMotorSeriesEntity, StepperMotorCategoryEntity> implements ProductService<StepperMotor> {
 
 	@Autowired
 	protected StepperMotorCategoryRepository motorCategoryRepository;
@@ -45,6 +45,9 @@ extends BaseMotorRestController<StepperMotorEntity, StepperMotor, StepperMotorCa
 	
 	@Autowired
 	private StepperMotorRepository motorRepository;
+
+	@Autowired
+	private LightStepperMotorRepository lightMotorRepository;
 
 	@Autowired
 	private MotorMapper motorMapper;
@@ -65,13 +68,23 @@ extends BaseMotorRestController<StepperMotorEntity, StepperMotor, StepperMotorCa
 	}
 	
 	@Override
-	protected BaseProductRepository<StepperMotorEntity> getProductRepository() {
+	protected StepperMotorRepository getProductRepository() {
 		return motorRepository;
 	}
 
 	@Override
-	protected StepperMotor mapEntityToModel(StepperMotorEntity entity, boolean comprehensiveMapping) {
-		return motorMapper.mapStepperMotorToModel(entity, comprehensiveMapping);
+	protected LightStepperMotorRepository getLightProductRepository() {
+		return lightMotorRepository;
+	}
+
+	@Override
+	protected StepperMotor mapEntityToModel(StepperMotorEntity entity) {
+		return motorMapper.mapStepperMotorToModel(entity);
+	}
+
+	@Override
+	protected StepperMotor mapLightEntityToModel(StepperMotorEntity.Light entity) {
+		return motorMapper.mapStepperMotorToModel(entity);
 	}
 
 	@Override

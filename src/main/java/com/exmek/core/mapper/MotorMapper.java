@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ObjectUtils;
@@ -19,9 +20,11 @@ import com.exmek.core.model.LinearStepperMotor;
 import com.exmek.core.model.MotorSeries;
 import com.exmek.core.model.Spec;
 import com.exmek.core.model.StepperMotor;
+import com.exmek.core.persistence.entity.AbstractDCMotorEntity;
 import com.exmek.core.persistence.entity.AbstractMotorEntity;
 import com.exmek.core.persistence.entity.AbstractMotorSpecEntity;
 import com.exmek.core.persistence.entity.AbstractProductEntity;
+import com.exmek.core.persistence.entity.AbstractStepperMotorEntity;
 import com.exmek.core.persistence.entity.DCMotorEntity;
 import com.exmek.core.persistence.entity.LeadDefEntity;
 import com.exmek.core.persistence.entity.StepperMotorEntity;
@@ -49,11 +52,7 @@ public class MotorMapper extends AbstractProductMapper {
 	@Autowired
 	private MotorPerfCurveMapper motorPerfCurveMapper;
 	
-	public DCMotor mapDCMotorToModel(DCMotorEntity entity) {
-		return mapDCMotorToModel(entity, true);
-	}
-
-	public DCMotor mapDCMotorToModel(DCMotorEntity entity, boolean comprehensiveMapping) {
+	public DCMotor mapDCMotorToModel(AbstractDCMotorEntity entity) {
 		if (entity == null) {
 			return null;
 		}
@@ -71,11 +70,12 @@ public class MotorMapper extends AbstractProductMapper {
 		motor.setNoloadCurrent(toMeasuredValue(entity.getNoloadCurrent(), entity.getNoloadCurrentUnit()));
 		motor.setNoloadRotatingSpeed(toMeasuredValue(entity.getNoloadRotatingSpeed(), entity.getNoloadRotatingSpeedUnit()));
 		
-		if (comprehensiveMapping) {
-			motor.setMotorCategory(MotorCategoryMapper.mapEntityToCategory(entity.getMotorCategory(), false));
-			motor.setProductSeries(AbstractSeriesMapper.mapEntityToSeries(entity.getProductSeries(), MotorSeries::new, false));
-			motor.setAllSpecs(mapAllCombinedSpecs(entity, entity.getSpecs(), appConfigProvider.getSearchDCMotorMetaCriteriaFields(), DC_MOTOR_EXCLUDED_FIELDS_TO_SPECS));
-			motor.setPerfCurves(motorPerfCurveMapper.mapToPerfCurveModels(entity.getPerfMeasurements(), entity.getModel()));
+		if (entity instanceof DCMotorEntity) {
+			DCMotorEntity fullEntity = (DCMotorEntity) entity;
+			motor.setMotorCategory(MotorCategoryMapper.mapEntityToCategory(fullEntity.getMotorCategory(), false));
+			motor.setProductSeries(AbstractSeriesMapper.mapEntityToSeries(fullEntity.getProductSeries(), MotorSeries::new, false));
+			motor.setAllSpecs(mapAllCombinedSpecs(entity, fullEntity.getSpecs(), appConfigProvider.getSearchDCMotorMetaCriteriaFields(), DC_MOTOR_EXCLUDED_FIELDS_TO_SPECS));
+			motor.setPerfCurves(motorPerfCurveMapper.mapToPerfCurveModels(fullEntity.getPerfMeasurements(), entity.getModel()));
 			
 			motor.setMechanicalImagePaths(resourceManager.getMotorMechanicalImagePaths(entity.getModel()));
 			motor.setThreeDDrawingPaths(resourceManager.getMotor3DDrawingPaths(entity.getModel()));
@@ -124,21 +124,15 @@ public class MotorMapper extends AbstractProductMapper {
 		return spec;
 	}
 
-	public StepperMotor mapStepperMotorToModel(StepperMotorEntity entity) {
-		return mapStepperMotorToModel(entity, true);
-	}
-
-	public StepperMotor mapStepperMotorToModel(StepperMotorEntity entity, boolean comprehensiveMapping) {
+	public StepperMotor mapStepperMotorToModel(AbstractStepperMotorEntity entity) {
 		if (entity == null) {
 			return null;
 		}
-		Set<LeadDefEntity> leadDefEntities = entity.getLinearStepperMotorLeads();
+		StepperMotorEntity fullEntity = entity instanceof StepperMotorEntity ? (StepperMotorEntity) entity : null;
 		StepperMotor motor = super.mapProduct(entity, () -> {
-			if (leadDefEntities != null && !leadDefEntities.isEmpty()) {
+			if (fullEntity != null && CollectionUtils.isNotEmpty(fullEntity.getLinearStepperMotorLeads())) {
 				LinearStepperMotor linearStepperMotor = new LinearStepperMotor();
-				if (comprehensiveMapping) {
-					linearStepperMotor.setLeads(mapLeadsToModels(leadDefEntities));
-				}
+				linearStepperMotor.setLeads(mapLeadsToModels(fullEntity.getLinearStepperMotorLeads()));
 				return linearStepperMotor;
 			} else {
 				return new StepperMotor();
@@ -154,14 +148,14 @@ public class MotorMapper extends AbstractProductMapper {
 		motor.setStepAngle(toMeasuredValue(entity.getStepAngle(), entity.getStepAngleUnit()));
 		motor.setMaxThrust(toMeasuredValue(entity.getMaxThrust(), entity.getMaxThrustUnit()));
 		
-		if (comprehensiveMapping) {
-			motor.setMotorCategory(MotorCategoryMapper.mapEntityToCategory(entity.getMotorCategory(), false));
-			motor.setProductSeries(AbstractSeriesMapper.mapEntityToSeries(entity.getProductSeries(), MotorSeries::new, false));
-			motor.setAllSpecs(mapAllCombinedSpecs(entity, entity.getSpecs(), appConfigProvider.getSearchStepperMotorMetaCriteriaFields(), STEPPER_MOTOR_EXCLUDED_FIELDS_TO_SPECS));
+		if (fullEntity != null) {
+			motor.setMotorCategory(MotorCategoryMapper.mapEntityToCategory(fullEntity.getMotorCategory(), false));
+			motor.setProductSeries(AbstractSeriesMapper.mapEntityToSeries(fullEntity.getProductSeries(), MotorSeries::new, false));
+			motor.setAllSpecs(mapAllCombinedSpecs(entity, fullEntity.getSpecs(), appConfigProvider.getSearchStepperMotorMetaCriteriaFields(), STEPPER_MOTOR_EXCLUDED_FIELDS_TO_SPECS));
 			if (motor instanceof LinearStepperMotor) {
-				motor.setPerfCurves(motorPerfCurveMapper.mapToLinearStepperMotorPerfCurveModels(entity.getPerfMeasurements(), entity.getModel()));
+				motor.setPerfCurves(motorPerfCurveMapper.mapToLinearStepperMotorPerfCurveModels(fullEntity.getPerfMeasurements(), entity.getModel()));
 			} else {
-				motor.setPerfCurves(motorPerfCurveMapper.mapToPerfCurveModels(entity.getPerfMeasurements(), entity.getModel()));
+				motor.setPerfCurves(motorPerfCurveMapper.mapToPerfCurveModels(fullEntity.getPerfMeasurements(), entity.getModel()));
 			}
 			
 			motor.setMechanicalImagePaths(resourceManager.getMotorMechanicalImagePaths(entity.getModel()));

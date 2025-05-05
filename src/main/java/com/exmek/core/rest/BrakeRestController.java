@@ -23,24 +23,27 @@ import com.exmek.core.model.Brake;
 import com.exmek.core.model.BrakeSeries;
 import com.exmek.core.persistence.entity.BrakeEntity;
 import com.exmek.core.persistence.entity.BrakeSeriesEntity;
-import com.exmek.core.persistence.repository.BaseProductRepository;
 import com.exmek.core.persistence.repository.BaseSeriesRepository;
 import com.exmek.core.persistence.repository.BrakeRepository;
 import com.exmek.core.persistence.repository.BrakeSeriesRepository;
+import com.exmek.core.persistence.repository.LightBrakeRepository;
 import com.exmek.core.service.ProductService;
 
 import jakarta.validation.constraints.NotNull;
 
 @RestController
 @RequestMapping(EndpointConsts.ENDPOINT_API_BRAKES)
-public class BrakeRestController extends BaseProductRestController<BrakeEntity, Brake, BrakeSeriesEntity, BrakeSeries> implements ProductService<Brake> {
+public class BrakeRestController extends BaseProductRestController<BrakeEntity, BrakeEntity.Light, Brake, BrakeSeriesEntity, BrakeSeries> implements ProductService<Brake> {
 
-	@Autowired
-	private BrakeRepository brakeRepository;
-	
 	@Autowired
 	private BrakeSeriesRepository brakeSeriesRepository;
 
+	@Autowired
+	private BrakeRepository brakeRepository;
+
+	@Autowired
+	private LightBrakeRepository lightBrakeRepository;
+	
 	@Autowired
 	private BrakeMapper brakeMapper;
 
@@ -58,8 +61,13 @@ public class BrakeRestController extends BaseProductRestController<BrakeEntity, 
 	}
 
 	@Override
-	protected BaseProductRepository<BrakeEntity> getProductRepository() {
+	protected BrakeRepository getProductRepository() {
 		return brakeRepository;
+	}
+
+	@Override
+	protected LightBrakeRepository getLightProductRepository() {
+		return lightBrakeRepository;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -69,10 +77,15 @@ public class BrakeRestController extends BaseProductRestController<BrakeEntity, 
 	}
 
 	@Override
-	protected Brake mapEntityToModel(BrakeEntity entity, boolean comprehensiveMapping) {
-		return brakeMapper.mapBrakeToModel(entity, comprehensiveMapping);
+	protected Brake mapEntityToModel(BrakeEntity entity) {
+		return brakeMapper.mapBrakeToModel(entity);
 	}
 
+	@Override
+	protected Brake mapLightEntityToModel(BrakeEntity.Light entity) {
+		return brakeMapper.mapBrakeToModel(entity);
+	}
+	
 	@Override
 	protected List<String> getSearchMetaCriteriaFields() {
 		return appConfigProvider.getSearchBrakeMetaCriteriaFields();

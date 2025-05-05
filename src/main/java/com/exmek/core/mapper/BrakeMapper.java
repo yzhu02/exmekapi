@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 
 import com.exmek.core.model.Brake;
 import com.exmek.core.model.BrakeSeries;
+import com.exmek.core.persistence.entity.AbstractBrakeEntity;
 import com.exmek.core.persistence.entity.AbstractProductEntity;
 import com.exmek.core.persistence.entity.BrakeEntity;
 
@@ -22,7 +23,7 @@ public class BrakeMapper extends AbstractProductMapper {
 			AbstractProductEntity.FIELD_NAME_DESCRIPTION
 			));
 	
-	public Brake mapBrakeToModel(BrakeEntity entity, boolean comprehensiveMapping) {
+	public Brake mapBrakeToModel(AbstractBrakeEntity entity) {
 		if (entity == null) {
 			return null;
 		}
@@ -34,8 +35,9 @@ public class BrakeMapper extends AbstractProductMapper {
 		model.setRatedPower(toMeasuredValue(entity.getRatedPower(), entity.getRatedPowerUnit()));
 		model.setStartVoltage(toMeasuredValue(entity.getStartVoltage(), entity.getStartVoltageUnit()));
 		
-		if (comprehensiveMapping) {
-			model.setProductSeries(AbstractSeriesMapper.mapEntityToSeries(entity.getProductSeries(), BrakeSeries::new, false));
+		if (entity instanceof BrakeEntity) {
+			BrakeEntity fullEntity = (BrakeEntity) entity;
+			model.setProductSeries(AbstractSeriesMapper.mapEntityToSeries(fullEntity.getProductSeries(), BrakeSeries::new, false));
 			model.setAllSpecs(mapAllCombinedSpecs(entity, appConfigProvider.getSearchPlanetaryGearboxMetaCriteriaFields(), EXCLUDED_FIELDS_TO_SPECS));
 			
 			model.setMechanicalImagePaths(resourceManager.getBrakeMechanicalImagePaths(entity.getModel()));

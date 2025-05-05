@@ -43,7 +43,7 @@ import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 
-public abstract class BaseProductRestController<T extends AbstractProductEntity, M extends AbstractProduct, SE extends AbstractSeriesEntity, S extends AbstractSeries> 
+public abstract class BaseProductRestController<T extends AbstractProductEntity, L extends AbstractProductEntity, M extends AbstractProduct, SE extends AbstractSeriesEntity, S extends AbstractSeries> 
 implements ProductService<M>, Scheduleable {
 
 	public static final String PARAM_NAME_SERIES			= "series";
@@ -74,10 +74,14 @@ implements ProductService<M>, Scheduleable {
 	
 	protected abstract BaseProductRepository<T> getProductRepository();
 	
+	protected abstract BaseProductRepository<L> getLightProductRepository();
+	
 	protected abstract <SM extends AbstractSeriesMapper<S, SE>> SM getSeriesMapper();
 	
-	protected abstract M mapEntityToModel(T entity, boolean comprehensiveMapping);
+	protected abstract M mapEntityToModel(T entity);
 
+	protected abstract M mapLightEntityToModel(L entity);
+	
 	protected abstract List<String> getSearchMetaCriteriaFields();
 
 	protected abstract Map<?, Range<? extends Number>> getMinMaxRangeByUnit(String fieldName, MetaCriteriaKey criteriaKey);
@@ -138,10 +142,6 @@ implements ProductService<M>, Scheduleable {
 		return unitsOfFieldNames;
 	}
 	
-	protected M mapEntityToModel(T entity) {
-		return mapEntityToModel(entity, true);
-	}
-
 	public M getProduct(String idOrModel) {
 		if (idOrModel == null || idOrModel.isBlank()) {
 			return null;
@@ -229,15 +229,15 @@ implements ProductService<M>, Scheduleable {
 	
 	protected PageableListDataResponse<M> searchBy(
 			ConditionClause conditionClause,
-			BiFunction<Root<T>, CriteriaBuilder, Pair<Predicate, LogicalOperator>> fAdditionalCondition,
+			BiFunction<Root<L>, CriteriaBuilder, Pair<Predicate, LogicalOperator>> fAdditionalCondition,
 			Integer pageNumber, Integer pageSize,
 			Map<String, Set<Object>> dataAvailableUnitsOfFieldNames) {
 
-		return productSearcher.search(getProductRepository(), 
+		return productSearcher.search(getLightProductRepository(), 
 				conditionClause, 
 				fAdditionalCondition, 
 				pageNumber, pageSize, 
-				entity -> mapEntityToModel(entity, false),
+				entity -> mapLightEntityToModel(entity),
 				dataAvailableUnitsOfFieldNames);
 	}
 

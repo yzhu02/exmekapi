@@ -12,6 +12,12 @@ import jakarta.persistence.Table;
 @Table(name = "BRAKE")
 @Access(AccessType.FIELD)
 public class BrakeEntity extends AbstractBrakeEntity {
+
+	@Entity
+	@Table(name = "BRAKE")
+	@Access(AccessType.FIELD)
+	public static class Light extends AbstractBrakeEntity {
+	}
 	
 	@ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "SERIES", referencedColumnName = "SERIES", nullable = false, insertable = false, updatable = false)

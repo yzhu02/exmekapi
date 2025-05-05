@@ -19,7 +19,6 @@ import com.exmek.core.persistence.entity.PlanetaryGearboxEntity;
 
 public interface PlanetaryGearboxRepository extends BaseProductRepository<PlanetaryGearboxEntity>, JpaRepository<PlanetaryGearboxEntity, Long>, JpaSpecificationExecutor<PlanetaryGearboxEntity> {
 
-	
 	//length
 	@Query("""
 			SELECT MIN(m.length), MAX(m.length), m.lengthUnit 

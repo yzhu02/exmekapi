@@ -24,10 +24,10 @@ import com.exmek.core.model.MotorSeries;
 import com.exmek.core.persistence.entity.DCMotorCategoryEntity;
 import com.exmek.core.persistence.entity.DCMotorEntity;
 import com.exmek.core.persistence.entity.DCMotorSeriesEntity;
-import com.exmek.core.persistence.repository.BaseProductRepository;
 import com.exmek.core.persistence.repository.DCMotorCategoryRepository;
 import com.exmek.core.persistence.repository.DCMotorRepository;
 import com.exmek.core.persistence.repository.DCMotorSeriesRepository;
+import com.exmek.core.persistence.repository.LightDCMotorRepository;
 import com.exmek.core.service.ProductService;
 
 import jakarta.validation.constraints.NotNull;
@@ -35,7 +35,7 @@ import jakarta.validation.constraints.NotNull;
 @RestController
 @RequestMapping(EndpointConsts.ENDPOINT_API_MOTORS)
 public class DCMotorRestController 
-extends BaseMotorRestController<DCMotorEntity, DCMotor, DCMotorCategoryEntity, DCMotorSeriesEntity> implements ProductService<DCMotor> {
+extends BaseMotorRestController<DCMotorEntity, DCMotorEntity.Light, DCMotor, DCMotorSeriesEntity, DCMotorCategoryEntity> implements ProductService<DCMotor> {
 	
 	public static final String QRY_PARAM_VALUE_TYPE_BLDC	= "BLDC";
 	public static final String QRY_PARAM_VALUE_TYPE_BRUSH	= "Brush";
@@ -48,6 +48,9 @@ extends BaseMotorRestController<DCMotorEntity, DCMotor, DCMotorCategoryEntity, D
 
 	@Autowired
 	private DCMotorRepository motorRepository;
+	
+	@Autowired
+	private LightDCMotorRepository lightMotorRepository;
 	
 	@Autowired
 	private MotorMapper motorMapper;
@@ -68,15 +71,25 @@ extends BaseMotorRestController<DCMotorEntity, DCMotor, DCMotorCategoryEntity, D
 	}
 	
 	@Override
-	protected BaseProductRepository<DCMotorEntity> getProductRepository() {
+	protected DCMotorRepository getProductRepository() {
 		return motorRepository;
 	}
 
 	@Override
-	protected DCMotor mapEntityToModel(DCMotorEntity entity, boolean comprehensiveMapping) {
-		return motorMapper.mapDCMotorToModel(entity, comprehensiveMapping);
+	protected LightDCMotorRepository getLightProductRepository() {
+		return lightMotorRepository;
+	}
+	
+	@Override
+	protected DCMotor mapEntityToModel(DCMotorEntity entity) {
+		return motorMapper.mapDCMotorToModel(entity);
 	}
 
+	@Override
+	protected DCMotor mapLightEntityToModel(DCMotorEntity.Light entity) {
+		return motorMapper.mapDCMotorToModel(entity);
+	}
+	
 	@Override
 	protected List<String> getSearchMetaCriteriaFields() {
 		return appConfigProvider.getSearchDCMotorMetaCriteriaFields();

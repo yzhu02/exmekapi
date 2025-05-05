@@ -13,6 +13,12 @@ import jakarta.persistence.Table;
 @Access(AccessType.FIELD)
 public class PlanetaryGearboxEntity extends AbstractPlanetaryGearboxEntity {
 	
+	@Entity
+	@Table(name = "PLANETARY_GEARBOX")
+	@Access(AccessType.FIELD)
+	public static class Light extends AbstractPlanetaryGearboxEntity {	
+	}
+
 	@ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "SERIES", referencedColumnName = "SERIES", nullable = false, insertable = false, updatable = false)
     private GearboxSeriesEntity productSeries;
