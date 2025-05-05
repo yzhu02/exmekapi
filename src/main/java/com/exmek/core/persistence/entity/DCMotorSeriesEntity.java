@@ -13,7 +13,7 @@ import jakarta.persistence.Table;
 @Access(AccessType.FIELD)
 public class DCMotorSeriesEntity extends AbstractMotorSeriesEntity {
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "CATEGORY", referencedColumnName = "CATEGORY", nullable = false, insertable = false, updatable = false)
     private DCMotorCategoryEntity motorCategory;
 
