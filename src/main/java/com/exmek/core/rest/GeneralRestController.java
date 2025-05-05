@@ -2,7 +2,6 @@ package com.exmek.core.rest;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,38 +13,23 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
-import org.thymeleaf.TemplateEngine;
-import org.thymeleaf.context.Context;
 
-import com.exmek.commons.net.ContentType;
 import com.exmek.core.config.AppConfigProvider;
-import com.exmek.core.config.ReceiverEmailConf;
 import com.exmek.core.consts.EndpointConsts;
 import com.exmek.core.consts.RequestHeaderConsts;
-import com.exmek.core.email.MailSenderService;
 import com.exmek.core.error.ErrorCode;
 import com.exmek.core.error.ValidationException;
-import com.exmek.core.external.CountryLookupService;
 import com.exmek.core.gensearch.GeneralSearchItem;
 import com.exmek.core.gensearch.GeneralSearcher;
-import com.exmek.core.mapper.InquiryMapper;
+import com.exmek.core.inquiry.InquiryProcessor;
 import com.exmek.core.model.Company;
-import com.exmek.core.model.Inquiry;
 import com.exmek.core.model.News;
 import com.exmek.core.news.NewsRepo;
-import com.exmek.core.persistence.entity.InquiryEntity;
-import com.exmek.core.persistence.repository.InquiryRepository;
 import com.exmek.core.resource.ResourceInfo;
 import com.exmek.core.resource.ResourceManager;
 
-import jakarta.mail.MessagingException;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.constraints.NotNull;
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
 @RestController
 @RequestMapping(EndpointConsts.ENDPOINT_API_PREFIX)
 public class GeneralRestController {
@@ -53,26 +37,14 @@ public class GeneralRestController {
 	public static final String QRY_PARAM_NAME_KEYWORD	= "keyword";
 
 	@Autowired
-	private AppConfigProvider appConfigProvider; 
+	private AppConfigProvider appConfigProvider;
 
 	@Autowired
 	private NewsRepo newsRepo;
-
-	@Autowired
-	private InquiryRepository inquiryRepository;
 	
 	@Autowired
-	private CountryLookupService countryLookupService;
-
-	@Autowired
-	private InquiryMapper inquiryMapper;
-	
-	@Autowired
-	private TemplateEngine templateEngine;
-	
-	@Autowired
-	private MailSenderService mailSenderService;
-	
+	private InquiryProcessor inquiryProcessor;
+		
 	@Autowired
 	private ResourceManager resourceManager;
 	
@@ -100,66 +72,10 @@ public class GeneralRestController {
 	@PostMapping("/inquiries")
 	public InquiryResponse createInquiry(@NotNull @RequestBody InquiryRequest reqInquiryPayload,
 			@RequestHeader(name = RequestHeaderConsts.CLIENT_IP, required = false) String headerClientIp) {
-		if (reqInquiryPayload == null) {
-			throw new ValidationException("inquiry request payload cannot be null. ", ErrorCode.ERR_CODE_INQUIRY_MISSING_REQUEST_PAYLOAD);
-		}
-		InquiryResponse response = new InquiryResponse();
-//		HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
-		InquiryEntity entity = inquiryMapper.mapInquiryToEntity(reqInquiryPayload.getInquiry());
-		String clientIpAddr = headerClientIp;
-		if (ObjectUtils.isEmpty(clientIpAddr)) {
-			HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
-			clientIpAddr = request.getRemoteAddr();
-		}
-		entity.setClientIpAddress(clientIpAddr);
-		entity.setClientCountryOrRegion(getCountryOrRegionName(clientIpAddr));
-		try {
-			entity = inquiryRepository.save(entity);
-			response.setStatus("SAVED");
-		} catch (Exception ex) {
-			log.error("Failed to save InquiryEntity to db.", ex);
-			response.setStatus("SAVE_FAILED");
-		}
-		Inquiry inquiry = inquiryMapper.mapInquiryToModel(entity);
-		response.setInquiry(inquiry);
-		if (sendInquiryEmailToExmekSys(inquiry)) {
-			response.setStatus("KICKED_INQUIRY_EMAIL");
-		} else {
-			response.setStatus("KICK_INQUIRY_EMAIL_FAILED");
-		}
-		return response;
+		
+		return inquiryProcessor.processInquiry(reqInquiryPayload, headerClientIp);
 	}
 	
-	private String getCountryOrRegionName(String ipAddr) {
-		if (ObjectUtils.isEmpty(ipAddr)) {
-			return null;
-		}
-		String countryOrRegionCode = countryLookupService.getCountryOrRegionCodeByIP(ipAddr);
-		if (countryOrRegionCode == null) {
-			return null;
-		}
-		if (countryOrRegionCode.length() <= 2) {
-			return new Locale("", countryOrRegionCode).getDisplayCountry();
-		} else {
-			return countryOrRegionCode;
-		}
-	}
-
-	private boolean sendInquiryEmailToExmekSys(Inquiry inquiry) {
-		Context templContext = new Context();
-		templContext.setVariable("inquiry", inquiry);
-	    String htmlContent = templateEngine.process("inquiry", templContext);
-	    String subject = "Inquiry for " + inquiry.getRefModel();
-	    ReceiverEmailConf irEmailConf = appConfigProvider.getInquiryReceiverEmailConf();
-		try {
-			mailSenderService.sendMail(irEmailConf.getTo(), irEmailConf.getCc(), irEmailConf.getBcc(), subject, htmlContent, ContentType.TEXT_HTML);
-			return true;
-		} catch (MessagingException ex) {
-			log.error("Failed to send email of inquiry for {} ", inquiry.getRefModel());
-			return false;
-		}
-	}
-
 	@GetMapping("/tech-docs")
 	public List<ResourceInfo> getAllTechDocInfos() {
 		return resourceManager.getAllTechDocInfos();
