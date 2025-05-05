@@ -1,17 +1,13 @@
 package com.exmek;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.cache.annotation.EnableCaching;
-import org.springframework.scheduling.annotation.EnableScheduling;
-
-@SpringBootApplication
-@EnableCaching
-@EnableScheduling
+//@SpringBootApplication
+//@EnableCaching
+//@EnableScheduling
 public class ExmekWebApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(ExmekWebApplication.class, args);
-	}
+//	public static void main(String[] args) {
+////		SpringApplication.run(ExmekWebApplication.class, args);
+//		System.err.println("Don't start with ExmekWebApplication but with ExmekApiApplication!");
+//	}
 
 }
