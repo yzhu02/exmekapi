@@ -12,7 +12,7 @@ VALUES
 	'MB082GA*', 'curve.coordinates', '[{"name": "Torque(oz-in)", "x": "Speed(Krpm)", "y": "Torque(oz-in)"}, {"name": "Torque(Ncm)", "x": "Speed(Krpm)", "y": "Torque(Ncm)"}]'
 ),
 (
-	'MB059AH*,MDB56GS*,ME042AS*,ME042GS*,ME042WS*,ME042YS*,ME043AS*,ME057AH*,ME060AS*,MEO70AS*,ME080AS*,ME080RS*D,ME086AS*,ME110AS*,MEL57AH*', 'curve.coordinates', '[{"name": "", "x": "Torque(Nm)", "y": "Speed(rpm)"}, {"name": "", "x": "Torque(Nm)", "y": "Current(A)"}]'
+	'MB059AH*,MDB56GS*,ME042AS*,ME042GS*,ME042WS*,ME042YS*,ME043AS*,ME057AH*,ME060AS*,ME070AS*,ME080AS*,ME080RS*D,ME086AS*,ME110AS*,MEL57AH*', 'curve.coordinates', '[{"name": "", "x": "Torque(Nm)", "y": "Speed(rpm)"}, {"name": "", "x": "Torque(Nm)", "y": "Current(A)"}]'
 )
 ;
 -- BLDC_INTERNAL_ROTOR config end --
