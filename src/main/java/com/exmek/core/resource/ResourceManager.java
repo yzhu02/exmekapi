@@ -298,7 +298,7 @@ public class ResourceManager implements Scheduleable {
 	}
 	
 	public List<ResourceInfo> getAllTechDocInfos() {
-		String techDocPathPattern = UrlUtils.concatURL(ResourcePatternResolver.CLASSPATH_ALL_URL_PREFIX, DIR_NAME_STATIC, DIR_NAME_MATERIALS, "**", DIR_NAME_TECHDOC, "**");
+		String techDocPathPattern = UrlUtils.concatURL(ResourcePatternResolver.CLASSPATH_ALL_URL_PREFIX, DIR_NAME_STATIC, DIR_NAME_MATERIALS, "**", DIR_NAME_TECHDOC, "*.pdf");
 		Resource[] resources = null;
 		try {
 			resources = ResourcePatternUtils.getResourcePatternResolver(applicationContext).getResources(techDocPathPattern);
@@ -309,27 +309,12 @@ public class ResourceManager implements Scheduleable {
 			log.info("No techdoc resources loaded from {} ", DIR_NAME_STATIC);
 			return null;
 		}
+		log.info("Loaded all techdocs. ");
 		return Arrays.stream(resources)
-				.filter(this::isResourceFile)
 				.map(r -> createResourceInfo(r, DIR_NAME_STATIC, DIR_NAME_MATERIALS))
 				.collect(Collectors.toList());
     }
 	
-	private boolean isResourceFile(Resource resource) {
-		if (resource == null) {
-			return false;
-		}
-		File file = null;
-		try {
-			file = resource.getFile();
-		} catch (IOException e) {
-		}
-		if (file == null) {
-			return false;
-		}
-		return file.isFile();
-	}
-
 	private ResourceInfo createResourceInfo(Resource res, String contextDirName, String baseDirName) {
 		ResourceInfo resInfo = new ResourceInfo();
 		resInfo.setName(res.getFilename());
