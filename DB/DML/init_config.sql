@@ -20,7 +20,7 @@ VALUES
 	'cors.allowedOrigins', '["http://localhost:3000", "http://localhost:80", "https://localhost:443"]' 
 ),
 (
-	'server.allowUrlEncodedSlash', 'true' 
+	'server.allowUrlEncodedSlash', 'false' 
 ),
 (
 	'search.dcMotor.metaCriteria.fields', '["frameSize", "length", "ratedVoltage", "ratedCurrent", "ratedPower", "ratedTorque", "ratedRotatingSpeed", "ratedLinearSpeed", "peakCurrent", "peakTorque", "maxSortingWeight", "weight", "model"]'
