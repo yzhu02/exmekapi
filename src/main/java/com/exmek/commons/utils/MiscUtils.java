@@ -135,9 +135,11 @@ public class MiscUtils {
 		}
 		if (appConfigProvider != null) {
 			Map<String, String> fieldDisplayNameMappings = appConfigProvider.getMetaFieldDisplayNameMappings();
-			String displayName = fieldDisplayNameMappings.get(fieldName);
-			if (StringUtils.isNotEmpty(displayName)) {
-				return displayName;
+			if (fieldDisplayNameMappings != null) {
+				String displayName = fieldDisplayNameMappings.get(fieldName);
+				if (StringUtils.isNotEmpty(displayName)) {
+					return displayName;
+				}
 			}
 		}
 		StringBuilder sb = new StringBuilder();
