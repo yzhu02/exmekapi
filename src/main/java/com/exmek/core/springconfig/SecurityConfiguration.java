@@ -36,10 +36,10 @@ import com.exmek.core.config.AppConfigProvider;
 import com.exmek.core.consts.EndpointConsts;
 import com.exmek.core.error.ErrorCode;
 import com.exmek.core.error.ErrorResponse;
-import com.exmek.core.news.NewsRepo;
 import com.exmek.core.persistence.entity.UserEntity;
 import com.exmek.core.persistence.repository.UserRepository;
 import com.exmek.core.resource.ResourceManager;
+import com.exmek.core.resource.UserResourceManager;
 
 @Configuration
 @EnableWebSecurity
@@ -76,7 +76,8 @@ public class SecurityConfiguration {
     	    .requestMatchers(
     	    		UrlUtils.concatURL("/", ResourceManager.DIR_NAME_IMAGES, "**"),
     	    		UrlUtils.concatURL("/", ResourceManager.DIR_NAME_MATERIALS, "**"),
-    	    		UrlUtils.concatURL("/", NewsRepo.NEWSREPO_NAME, "**"),
+    	    		UrlUtils.concatURL("/", UserResourceManager.NEWSREPO_BASE_PATH, "**"),
+    	    		UrlUtils.concatURL("/", UserResourceManager.COMMON_TECHDOCS_BASE_PATH, "**"),
     	    		EndpointConsts.ENDPOINT_HEALTH
     	    		)
     	    .permitAll()

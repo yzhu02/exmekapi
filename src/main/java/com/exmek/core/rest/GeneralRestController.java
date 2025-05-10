@@ -2,6 +2,8 @@ package com.exmek.core.rest;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,9 +26,9 @@ import com.exmek.core.gensearch.GeneralSearcher;
 import com.exmek.core.inquiry.InquiryProcessor;
 import com.exmek.core.model.Company;
 import com.exmek.core.model.News;
-import com.exmek.core.news.NewsRepo;
 import com.exmek.core.resource.ResourceInfo;
 import com.exmek.core.resource.ResourceManager;
+import com.exmek.core.resource.UserResourceManager;
 
 import jakarta.validation.constraints.NotNull;
 
@@ -40,7 +42,7 @@ public class GeneralRestController {
 	private AppConfigProvider appConfigProvider;
 
 	@Autowired
-	private NewsRepo newsRepo;
+	private UserResourceManager userResourceManager;
 	
 	@Autowired
 	private InquiryProcessor inquiryProcessor;
@@ -61,12 +63,12 @@ public class GeneralRestController {
 		if (idOrTitle == null || idOrTitle.isBlank()) {
 			return null;
 		}
-		return newsRepo.loadNewsByIdOrTitle(idOrTitle);
+		return userResourceManager.getNewsByIdOrTitle(idOrTitle);
 	}
 	
 	@GetMapping("/news")
 	public List<News> getAllNews() {
-		return newsRepo.loadAllNews();
+		return userResourceManager.getAllNews();
 	}
 
 	@PostMapping("/inquiries")
@@ -77,8 +79,18 @@ public class GeneralRestController {
 	}
 	
 	@GetMapping("/tech-docs")
-	public List<ResourceInfo> getAllTechDocInfos() {
-		return resourceManager.getAllTechDocInfos();
+	public List<ResourceInfo> getTechDocInfos() {
+		List<ResourceInfo> commonTechDocInfos = userResourceManager.getCommonTechDocInfos();
+		List<ResourceInfo> cpTechDocInfos = resourceManager.getTechDocInfos();
+		if (commonTechDocInfos == null) {
+			return cpTechDocInfos;
+		} else if (cpTechDocInfos == null) {
+			return commonTechDocInfos;
+		} else {
+			return Stream.concat(commonTechDocInfos.stream(), cpTechDocInfos.stream())
+					.distinct()
+					.collect(Collectors.toList());
+		}
 	}
 
 	@GetMapping("/gensearch")

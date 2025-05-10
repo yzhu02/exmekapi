@@ -1,6 +1,5 @@
 package com.exmek.core.resource;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -297,7 +296,7 @@ public class ResourceManager implements Scheduleable {
 		return getTechDocResourcePaths(model, DIR_NAME_BRAKE, this.brakeTechDocPathsMap, series);
 	}
 	
-	public List<ResourceInfo> getAllTechDocInfos() {
+	public List<ResourceInfo> getTechDocInfos() {
 		String techDocPathPattern = UrlUtils.concatURL(ResourcePatternResolver.CLASSPATH_ALL_URL_PREFIX, DIR_NAME_STATIC, DIR_NAME_MATERIALS, "**", DIR_NAME_TECHDOC, "*.pdf");
 		Resource[] resources = null;
 		try {
