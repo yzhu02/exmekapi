@@ -23,6 +23,9 @@ public class ExmekApiService {
 	public static void main(String[] args) {
 		if (System.getProperty(UserResourceManager.SYS_PROP_NAME_USER_RESOURCES_LOCATION) == null) {
 			String userResourcesLocation = System.getProperty("user.dir") + File.separator + "user-resources";
+			if (!userResourcesLocation.startsWith("/")) {
+				userResourcesLocation = "/" + userResourcesLocation;
+			}
 			System.setProperty(UserResourceManager.SYS_PROP_NAME_USER_RESOURCES_LOCATION, userResourcesLocation);
 		}
 		SpringApplication.run(ExmekApiService.class, args);
