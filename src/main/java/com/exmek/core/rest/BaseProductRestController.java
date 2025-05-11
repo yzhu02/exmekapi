@@ -32,7 +32,6 @@ import com.exmek.core.persistence.entity.AbstractProductEntity;
 import com.exmek.core.persistence.entity.AbstractSeriesEntity;
 import com.exmek.core.persistence.repository.BaseProductRepository;
 import com.exmek.core.persistence.repository.BaseSeriesRepository;
-import com.exmek.core.resource.ResourceManager;
 import com.exmek.core.scheduler.Scheduleable;
 import com.exmek.core.search.DbProductSearcher;
 import com.exmek.core.search.SearchMetaCriteriaBuilder;
@@ -56,9 +55,6 @@ implements ProductService<M>, Scheduleable {
 
 	@Autowired
 	protected AppConfigProvider appConfigProvider;
-
-	@Autowired
-	protected ResourceManager resourceManager;
 	
 	@Autowired
 	protected DbProductSearcher productSearcher;

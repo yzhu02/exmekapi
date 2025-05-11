@@ -26,8 +26,8 @@ import com.exmek.core.gensearch.GeneralSearcher;
 import com.exmek.core.inquiry.InquiryProcessor;
 import com.exmek.core.model.Company;
 import com.exmek.core.model.News;
+import com.exmek.core.resource.CompositeResourceManager;
 import com.exmek.core.resource.ResourceInfo;
-import com.exmek.core.resource.ResourceManager;
 import com.exmek.core.resource.UserResourceManager;
 
 import jakarta.validation.constraints.NotNull;
@@ -43,13 +43,13 @@ public class GeneralRestController {
 
 	@Autowired
 	private UserResourceManager userResourceManager;
-	
+
+	@Autowired
+	private CompositeResourceManager compositeResourceManager;
+
 	@Autowired
 	private InquiryProcessor inquiryProcessor;
-		
-	@Autowired
-	private ResourceManager resourceManager;
-	
+
 	@Autowired
 	private GeneralSearcher generalSearcher;
 
@@ -81,13 +81,13 @@ public class GeneralRestController {
 	@GetMapping("/tech-docs")
 	public List<ResourceInfo> getTechDocInfos() {
 		List<ResourceInfo> commonTechDocInfos = userResourceManager.getCommonTechDocInfos();
-		List<ResourceInfo> cpTechDocInfos = resourceManager.getTechDocInfos();
+		List<ResourceInfo> allPerModelTechDocInfos = compositeResourceManager.getTechDocInfos();
 		if (commonTechDocInfos == null) {
-			return cpTechDocInfos;
-		} else if (cpTechDocInfos == null) {
+			return allPerModelTechDocInfos;
+		} else if (allPerModelTechDocInfos == null) {
 			return commonTechDocInfos;
 		} else {
-			return Stream.concat(commonTechDocInfos.stream(), cpTechDocInfos.stream())
+			return Stream.concat(commonTechDocInfos.stream(), allPerModelTechDocInfos.stream())
 					.distinct()
 					.collect(Collectors.toList());
 		}
