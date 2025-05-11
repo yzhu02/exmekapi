@@ -21,14 +21,13 @@ import org.springframework.util.ObjectUtils;
 
 import com.exmek.commons.utils.UrlUtils;
 import com.exmek.core.config.AppConfigProvider;
-import com.exmek.core.scheduler.Scheduleable;
 
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Component
-public class ClasspathResourceManager implements ResourceManager, Scheduleable {
+public class ClasspathResourceManager implements ResourceManager {
 	
 	////Directory names BEGIN
 	public static final String DIR_NAME_STATIC			= "static";
@@ -132,11 +131,6 @@ public class ClasspathResourceManager implements ResourceManager, Scheduleable {
 		this.brakeTechDocPathsMap = initResourcePathMap(
 				UrlUtils.concatURL(MATERIALS_BRAKE_TECHDOC_FULL_LOCATION, resFileMatch),
 				MATERIALS_BRAKE_TECHDOC_REL_PATH);
-	}
-
-	@Override
-	public void onSchedule() {
-		initialize();
 	}
 	
 	private Map<String, List<String>> initResourcePathMap(String resourceFullLocation, String resourceRelPath) {
