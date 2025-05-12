@@ -123,7 +123,7 @@ public class UserResourceManager implements ResourceManager {
 			log.warn("Can't load common techDocs as the techDocs location {} doesn't exist. ", commonTechDocsDir);
 			return null;
 		}
-		File[] commonTechDocPdfFiles = commonTechDocsDir.listFiles((dir, filename) -> filename.toLowerCase().endsWith(".pdf"));
+		File[] commonTechDocPdfFiles = commonTechDocsDir.listFiles((dir, filename) -> isPdfOrZip(filename));
 		return Arrays.stream(commonTechDocPdfFiles)
 				.map(f -> ResourceInfo.builder()
 						.name(f.getName())
@@ -161,7 +161,7 @@ public class UserResourceManager implements ResourceManager {
 		File resDir = new File(resLocation);
 		if (resDir.exists()) {
 			log.info("Loading techdoc resources from {} ...", resLocation);
-			File[] resFiles = resDir.listFiles(f -> f.getName().toLowerCase().endsWith(".pdf"));
+			File[] resFiles = resDir.listFiles(f -> isPdfOrZip(f.getName()));
 			if (resFiles != null && resFiles.length > 0) {
 				return Arrays.stream(resFiles)
 				.map(f -> ResourceInfo.builder()
@@ -174,6 +174,14 @@ public class UserResourceManager implements ResourceManager {
 			}
 		}
 		return null;
+	}
+
+	private boolean isPdfOrZip(String filename) {
+		if (filename == null) {
+			return false;
+		}
+		filename = filename.toLowerCase();
+		return filename.endsWith(".pdf") || filename.endsWith(".zip");
 	}
 
 	private List<String> getResourcePaths(String model, String baseDirName, String productDirName, String resSubCatDirName, 
