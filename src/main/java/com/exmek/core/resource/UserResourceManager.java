@@ -8,13 +8,13 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Component;
-import org.springframework.util.ObjectUtils;
 
 import com.exmek.commons.utils.JsonMapperUtils;
 import com.exmek.commons.utils.UrlUtils;
@@ -179,11 +179,27 @@ public class UserResourceManager implements ResourceManager {
 	private List<String> getResourcePaths(String model, String baseDirName, String productDirName, String resSubCatDirName, 
 			String series) {
 
-		List<String> resourcePaths = getResourcePaths(model, baseDirName, productDirName, resSubCatDirName);
-		if (ObjectUtils.isEmpty(resourcePaths) && series != null) {
-			resourcePaths = getResourcePaths(series, baseDirName, productDirName, resSubCatDirName);
+		List<String> resPaths = getResourcePaths(model, baseDirName, productDirName, resSubCatDirName);
+		if (series == null) {
+			return resPaths;
 		}
-		return resourcePaths;
+		List<String> bySeriesResPaths = getResourcePaths(series, baseDirName, productDirName, resSubCatDirName);
+		if (CollectionUtils.isEmpty(resPaths)) {
+			return bySeriesResPaths;
+		}
+		if (CollectionUtils.isEmpty(bySeriesResPaths)) {
+			return resPaths;
+		}
+		Set<String> resExtensionSet = resPaths.stream()
+				.map(p -> getFileNameExtension(p))
+				.collect(Collectors.toSet());
+		for (String bySeriesResPath : bySeriesResPaths) {
+			if (!resExtensionSet.contains(getFileNameExtension(bySeriesResPath))) {
+				//Avoid model and series are with same suffix
+				resPaths.add(bySeriesResPath);
+			}
+		}
+		return resPaths;
 	}
 
 	private List<String> getResourcePaths(String modelOrSeries, String baseDirName, String productDirName, String resSubCatDirName) {
@@ -231,6 +247,18 @@ public class UserResourceManager implements ResourceManager {
 				.collect(Collectors.toList());
 	}
 	
+	private String getFileNameExtension(String filePath) {
+		if (filePath == null) {
+			return null;
+		}
+		int dotInx = filePath.lastIndexOf('.');
+		if (dotInx >= 0) {
+			return filePath.substring(dotInx + 1);
+		} else {
+			return "";
+		}
+	}
+
 	private boolean isMatchingResourceFile(File file, String modelOrSeries) {
 		String filename = file.getName();
 		String resName = filename;

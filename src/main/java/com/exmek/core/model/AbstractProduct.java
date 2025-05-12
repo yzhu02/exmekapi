@@ -2,6 +2,7 @@ package com.exmek.core.model;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 
 import com.exmek.core.commons.enums.LengthUnit;
 import com.exmek.core.commons.enums.SizeMeasurementType;
@@ -33,11 +34,13 @@ public abstract class AbstractProduct extends AbstractModel.Namable {
 
 	private BigDecimal nemaSize;
 
+	private List<Spec> allSpecs;
+
 	private List<String> mechanicalImagePaths;
 	
 	private List<String> threeDDrawingPaths;
 	
 	private List<String> techDocPaths;
 
-	private List<Spec> allSpecs;
+	private Map<String, List<String>> additionalImagePaths;
 }
