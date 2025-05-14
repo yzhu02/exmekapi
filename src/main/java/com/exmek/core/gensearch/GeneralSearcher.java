@@ -66,7 +66,7 @@ public class GeneralSearcher {
 			return;
 		}
 		foundProducts.forEach(p -> result.add(GeneralSearchItem.builder()
-				.type(GeneralSearchItem.Type.DC_MOTOR)
+				.type(type)
 				.model(p.getModel())
 				.description(p.getDescription())
 				.matchingField(matchingField)
