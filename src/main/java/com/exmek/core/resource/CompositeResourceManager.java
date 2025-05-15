@@ -5,6 +5,7 @@ import java.util.Set;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -83,12 +84,14 @@ public class CompositeResourceManager implements ResourceManager {
 				.map(ResourceInfo::getName)
 				.collect(Collectors.toSet());
 		List<ResourceInfo> cpTechDocInfos = classpathResourceManager.getTechDocInfos();
-		cpTechDocInfos.forEach(r -> {
-			if (!techDocNameSet.contains(r.getName())) {
-				techDocInfos.add(r);
-				techDocNameSet.add(r.getName());
-			}
-		});
+		if (CollectionUtils.isNotEmpty(cpTechDocInfos)) {
+			cpTechDocInfos.forEach(r -> {
+				if (!techDocNameSet.contains(r.getName())) {
+					techDocInfos.add(r);
+					techDocNameSet.add(r.getName());
+				}
+			});
+		}
 		return techDocInfos;
 	}
 }
