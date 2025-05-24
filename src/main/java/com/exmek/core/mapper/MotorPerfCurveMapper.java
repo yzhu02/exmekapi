@@ -153,14 +153,50 @@ public class MotorPerfCurveMapper {
 		return models;
 	}
 
+	/**
+	 * <pre>
+	 * Example of VARIABLES column from DB:
+	 * <b>
+	 * 	"pps, r/min, LinearSpeed[0.3048:AF, 0.6096:AA, 1.2192:B, 2:G, 4:M, 8:T](mm/s), Thrust[0.3048:AF, 0.6096:AA, 1.2192:B, 2:G, 4:M, 8:T](kg)"
+	 * </b>
+	 * Example of VALUES column from DB (for LS020NB201):
+	 * <b>
+	 * 	200,60,0.3,0.6096,1.2192,2,4,8,7,6.8,4.6,3.5,3.1,2
+	 * 	600,180,0.9,1.8288,3.6576,6,12,24,6.9,6.7,4.5,3.4,3,1.8
+	 * 	1000,300,1.5,3.048,6.096,10,20,40,6.8,6.5,4.4,3.3,2.9,1.5
+	 * 	1500,450,2.25,4.572,9.144,15,30,60,6.6,6.4,4.3,3.1,2.8,1.5
+	 * 	2000,600,3,6.096,12.192,20,40,80,6.5,6.2,4.1,3.1,2.8,1.3
+	 * 	2500,750,3.75,7.62,15.24,25,50,100,6.4,5.7,4,2.9,2.4,1.2
+	 * </b>
+	 * In this case, 
+	 * 	the LinearSpeed and Thrust both contain following columns: 0.3048:AF, 0.6096:AA, 1.2192:B, 2:G, 4:M, 8:T
+	 * 	the columns of LinearSpeed and Thrust must match
+	 *	the column name is in form of COEFFICIENT:LINEAR_SPEED_SYMBOL
+	 * 	the value of LinearSpeed will be used for x-axis coordinate and the value of Thrust will be used as y-axis coordinate
+	 *  when calculating x-axis value: x-axis_value = linear_speed_value_loaded_from_db / COEFFICIENT
+	 *  Line 0.3048(AF):
+	 *  	[x0, y0] = [0.3/0.3048, 7]
+	 *  	[x1, y1] = [0.9/0.3048, 6.9]
+	 *  	[x2, y2] = [1.5/0.3048, 6.8]
+	 *  	...
+	 *  Line 0.6096(AA):
+	 *  	[x0, y0] = [0.6096/0.6096, 6.8]
+	 *  	[x1, y1] = [1.8288/0.6096, 6.7]
+	 *  	[x2, y2] = [3.048/0.6096, 6.5]
+	 *  	...
+	 *  the column value "200,600,1000,1500,2000,2500" represents the "pps" row in 'speedMeasure.values' in the response.
+	 *  the column value "60,180,300,450,600,750" represents "r/min" row in 'speedMeasure.values' in the response.
+	 * </pre>
+	 * @param entity
+	 * @param model
+	 * @return
+	 */
 	public LinearStepperMotorPerfCurve mapToLinearStepperMotorPerfCurveModel(AbstractMotorPerfMeasurementEntity entity, String model) {
 		if (entity == null) {
 			return null;
 		}
 		LinearStepperMotorPerfCurve perfCurve = new LinearStepperMotorPerfCurve();
 		perfCurve.setTitle(entity.getTitle());
-		
-		//'pps, r/min, LinearSpeed[0.3048:AF, 0.6096:AA, 1.2192:B, 2:G, 4:M, 8:T](mm/s), Thrust[0.3048:AF, 0.6096:AA, 1.2192:B, 2:G, 4:M, 8:T](kg)'
 		
 		String variablesStr = entity.getVariables();
 		if (ObjectUtils.isEmpty(variablesStr)) {
@@ -172,30 +208,30 @@ public class MotorPerfCurveMapper {
 		Map<String, Integer> linearSpeedColIndexMap = new LinkedHashMap<>();
 		Map<String, Integer> thrustColIndexMap = new LinkedHashMap<>();
 
-		String narrowedVarsStr = variablesStr;
-		int linearSpeedFromInx = narrowedVarsStr.indexOf(linearSpeedPrefix);
-		int linearSpeedEndInx = narrowedVarsStr.indexOf(']', linearSpeedFromInx + linearSpeedPrefix.length());
+		String collapsedVarsStr = variablesStr;
+		int linearSpeedFromInx = collapsedVarsStr.indexOf(linearSpeedPrefix);
+		int linearSpeedEndInx = collapsedVarsStr.indexOf(']', linearSpeedFromInx + linearSpeedPrefix.length());
 		if (linearSpeedFromInx == -1 || linearSpeedEndInx == -1) {
 			throw new BizRuntimeException("Unable to find " + linearSpeedPrefix + "] for linear stepper motor performance curve data. ",
 					ErrorCode.ERR_CODE_LINEAR_STEPPER_MOTOR_PERF_CURVE_DATA_MALFORMED);
 		}
 		String linearSpeedEnclosingPlaceholder = "__LINEARSPEEDCOLS-PLACEHOLDER__";
-		String linearSpeedEnclosingCols = narrowedVarsStr.substring(linearSpeedFromInx + linearSpeedPrefix.length(), linearSpeedEndInx);
-		narrowedVarsStr = narrowedVarsStr.substring(0, linearSpeedFromInx) + linearSpeedPrefix + linearSpeedEnclosingPlaceholder + narrowedVarsStr.substring(linearSpeedEndInx);
+		String linearSpeedEnclosingCols = collapsedVarsStr.substring(linearSpeedFromInx + linearSpeedPrefix.length(), linearSpeedEndInx);
+		collapsedVarsStr = collapsedVarsStr.substring(0, linearSpeedFromInx) + linearSpeedPrefix + linearSpeedEnclosingPlaceholder + collapsedVarsStr.substring(linearSpeedEndInx);
 		
-		int thrustFromInx = narrowedVarsStr.indexOf(thrustPrefix);
-		int thrustEndInx = narrowedVarsStr.indexOf(']', thrustFromInx + thrustPrefix.length());
+		int thrustFromInx = collapsedVarsStr.indexOf(thrustPrefix);
+		int thrustEndInx = collapsedVarsStr.indexOf(']', thrustFromInx + thrustPrefix.length());
 		if (thrustFromInx == -1 || thrustEndInx == -1) {
 			throw new BizRuntimeException("Unable to find " + thrustPrefix + "] for linear stepper motor performance curve data. ",
 					ErrorCode.ERR_CODE_LINEAR_STEPPER_MOTOR_PERF_CURVE_DATA_MALFORMED);
 		}
 		String thrustEnclosingPlaceholder = "__THRUSTCOLS-PLACEHOLDER__";
-		String thrustEnclosingCols = narrowedVarsStr.substring(thrustFromInx + thrustPrefix.length(), thrustEndInx);
-		narrowedVarsStr = narrowedVarsStr.substring(0, thrustFromInx) + thrustPrefix + thrustEnclosingPlaceholder + narrowedVarsStr.substring(thrustEndInx);
+		String thrustEnclosingCols = collapsedVarsStr.substring(thrustFromInx + thrustPrefix.length(), thrustEndInx);
+		collapsedVarsStr = collapsedVarsStr.substring(0, thrustFromInx) + thrustPrefix + thrustEnclosingPlaceholder + collapsedVarsStr.substring(thrustEndInx);
 		
 		String linearSpeedUnit = "";
 		String thrustUnit = "";
-		String[] columnSegments = narrowedVarsStr.split(",");
+		String[] columnSegments = collapsedVarsStr.split(",");
 		int colIndex = 0;
 		for (String columnSegment : columnSegments) {
 			columnSegment = columnSegment.trim();
