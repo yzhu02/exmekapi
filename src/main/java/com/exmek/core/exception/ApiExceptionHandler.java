@@ -1,4 +1,4 @@
-package com.exmek.core.error;
+package com.exmek.core.exception;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;

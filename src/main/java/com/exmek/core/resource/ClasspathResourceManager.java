@@ -78,7 +78,10 @@ public class ClasspathResourceManager implements ResourceManager {
 			ResourcePatternResolver.CLASSPATH_ALL_URL_PREFIX, DIR_NAME_STATIC, MATERIALS_BRAKE_TECHDOC_REL_PATH);
 	////Internal directory locations END
 	
-	private static final String RESOURCE_FILENAME_REGEX = "(\\w+)(\\[(\\d+)\\])*";
+	//Example:
+	//MAB23X-30[0].jpg
+	//MPC023-[Implication For Name].jpg
+	private static final String RESOURCE_FILENAME_REGEX = "(\\w+)(\\[(\\w+)\\])?";
 
 	@Autowired
 	private ApplicationContext applicationContext;

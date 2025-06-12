@@ -1,4 +1,4 @@
-package com.exmek.core.error;
+package com.exmek.core.exception;
 
 import org.springframework.http.HttpStatus;
 
@@ -28,4 +28,5 @@ public interface ErrorCode {
 	
 	String ERR_CODE_SEARCH_REQUIRE_CONDITION_OR_FETCHWITHOUTCONDITION =
 			String.valueOf(HttpStatus.BAD_REQUEST.value()) + ".request.search.require_condition_or_fetchWithoutCondition";
+	
 }

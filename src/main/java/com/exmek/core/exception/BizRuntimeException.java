@@ -1,4 +1,4 @@
-package com.exmek.core.error;
+package com.exmek.core.exception;
 
 public class BizRuntimeException extends RuntimeException {
 
@@ -10,6 +10,10 @@ public class BizRuntimeException extends RuntimeException {
         super();
     }
 
+	public BizRuntimeException(String message) {
+        super(message);
+    }
+    
     public BizRuntimeException(String message, String code) {
         super(message);
         this.code = code;

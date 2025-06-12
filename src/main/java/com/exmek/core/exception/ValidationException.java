@@ -1,4 +1,4 @@
-package com.exmek.core.error;
+package com.exmek.core.exception;
 
 public class ValidationException extends BizRuntimeException {
 

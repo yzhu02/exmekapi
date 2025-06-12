@@ -10,4 +10,7 @@ public class Range<N extends Number> {
 	private N min;
 
 	private N max;
+	
+	private String measurable;
+
 }

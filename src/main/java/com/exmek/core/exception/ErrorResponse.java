@@ -1,4 +1,4 @@
-package com.exmek.core.error;
+package com.exmek.core.exception;
 
 import lombok.Builder;
 import lombok.Data;

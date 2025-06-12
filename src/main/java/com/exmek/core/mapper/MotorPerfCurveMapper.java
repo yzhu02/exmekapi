@@ -9,29 +9,40 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Triple;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 
+import com.exmek.commons.utils.MathUtils;
 import com.exmek.commons.utils.MiscUtils;
 import com.exmek.core.commons.model.CurveLine;
 import com.exmek.core.commons.model.Point;
+import com.exmek.core.commons.model.Range;
+import com.exmek.core.config.AppConfigProvider;
 import com.exmek.core.config.CurveCoordinate;
 import com.exmek.core.config.MotorConfigProvider;
-import com.exmek.core.error.BizRuntimeException;
-import com.exmek.core.error.ErrorCode;
+import com.exmek.core.exception.BizRuntimeException;
+import com.exmek.core.exception.ErrorCode;
+import com.exmek.core.exception.InvalidFormatException;
 import com.exmek.core.model.LinearStepperMotorPerfCurve;
 import com.exmek.core.model.LinearStepperMotorPerfCurve.SpeedMeasure;
 import com.exmek.core.model.MotorPerfCurve;
 import com.exmek.core.persistence.entity.AbstractMotorPerfMeasurementEntity;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Component
 public class MotorPerfCurveMapper {
 	
 	@Autowired
 	private MotorConfigProvider motorConfigProvider;
+	
+	@Autowired
+	private AppConfigProvider appConfigProvider;
 
 	public <E extends AbstractMotorPerfMeasurementEntity> List<MotorPerfCurve> mapToPerfCurveModels(Set<E> entities, String model) {
 		if (entities == null) {
@@ -60,6 +71,8 @@ public class MotorPerfCurveMapper {
 			BigDecimal[][] mValues = MiscUtils.parseCSVLikeValues(entity.getValues(),
 					rows -> new BigDecimal[rows][], cells -> new BigDecimal[cells], s -> MiscUtils.parseBigDecimalValue(s));
 			List<CurveLine> curveLines = new ArrayList<>();
+			List<Range<BigDecimal>> yAxisEquivalentBoundaries = new ArrayList<>();
+			boolean isYAxisSameMeasurementAndHasDifferentUnit = false;
 			for (int i = 0; i < dcMotorCurveCoordinates.size(); i++) {
 				CurveCoordinate cc = dcMotorCurveCoordinates.get(i);
 				CurveLine cLine = new CurveLine();
@@ -72,25 +85,43 @@ public class MotorPerfCurveMapper {
 				Triple<String, String, Integer> configuredYColNameByInx = extractNameByIndex(cc.getY());
 				String xColName = configuredXColNameByInx.getMiddle();
 				String yColName = configuredYColNameByInx.getMiddle();
+				if (isYAxisSameMeasurementAndHasDifferentUnit == false) {
+					isYAxisSameMeasurementAndHasDifferentUnit = i > 0 ? 
+							isSameMeasurementAndHasDifferentUnit(curveLines.get(i - 1).getYAxisName(), yColName) : false;
+				}
 				cLine.setXAxisName(xColName);
 				cLine.setYAxisName(yColName);
 				int xColInx = findIndex(columnNames, configuredXColNameByInx);
 				int yColInx = findIndex(columnNames, configuredYColNameByInx);
+				BigDecimal yMin = null;
+				BigDecimal yMax = null;
 				if (xColInx >= 0 && yColInx >= 0) {
 					for (int r = 0; r < mValues.length; r++) {
 						if ((xColInx < mValues[r].length && mValues[r][xColInx] != null)
 								&& (yColInx < mValues[r].length && mValues[r][yColInx] != null)) {
 							cLine.addPoint(Point.of(mValues[r][xColInx], mValues[r][yColInx]));
+							yMin = yMin == null ? mValues[r][yColInx] : MathUtils.min(yMin, mValues[r][yColInx]);
+							yMax = yMax == null ? mValues[r][yColInx] : MathUtils.max(yMax, mValues[r][yColInx]);
 						}
 					}
 				}
 				curveLines.add(cLine);
+				yAxisEquivalentBoundaries.add(Range.<BigDecimal>builder()
+						.min(yMin)
+						.max(yMax)
+						.measurable(yColName)
+						.build()
+				);
 			}
 			perfCurve.setCurveLines(curveLines);
+			if (isYAxisSameMeasurementAndHasDifferentUnit) { // When two y-axis represent same measurement but with different units like "Torque(oz-in) vs Torque(Ncm)"
+				recalcMeasurableMinMinMaxMax(yAxisEquivalentBoundaries);
+				perfCurve.setYAxisEquivalentBoundaries(yAxisEquivalentBoundaries);
+			}
 		}
 		return perfCurve;
 	}
-	
+
 	//Example: 
 	// Speed(rpm) -> [Speed(rpm), Speed(rpm), null]
 	// Speed(rpm)[0] -> [Speed(rpm)[0], Speed(rpm), 0]
@@ -139,6 +170,141 @@ public class MotorPerfCurveMapper {
 		return -1;
 	}
 	
+	private boolean isSameMeasurementAndHasDifferentUnit(String axisName0, String axisName1) {
+		return isSameMeasurement(axisName0, axisName1) && hasDifferentUnit(axisName0, axisName1);
+	}
+
+	/**
+	 * Returns true when given two y-axis represent same measurement without comparing the units enclosing with (), like "Torque(oz-in) vs Torque(Ncm)",
+	 * otherwise returns false;
+	 * 
+	 * @param yAxisName0
+	 * @param yAxisName1
+	 * @return
+	 */
+	private boolean isSameMeasurement(String axisName0, String axisName1) {
+		if (Objects.equals(axisName0, axisName1)) {
+			return true;
+		}
+		return Objects.equals(extractMeasurementWithoutUnit(axisName0), extractMeasurementWithoutUnit(axisName1));
+	}
+	
+	private String extractMeasurementWithoutUnit(String axisName) {
+		int parenthesesStartInx = axisName.indexOf('(');
+		if (parenthesesStartInx < 0) {
+			return axisName;
+		}
+		return axisName.substring(0,  parenthesesStartInx);
+	}
+	
+	/**
+	 * Returns true if given two y-axis has unit enclosing with () and the units are different like "Torque(oz-in) vs Torque(Ncm)", 
+	 * otherwise returns false;
+	 * 
+	 * @param yAxisName0
+	 * @param yAxisName1
+	 * @return
+	 */
+	private boolean hasDifferentUnit(String axisName0, String axisName1) {
+		if (Objects.equals(axisName0, axisName1)) {
+			return false;
+		}
+		return !Objects.equals(extractUnit(axisName0), extractUnit(axisName1));
+	}
+	
+	private String extractUnit(String axisName) {
+		int parenthesesStartInx = axisName.indexOf('(');
+		if (parenthesesStartInx < 0) {
+			return null;
+		}
+		int parenthesesEndInx = axisName.indexOf(')', parenthesesStartInx + 1);
+		return parenthesesEndInx > 0 ? axisName.substring(parenthesesStartInx + 1, parenthesesEndInx) : axisName.substring(parenthesesStartInx + 1);
+	}
+
+	/**
+	 * Recalculate measurable min-min and max-max, 
+	 * by taking the min of all min from given ranges comparing by converting to same unit 
+	 * and taking the max of all max from given ranges comparing by converting to same unit.
+	 *  
+	 * @param ranges
+	 */
+	private void recalcMeasurableMinMinMaxMax(List<Range<BigDecimal>> ranges) {
+		for (int i = 1; i < ranges.size(); i++) {
+			Range<BigDecimal> prev = ranges.get(i - 1);
+			Range<BigDecimal> curr = ranges.get(i);
+			
+			BigDecimal convertedPrevMin = convertMeasurable(prev.getMin(), prev.getMeasurable(), curr.getMeasurable());
+			if (convertedPrevMin.compareTo(curr.getMin()) < 0) {
+				curr.setMin(convertMeasurable(prev.getMin(), prev.getMeasurable(), curr.getMeasurable()));
+			} else if (convertedPrevMin.compareTo(curr.getMin()) > 0) {
+				for (int j = i - 1; j >= 0; j--) {
+					Range<BigDecimal> jPrev = ranges.get(j);
+					jPrev.setMin(convertMeasurable(curr.getMin(), curr.getMeasurable(), jPrev.getMeasurable()));
+				}
+			}
+			
+			BigDecimal convertedPrevMax = convertMeasurable(prev.getMax(), prev.getMeasurable(), curr.getMeasurable());
+			if (convertedPrevMax.compareTo(curr.getMax()) > 0) {
+				curr.setMax(convertMeasurable(prev.getMax(), prev.getMeasurable(), curr.getMeasurable()));
+			} else if (convertedPrevMax.compareTo(curr.getMax()) < 0) {
+				for (int j = i - 1; j >= 0; j--) {
+					Range<BigDecimal> jPrev = ranges.get(j);
+					jPrev.setMax(convertMeasurable(curr.getMax(), curr.getMeasurable(), jPrev.getMeasurable()));
+				}
+			}
+		}
+	}
+
+	private BigDecimal convertMeasurable(BigDecimal fromValue, String fromMeasurable, String toMeasurable) {
+		if (fromValue == null) {
+			log.error("Cannot convert from null, default to use original value {} ", fromValue);
+			return fromValue;
+		}
+		
+		//It is configured like: {"Torque(oz-in):Torque(Ncm)": "1:0.7061"}
+		Map<String, String> measurableConversionRatios = appConfigProvider.getMeasurableConversionRatios();
+		if (measurableConversionRatios == null) {
+			log.error("Unable to convert from {} to {} as no measurable.conversionRatios configured, default to use original value {} ", 
+					fromMeasurable, toMeasurable, fromValue);
+			return fromValue;
+		}
+		//The key is like "Torque(oz-in):Torque(Ncm)", can be either fromMeasurable:toMeasurable or toMeasurable:fromMeasurable.
+		//The value can be "1:0.7061" or "1.41612" without ':' 
+		String conversionRatioStr = measurableConversionRatios.get(toMeasurable + ":" + fromMeasurable);
+		try {
+			if (StringUtils.isNotEmpty(conversionRatioStr)) {
+				BigDecimal ratio = parseRatio(conversionRatioStr);
+				return fromValue.multiply(ratio).setScale(4, RoundingMode.HALF_UP);
+			} else {
+				conversionRatioStr = measurableConversionRatios.get(fromMeasurable + ":" + toMeasurable);
+				if (StringUtils.isNotEmpty(conversionRatioStr)) {
+					BigDecimal reciprocalRatio = parseRatio(conversionRatioStr);
+					return fromValue.divide(reciprocalRatio).setScale(4, RoundingMode.HALF_UP);
+				} else {
+					log.error("Unable to convert from {} to {} as can't find the respective conversion ratio, default to use original value {} ", 
+							fromMeasurable, toMeasurable, fromValue);
+					return fromValue;
+				}
+			}
+		} catch (Exception ex) {
+			log.error("Exception occurred with conversion ratio {}, default to use original value {}", conversionRatioStr, fromValue, ex);
+			return fromValue;
+		}
+	}
+
+	private BigDecimal parseRatio(String ratioStr) {
+		int colonInx = ratioStr.indexOf(':');
+		if (colonInx == 0) {
+			throw new InvalidFormatException("Invalid format of the ratio " + ratioStr);
+		} else if (colonInx < 0) {
+			return new BigDecimal(ratioStr);
+		} else {
+			BigDecimal numerator = new BigDecimal(ratioStr.substring(0, colonInx));
+			BigDecimal denominator = new BigDecimal(ratioStr.substring(colonInx + 1));
+			return numerator.divide(denominator, 4, RoundingMode.HALF_UP);
+		}
+	}
+
 	public <E extends AbstractMotorPerfMeasurementEntity> List<LinearStepperMotorPerfCurve> mapToLinearStepperMotorPerfCurveModels(Set<E> entities, String model) {
 		if (entities == null) {
 			return null;

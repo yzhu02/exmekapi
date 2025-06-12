@@ -53,9 +53,14 @@ public class AppConfigProvider implements Scheduleable {
 	
 	public static final String CONFIG_NAME_RESOURCE_READ_INDIVIDUAL_FOLDER_ENABLED		= "resource.readIndividualFolderEnabled";
 	
+	public static final String CONFIG_NAME_MEASURABLE_CONVERSION_RATIOS					= "measurable.conversionRatios";
+	
 
 	private static final String DEFAULT_VALUE_SMTP_EXMEKSYS_							= "{\"host\": \"smtp.gmail.com\", \"port\": 587, \"user\": \"exmeksys@gmail.com\", \"password\": \"mzuhdzrzhyeostbe\", \"properties\": {\"mail.transport.protocol\": \"smtp\", \"mail.smtp.auth\": \"true\", \"mail.smtp.starttls.enable\": \"true\"}}";
+	
 	private static final String DEFAULT_VALUE_EXTERNAL_LOOKUP_COUNTRY_SERVICE			= "{\"baseEndpoint\": \"https://api.country.is/\", \"countryPropertyName\": \"country\"}";
+	
+	private static final String DEFAULT_VALUE_MEASURABLE_CONVERSION_RATIOS				= "{\"Torque(oz-in):Torque(Ncm)\": \"1:0.7061\"}";
 
 	@Autowired
 	private ConfigRepository configRepository;
@@ -156,5 +161,10 @@ public class AppConfigProvider implements Scheduleable {
 	
 	public Boolean getResourceReadIndividualFolderEnabled() {
 		return BooleanUtils.toBoolean(getConfigValue(CONFIG_NAME_RESOURCE_READ_INDIVIDUAL_FOLDER_ENABLED, "false"));
+	}
+	
+	public Map<String, String> getMeasurableConversionRatios() {
+		String confStr = getConfigValue(CONFIG_NAME_MEASURABLE_CONVERSION_RATIOS, DEFAULT_VALUE_MEASURABLE_CONVERSION_RATIOS);
+		return JsonMapperUtils.readValue(confStr, new TypeReference<Map<String, String>>() {});
 	}
 }

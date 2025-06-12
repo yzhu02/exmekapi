@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.exmek.core.config.MotorConfigProvider;
 import com.exmek.core.consts.EndpointConsts;
-import com.exmek.core.error.BizRuntimeException;
-import com.exmek.core.error.ErrorCode;
+import com.exmek.core.exception.BizRuntimeException;
+import com.exmek.core.exception.ErrorCode;
 import com.exmek.core.persistence.entity.DCMotorEntity;
 import com.exmek.core.persistence.repository.DCMotorRepository;
 
