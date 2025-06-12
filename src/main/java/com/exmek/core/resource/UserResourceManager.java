@@ -6,15 +6,20 @@ import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.function.Predicate;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Component;
+import org.springframework.util.ObjectUtils;
 
 import com.exmek.commons.utils.JsonMapperUtils;
 import com.exmek.commons.utils.UrlUtils;
@@ -25,7 +30,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Component
-public class UserResourceManager implements ResourceManager {
+public class UserResourceManager extends AbstractResourceManager {
 
 	public static final String SYS_PROP_NAME_USER_RESOURCES_LOCATION = "user.resources.location";
 
@@ -203,7 +208,9 @@ public class UserResourceManager implements ResourceManager {
 				.collect(Collectors.toSet());
 		for (String bySeriesResPath : bySeriesResPaths) {
 			if (!resExtensionSet.contains(getFileNameExtension(bySeriesResPath))) {
-				//Avoid model and series are with same suffix
+				// If it contains model specific file like MB057GA100.stl and 
+				// series specific file MB057GA.stl then only model specific file will be returned.
+				// Only if the series specific file has different extension like MB057GA.zip then both will be returned.
 				resPaths.add(bySeriesResPath);
 			}
 		}
@@ -253,6 +260,101 @@ public class UserResourceManager implements ResourceManager {
 		return Arrays.stream(resFiles)
 				.map(f -> UrlUtils.concatURL(resParentPath, f.getName()))
 				.collect(Collectors.toList());
+	}
+	
+	private Map<String, List<String>> getIndexedResourcePaths(String model, String baseDirName, String productDirName, String resSubCatDirName, 
+			String series) {
+
+		Map<String, List<String>> indexedResPaths = getIndexedResourcePaths(model, baseDirName, productDirName, resSubCatDirName);
+		if (series == null) {
+			return indexedResPaths;
+		}
+		Map<String, List<String>> bySeriesIndexedResPaths = getIndexedResourcePaths(series, baseDirName, productDirName, resSubCatDirName);
+		if (ObjectUtils.isEmpty(indexedResPaths)) {
+			return bySeriesIndexedResPaths;
+		}
+		if (ObjectUtils.isEmpty(bySeriesIndexedResPaths)) {
+			return indexedResPaths;
+		}
+		for (Map.Entry<String, List<String>> entry : indexedResPaths.entrySet()) {
+			List<String> resPaths = entry.getValue();
+			Set<String> resExtensionSet = resPaths.stream()
+					.map(p -> getFileNameExtension(p))
+					.collect(Collectors.toSet());
+			List<String> bySeriesResPaths = bySeriesIndexedResPaths.get(entry.getKey());
+			for (String bySeriesResPath : bySeriesResPaths) {
+				if (!resExtensionSet.contains(getFileNameExtension(bySeriesResPath))) {
+					// If it contains model specific file like MPC023-[Implication For Name].jpg and 
+					// series specific file MPC023[Implication For Name].jpg then only model specific file will be returned.
+					// Only if the series specific file has different extension like MPC023[Implication For Name].png then both will be returned.
+					resPaths.add(bySeriesResPath);
+				}
+			}
+		}
+		return indexedResPaths;
+	}
+
+	private Map<String, List<String>> getIndexedResourcePaths(String modelOrSeries, String baseDirName, String productDirName, String resSubCatDirName) {
+
+		File[] resFiles = null;
+
+		String relResPath = UrlUtils.concatURL("/", baseDirName, productDirName, modelOrSeries, resSubCatDirName);
+		String resLocation = RESOURCE_BASE_LOCATION + 
+				File.separator + baseDirName + 
+				File.separator + productDirName + 
+				File.separator + modelOrSeries + 
+				File.separator + resSubCatDirName;
+		File resDir = new File(resLocation);
+		if (resDir.exists()) {
+			log.info("Loading indexed resource for {} from {} ...", modelOrSeries, resLocation);
+			resFiles = resDir.listFiles();
+		} else {
+			relResPath = UrlUtils.concatURL("/", baseDirName, productDirName, resSubCatDirName);
+			resLocation = RESOURCE_BASE_LOCATION + 
+					File.separator + baseDirName + 
+					File.separator + productDirName + 
+					File.separator + resSubCatDirName;
+			resDir = new File(resLocation);
+			if (resDir.exists()) {
+				log.info("Loading indexed resource for {} from {} ...", modelOrSeries, resLocation);
+				resFiles = resDir.listFiles(f -> isMatchingResourceFile(f, modelOrSeries));
+			} else {
+				log.warn("Can't load indexed resources as the location {} doesn't exist. ", resLocation);
+				return null;
+			}
+		}
+		
+		if (resFiles == null || resFiles.length == 0) {
+			log.warn("No indexed resource loaded for {} from {} ", modelOrSeries, resLocation);
+			return null;
+		}
+		if (resFiles.length > 1) {
+			Arrays.sort(resFiles, (f1, f2) -> {
+				return f1.getName().compareTo(f2.getName());
+			});
+		}
+		Map<String, List<String>> indexedResPaths = new HashMap<>();
+		String resParentPath = relResPath;
+		for (File file : resFiles) {
+			String filename = file.getName();
+			int dotInx = filename.lastIndexOf('.');
+			String indexName = "";
+			if (dotInx > 0) {
+				String resName = filename.substring(0, dotInx);
+				Pattern p = Pattern.compile(INDEXED_RESOURCE_FILENAME_REGEX);
+				Matcher m = p.matcher(resName);
+				if (m.matches()) {
+					indexName = m.group(3);
+				}
+			}
+			List<String> resPaths = indexedResPaths.get(indexName);
+			if (resPaths == null) {
+				resPaths = new ArrayList<>();
+				indexedResPaths.put(indexName, resPaths);
+			}
+			resPaths.add(UrlUtils.concatURL(resParentPath, file.getName()));
+		}
+		return indexedResPaths;
 	}
 	
 	private String getFileNameExtension(String filePath) {
@@ -326,4 +428,18 @@ public class UserResourceManager implements ResourceManager {
 		return getResourcePaths(model, DIR_NAME_MATERIALS, DIR_NAME_BRAKE, DIR_NAME_TECHDOC, series);
 	}
 
+	@Override
+	public Map<String, List<String>> getMotorAdditionalImagePaths(String model, String series) {
+		return getIndexedResourcePaths(model, DIR_NAME_MATERIALS, DIR_NAME_MOTOR, DIR_NAME_ADDITIONAL_IMAGES, series);
+	}
+	
+	@Override
+	public Map<String, List<String>> getGearboxAdditionalImagePaths(String model, String series) {
+		return getIndexedResourcePaths(model, DIR_NAME_MATERIALS, DIR_NAME_GEARBOX, DIR_NAME_ADDITIONAL_IMAGES, series);
+	}
+	
+	@Override
+	public Map<String, List<String>> getBrakeAdditionalImagePaths(String model, String series) {
+		return getIndexedResourcePaths(model, DIR_NAME_MATERIALS, DIR_NAME_BRAKE, DIR_NAME_ADDITIONAL_IMAGES, series);
+	}
 }

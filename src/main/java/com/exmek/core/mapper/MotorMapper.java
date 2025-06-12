@@ -80,6 +80,7 @@ public class MotorMapper extends AbstractProductMapper {
 			motor.setMechanicalImagePaths(resourceManager.getMotorMechanicalImagePaths(entity.getModel(), entity.getSeries()));
 			motor.setThreeDDrawingPaths(resourceManager.getMotor3DDrawingPaths(entity.getModel(), entity.getSeries()));
 			motor.setTechDocPaths(resourceManager.getMotorTechDocPaths(entity.getModel(), entity.getSeries()));
+			motor.setAdditionalImagePaths(resourceManager.getMotorAdditionalImagePaths(entity.getModel(), entity.getSeries()));
 		}
 		
 		return motor;
@@ -161,6 +162,7 @@ public class MotorMapper extends AbstractProductMapper {
 			motor.setMechanicalImagePaths(resourceManager.getMotorMechanicalImagePaths(entity.getModel(), entity.getSeries()));
 			motor.setThreeDDrawingPaths(resourceManager.getMotor3DDrawingPaths(entity.getModel(), entity.getSeries()));
 			motor.setTechDocPaths(resourceManager.getMotorTechDocPaths(entity.getModel(), entity.getSeries()));
+			motor.setAdditionalImagePaths(resourceManager.getMotorAdditionalImagePaths(entity.getModel(), entity.getSeries()));
 		}
 
 		return motor;

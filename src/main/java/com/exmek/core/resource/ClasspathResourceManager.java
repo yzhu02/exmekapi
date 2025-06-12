@@ -11,6 +11,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.function.TriConsumer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.io.Resource;
@@ -27,7 +28,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Component
-public class ClasspathResourceManager implements ResourceManager {
+public class ClasspathResourceManager extends AbstractResourceManager {
 	
 	////Directory names BEGIN
 	public static final String DIR_NAME_STATIC			= "static";
@@ -45,6 +46,10 @@ public class ClasspathResourceManager implements ResourceManager {
 	public static final String MATERIALS_MOTOR_TECHDOC_REL_PATH		= UrlUtils.concatURL("/", DIR_NAME_MATERIALS, DIR_NAME_MOTOR, DIR_NAME_TECHDOC);
 	public static final String MATERIALS_GEARBOX_TECHDOC_REL_PATH	= UrlUtils.concatURL("/", DIR_NAME_MATERIALS, DIR_NAME_GEARBOX, DIR_NAME_TECHDOC);
 	public static final String MATERIALS_BRAKE_TECHDOC_REL_PATH		= UrlUtils.concatURL("/", DIR_NAME_MATERIALS, DIR_NAME_BRAKE, DIR_NAME_TECHDOC);
+	
+	public static final String MATERIALS_MOTOR_ADDITIONAL_IMAGES_REL_PATH	= UrlUtils.concatURL("/", DIR_NAME_MATERIALS, DIR_NAME_MOTOR, DIR_NAME_ADDITIONAL_IMAGES);
+	public static final String MATERIALS_GEARBOX_ADDITIONAL_IMAGES_REL_PATH	= UrlUtils.concatURL("/", DIR_NAME_MATERIALS, DIR_NAME_GEARBOX, DIR_NAME_ADDITIONAL_IMAGES);
+	public static final String MATERIALS_BRAKE_ADDITIONAL_IMAGES_REL_PATH	= UrlUtils.concatURL("/", DIR_NAME_MATERIALS, DIR_NAME_BRAKE, DIR_NAME_ADDITIONAL_IMAGES);
 	////Exposed relative paths END
 	
 	////Internal directory locations BEGIN
@@ -76,13 +81,20 @@ public class ClasspathResourceManager implements ResourceManager {
 	
 	private static final String MATERIALS_BRAKE_TECHDOC_FULL_LOCATION = UrlUtils.concatURL(
 			ResourcePatternResolver.CLASSPATH_ALL_URL_PREFIX, DIR_NAME_STATIC, MATERIALS_BRAKE_TECHDOC_REL_PATH);
+	
+	
+	
+	private static final String MATERIALS_MOTOR_ADDITIONAL_IMAGES_FULL_LOCATION = UrlUtils.concatURL(
+			ResourcePatternResolver.CLASSPATH_ALL_URL_PREFIX, DIR_NAME_STATIC, MATERIALS_MOTOR_ADDITIONAL_IMAGES_REL_PATH);
+	
+	private static final String MATERIALS_GEARBOX_ADDITIONAL_IMAGES_FULL_LOCATION = UrlUtils.concatURL(
+			ResourcePatternResolver.CLASSPATH_ALL_URL_PREFIX, DIR_NAME_STATIC, MATERIALS_GEARBOX_ADDITIONAL_IMAGES_REL_PATH);
+	
+	private static final String MATERIALS_BRAKE_ADDITIONAL_IMAGES_FULL_LOCATION = UrlUtils.concatURL(
+			ResourcePatternResolver.CLASSPATH_ALL_URL_PREFIX, DIR_NAME_STATIC, MATERIALS_BRAKE_ADDITIONAL_IMAGES_REL_PATH);
+	
 	////Internal directory locations END
 	
-	//Example:
-	//MAB23X-30[0].jpg
-	//MPC023-[Implication For Name].jpg
-	private static final String RESOURCE_FILENAME_REGEX = "(\\w+)(\\[(\\w+)\\])?";
-
 	@Autowired
 	private ApplicationContext applicationContext;
 
@@ -100,6 +112,10 @@ public class ClasspathResourceManager implements ResourceManager {
 	private Map<String, List<String>> motorTechDocPathsMap = new HashMap<>();
 	private Map<String, List<String>> gearboxTechDocPathsMap = new HashMap<>();
 	private Map<String, List<String>> brakeTechDocPathsMap = new HashMap<>();
+	
+	private Map<String, Map<String, List<String>>> motorAdditionalImagePathsMap = new HashMap<>();
+	private Map<String, Map<String, List<String>>> gearboxAdditionalImagePathsMap = new HashMap<>();
+	private Map<String, Map<String, List<String>>> brakeAdditionalImagePathsMap = new HashMap<>();
 
 	@PostConstruct
 	protected void initialize() {
@@ -134,6 +150,19 @@ public class ClasspathResourceManager implements ResourceManager {
 		this.brakeTechDocPathsMap = initResourcePathMap(
 				UrlUtils.concatURL(MATERIALS_BRAKE_TECHDOC_FULL_LOCATION, resFileMatch),
 				MATERIALS_BRAKE_TECHDOC_REL_PATH);
+		
+		
+		this.motorAdditionalImagePathsMap = initIndexedResourcePathMap(
+				UrlUtils.concatURL(MATERIALS_MOTOR_ADDITIONAL_IMAGES_FULL_LOCATION, resFileMatch),
+				MATERIALS_MOTOR_ADDITIONAL_IMAGES_REL_PATH);
+		
+		this.gearboxAdditionalImagePathsMap = initIndexedResourcePathMap(
+				UrlUtils.concatURL(MATERIALS_GEARBOX_ADDITIONAL_IMAGES_FULL_LOCATION, resFileMatch),
+				MATERIALS_GEARBOX_ADDITIONAL_IMAGES_REL_PATH);
+		
+		this.brakeAdditionalImagePathsMap = initIndexedResourcePathMap(
+				UrlUtils.concatURL(MATERIALS_BRAKE_ADDITIONAL_IMAGES_FULL_LOCATION, resFileMatch),
+				MATERIALS_BRAKE_ADDITIONAL_IMAGES_REL_PATH);
 	}
 	
 	private Map<String, List<String>> initResourcePathMap(String resourceFullLocation, String resourceRelPath) {
@@ -183,6 +212,60 @@ public class ClasspathResourceManager implements ResourceManager {
 		return resourceMap;
 	}
 	
+	private Map<String, Map<String, List<String>>> initIndexedResourcePathMap(String resourceFullLocation, String resourceRelPath) {
+		Map<String, Map<String, List<String>>> resourceMap = new HashMap<>();
+		Resource[] resources = null;
+		try {
+			resources = ResourcePatternUtils.getResourcePatternResolver(applicationContext).getResources(resourceFullLocation);
+			if (resources == null || resources.length == 0) {
+				log.info("No indexed resource loaded from {} ", resourceFullLocation);
+			} else {
+				log.info("Indexed resources are loaded from {} successfully. ", resourceFullLocation);
+			}
+		} catch (IOException ex) {
+			log.error("Failed to load indexed resources from {} ", resourceFullLocation, ex);
+		}
+		if (resources == null || resources.length == 0) {
+			return resourceMap;
+		}
+		TriConsumer<String, String, String> putResourceCallback = (resName, indexName, filename) -> {
+			Map<String, List<String>> indexedResPaths = resourceMap.get(resName);
+			if (indexedResPaths == null) {
+				indexedResPaths = new HashMap<>();
+				resourceMap.put(resName, indexedResPaths);
+			}
+			List<String> resPaths = indexedResPaths.get(indexName);
+			if (resPaths == null) {
+				resPaths = new ArrayList<>();
+				indexedResPaths.put(indexName, resPaths);
+			}
+			resPaths.add(UrlUtils.concatURL(resourceRelPath, filename));
+		};
+		if (resources.length > 1) {
+			Arrays.sort(resources, (r1, r2) -> {
+				return r1.getFilename().compareTo(r2.getFilename());
+			});
+		}
+		for (Resource res : resources) {
+			String filename = res.getFilename();
+			String resName = filename;
+			int dotInx = filename.lastIndexOf('.');
+			String indexName = "";
+			if (dotInx > 0) {
+				resName = filename.substring(0, dotInx);
+				Pattern p = Pattern.compile(INDEXED_RESOURCE_FILENAME_REGEX);
+				Matcher m = p.matcher(resName);
+				if (m.matches()) {
+					resName = m.group(1);
+					indexName = m.group(3);
+				}
+			}
+			putResourceCallback.accept(resName, indexName, filename);
+		}
+		log.info("Indexed resources are initialized successfully for parent path {} with size {} ", resourceRelPath, resourceMap.size());
+		return resourceMap;
+	}
+	
 	private List<String> getResourcePaths(String model, String baseDirName, String productDirName, String resSubCatDirName, 
 			Map<String, List<String>> defaultResMap, String series) {
 
@@ -216,6 +299,55 @@ public class ClasspathResourceManager implements ResourceManager {
 		return resPaths;
 	}
 
+	private Map<String, List<String>> getIndexedResourcePaths(String model, String baseDirName, String productDirName, String resSubCatDirName, 
+			Map<String, Map<String, List<String>>> defaultResMap, String series) {
+
+		Map<String, List<String>> resourcePaths = getIndexedResourcePaths(model, baseDirName, productDirName, resSubCatDirName, defaultResMap);
+		if (ObjectUtils.isEmpty(resourcePaths) && series != null) {
+			resourcePaths = getIndexedResourcePaths(series, baseDirName, productDirName, resSubCatDirName, defaultResMap);
+		}
+		return resourcePaths;
+	}
+
+	private Map<String, List<String>> getIndexedResourcePaths(String modelOrSeries, String baseDirName, String productDirName, String resSubCatDirName, 
+			Map<String, Map<String, List<String>>> defaultResMap) {
+		
+		if (Boolean.FALSE.equals(appConfigProvider.getResourceReadIndividualFolderEnabled())) {
+			return defaultResMap.get(modelOrSeries);
+		}
+		String relResPath = UrlUtils.concatURL("/", baseDirName, productDirName, modelOrSeries, resSubCatDirName);
+		Resource[] resources = readIndividualResources(relResPath, modelOrSeries);
+		if (resources == null || resources.length == 0) {
+			return defaultResMap.get(modelOrSeries);
+		}
+		Map<String, List<String>> indexedResPaths = new HashMap<>();
+		if (resources.length > 1) {
+			Arrays.sort(resources, (r1, r2) -> {
+				return r1.getFilename().compareTo(r2.getFilename());
+			});
+		}
+		for (Resource res : resources) {
+			String filename = res.getFilename();
+			int dotInx = filename.lastIndexOf('.');
+			String indexName = "";
+			if (dotInx > 0) {
+				String resName = filename.substring(0, dotInx);
+				Pattern p = Pattern.compile(INDEXED_RESOURCE_FILENAME_REGEX);
+				Matcher m = p.matcher(resName);
+				if (m.matches()) {
+					indexName = m.group(3);
+				}
+			}
+			List<String> resPaths = indexedResPaths.get(indexName);
+			if (resPaths == null) {
+				resPaths = new ArrayList<>();
+				indexedResPaths.put(indexName, resPaths);
+			}
+			resPaths.add(UrlUtils.concatURL(relResPath, res.getFilename()));
+		}
+		return indexedResPaths;
+	}
+	
 	private Resource[] readIndividualResources(String relModelResPath, String modelOrSeries) {
 		Resource[] resources = null;
 		String resFileMatch = "*.*";
@@ -276,6 +408,21 @@ public class ClasspathResourceManager implements ResourceManager {
 	@Override
 	public List<String> getBrakeTechDocPaths(String model, String series) {
 		return getResourcePaths(model, DIR_NAME_MATERIALS, DIR_NAME_BRAKE, DIR_NAME_TECHDOC, this.brakeTechDocPathsMap, series);
+	}
+	
+	@Override
+	public Map<String, List<String>> getMotorAdditionalImagePaths(String model, String series) {
+		return getIndexedResourcePaths(model, DIR_NAME_MATERIALS, DIR_NAME_MOTOR, DIR_NAME_ADDITIONAL_IMAGES, this.motorAdditionalImagePathsMap, series);
+	}
+
+	@Override
+	public Map<String, List<String>> getGearboxAdditionalImagePaths(String model, String series) {
+		return getIndexedResourcePaths(model, DIR_NAME_MATERIALS, DIR_NAME_GEARBOX, DIR_NAME_ADDITIONAL_IMAGES, this.gearboxAdditionalImagePathsMap, series);
+	}
+	
+	@Override
+	public Map<String, List<String>> getBrakeAdditionalImagePaths(String model, String series) {
+		return getIndexedResourcePaths(model, DIR_NAME_MATERIALS, DIR_NAME_BRAKE, DIR_NAME_ADDITIONAL_IMAGES, this.brakeAdditionalImagePathsMap, series);
 	}
 	
 	@Override

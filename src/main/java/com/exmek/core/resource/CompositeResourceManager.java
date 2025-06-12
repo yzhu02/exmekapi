@@ -1,6 +1,7 @@
 package com.exmek.core.resource;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -72,6 +73,24 @@ public class CompositeResourceManager implements ResourceManager {
 				() -> classpathResourceManager.getBrakeTechDocPaths(model, series));
 	}
 
+	@Override
+	public Map<String, List<String>> getMotorAdditionalImagePaths(String model, String series) {
+		return getOneByOrder(() -> userResourceManager.getMotorAdditionalImagePaths(model, series),
+				() -> classpathResourceManager.getMotorAdditionalImagePaths(model, series));
+	}
+	
+	@Override
+	public Map<String, List<String>> getGearboxAdditionalImagePaths(String model, String series) {
+		return getOneByOrder(() -> userResourceManager.getGearboxAdditionalImagePaths(model, series),
+				() -> classpathResourceManager.getGearboxAdditionalImagePaths(model, series));
+	}
+	
+	@Override
+	public Map<String, List<String>> getBrakeAdditionalImagePaths(String model, String series) {
+		return getOneByOrder(() -> userResourceManager.getBrakeAdditionalImagePaths(model, series),
+				() -> classpathResourceManager.getBrakeAdditionalImagePaths(model, series));
+	}
+	
 	private <T> T getOneByOrder(Supplier<T> p1, Supplier<T> p2) {
 		T result = p1.get();
 		return result != null ? result : p2.get();

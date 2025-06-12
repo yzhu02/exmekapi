@@ -1,6 +1,7 @@
 package com.exmek.core.resource;
 
 import java.util.List;
+import java.util.Map;
 
 public interface ResourceManager {
 
@@ -15,6 +16,7 @@ public interface ResourceManager {
 	String DIR_NAME_MICHANICAL					= "mechanical";
 	String DIR_NAME_3D							= "3d";
 	String DIR_NAME_TECHDOC						= "techdoc";
+	String DIR_NAME_ADDITIONAL_IMAGES			= "additional-images";
 
 	List<String> getMotorMechanicalImagePaths(String model, String series);
 
@@ -35,6 +37,13 @@ public interface ResourceManager {
 	List<String> getGearboxTechDocPaths(String model, String series);
 	
 	List<String> getBrakeTechDocPaths(String model, String series);
+
+	
+	Map<String, List<String>> getMotorAdditionalImagePaths(String model, String series);
+	
+	Map<String, List<String>> getGearboxAdditionalImagePaths(String model, String series);
+	
+	Map<String, List<String>> getBrakeAdditionalImagePaths(String model, String series);
 
 	List<ResourceInfo> getTechDocInfos();
 }
