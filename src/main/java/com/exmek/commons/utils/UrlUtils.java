@@ -41,4 +41,11 @@ public class UrlUtils {
 		}
 		return sb.toString();
 	}
+
+	public static String encodeBrackets(String url) {
+		if (url == null) {
+			return url;
+		}
+		return url.replace("[", "%5B").replace("]", "%5D");
+	}
 }

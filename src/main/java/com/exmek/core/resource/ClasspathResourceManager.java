@@ -187,7 +187,7 @@ public class ClasspathResourceManager extends AbstractResourceManager {
 				resourcePaths = new ArrayList<>();
 				resourceMap.put(resName, resourcePaths);
 			}
-			resourcePaths.add(UrlUtils.concatURL(resourceRelPath, filename));
+			resourcePaths.add(UrlUtils.concatURL(resourceRelPath, UrlUtils.encodeBrackets(filename)));
 		};
 		if (resources.length > 1) {
 			Arrays.sort(resources, (r1, r2) -> {
@@ -239,7 +239,7 @@ public class ClasspathResourceManager extends AbstractResourceManager {
 				resPaths = new ArrayList<>();
 				indexedResPaths.put(indexName, resPaths);
 			}
-			resPaths.add(UrlUtils.concatURL(resourceRelPath, filename));
+			resPaths.add(UrlUtils.concatURL(resourceRelPath, UrlUtils.encodeBrackets(filename)));
 		};
 		if (resources.length > 1) {
 			Arrays.sort(resources, (r1, r2) -> {
@@ -294,7 +294,7 @@ public class ClasspathResourceManager extends AbstractResourceManager {
 			});
 		}
 		for (Resource res : resources) {
-			resPaths.add(UrlUtils.concatURL(relResPath, res.getFilename()));
+			resPaths.add(UrlUtils.concatURL(relResPath, UrlUtils.encodeBrackets(res.getFilename())));
 		}
 		return resPaths;
 	}
@@ -343,7 +343,7 @@ public class ClasspathResourceManager extends AbstractResourceManager {
 				resPaths = new ArrayList<>();
 				indexedResPaths.put(indexName, resPaths);
 			}
-			resPaths.add(UrlUtils.concatURL(relResPath, res.getFilename()));
+			resPaths.add(UrlUtils.concatURL(relResPath, UrlUtils.encodeBrackets(res.getFilename())));
 		}
 		return indexedResPaths;
 	}

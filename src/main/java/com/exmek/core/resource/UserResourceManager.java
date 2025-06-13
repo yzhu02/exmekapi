@@ -84,7 +84,7 @@ public class UserResourceManager extends AbstractResourceManager {
 			aNews.setPicturePaths(StreamSupport.stream(Arrays.spliterator(picFiles), false)
 					.map(f -> f.getName())
 					.sorted()
-					.map(name -> UrlUtils.concatURL(NEWSREPO_BASE_PATH, sub.getName(), name))
+					.map(name -> UrlUtils.concatURL(NEWSREPO_BASE_PATH, sub.getName(), UrlUtils.encodeBrackets(name)))
 					.collect(Collectors.toList()));
 			if (filter == null || filter.test(aNews)) {
 				newsList.add(aNews);
@@ -132,7 +132,7 @@ public class UserResourceManager extends AbstractResourceManager {
 		return Arrays.stream(commonTechDocPdfFiles)
 				.map(f -> ResourceInfo.builder()
 						.name(f.getName())
-						.path(UrlUtils.concatURL(COMMON_TECHDOCS_BASE_PATH, f.getName()))
+						.path(UrlUtils.concatURL(COMMON_TECHDOCS_BASE_PATH, UrlUtils.encodeBrackets(f.getName())))
 						.size(f.length())
 						.build()
 				)
@@ -171,7 +171,7 @@ public class UserResourceManager extends AbstractResourceManager {
 				return Arrays.stream(resFiles)
 				.map(f -> ResourceInfo.builder()
 						.name(f.getName())
-						.path(UrlUtils.concatURL(relResPath, f.getName()))
+						.path(UrlUtils.concatURL(relResPath, UrlUtils.encodeBrackets(f.getName())))
 						.size(f.length())
 						.build()
 				)
@@ -258,7 +258,7 @@ public class UserResourceManager extends AbstractResourceManager {
 		}
 		String resParentPath = relResPath;
 		return Arrays.stream(resFiles)
-				.map(f -> UrlUtils.concatURL(resParentPath, f.getName()))
+				.map(f -> UrlUtils.concatURL(resParentPath, UrlUtils.encodeBrackets(f.getName())))
 				.collect(Collectors.toList());
 	}
 	
@@ -352,7 +352,7 @@ public class UserResourceManager extends AbstractResourceManager {
 				resPaths = new ArrayList<>();
 				indexedResPaths.put(indexName, resPaths);
 			}
-			resPaths.add(UrlUtils.concatURL(resParentPath, file.getName()));
+			resPaths.add(UrlUtils.concatURL(resParentPath, UrlUtils.encodeBrackets(file.getName())));
 		}
 		return indexedResPaths;
 	}
