@@ -6,6 +6,7 @@ import java.util.List;
 import com.exmek.core.commons.model.CurveLine;
 import com.exmek.core.commons.model.Range;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Data;
 
@@ -27,5 +28,6 @@ public class MotorPerfCurve {
 	 * If only one Y-Axis or the Y-Axis represent different measurement, then it is null.
 	 * </pre> 
 	 */
+	@JsonProperty("yAxisEquivalentBoundaries")
 	private List<Range<BigDecimal>> yAxisEquivalentBoundaries;
 }
