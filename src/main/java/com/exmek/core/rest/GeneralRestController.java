@@ -81,6 +81,10 @@ public class GeneralRestController {
 	@GetMapping("/tech-docs")
 	public List<ResourceInfo> getTechDocInfos() {
 		List<ResourceInfo> commonTechDocInfos = userResourceManager.getCommonTechDocInfos();
+		return commonTechDocInfos;
+
+		// As per confirmed from customer requirement, no need to provide download to tech-docs for individual product.
+		/*  
 		List<ResourceInfo> allPerModelTechDocInfos = compositeResourceManager.getTechDocInfos();
 		if (commonTechDocInfos == null) {
 			return allPerModelTechDocInfos;
@@ -91,6 +95,7 @@ public class GeneralRestController {
 					.distinct()
 					.collect(Collectors.toList());
 		}
+		*/
 	}
 
 	@GetMapping("/gensearch")
