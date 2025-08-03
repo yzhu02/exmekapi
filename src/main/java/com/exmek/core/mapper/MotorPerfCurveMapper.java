@@ -70,6 +70,8 @@ public class MotorPerfCurveMapper {
 			String[] mConditions = MiscUtils.split(entity.getConditions(), ",");
 			BigDecimal[][] mValues = MiscUtils.parseCSVLikeValues(entity.getValues(),
 					rows -> new BigDecimal[rows][], cells -> new BigDecimal[cells], s -> MiscUtils.parseBigDecimalValue(s));
+			BigDecimal[][] safeThresholds = MiscUtils.parseCSVLikeValues(entity.getSafeThreshold(),
+					rows -> new BigDecimal[rows][], cells -> new BigDecimal[cells], s -> MiscUtils.parseBigDecimalValue(s));
 			List<CurveLine> curveLines = new ArrayList<>();
 			List<Range<BigDecimal>> yAxisEquivalentBoundaries = new ArrayList<>();
 			boolean isYAxisSameMeasurementAndHasDifferentUnit = false;
@@ -96,12 +98,22 @@ public class MotorPerfCurveMapper {
 				BigDecimal yMin = null;
 				BigDecimal yMax = null;
 				if (xColInx >= 0 && yColInx >= 0) {
-					for (int r = 0; r < mValues.length; r++) {
-						if ((xColInx < mValues[r].length && mValues[r][xColInx] != null)
-								&& (yColInx < mValues[r].length && mValues[r][yColInx] != null)) {
-							cLine.addPoint(Point.of(mValues[r][xColInx], mValues[r][yColInx]));
-							yMin = yMin == null ? mValues[r][yColInx] : MathUtils.min(yMin, mValues[r][yColInx]);
-							yMax = yMax == null ? mValues[r][yColInx] : MathUtils.max(yMax, mValues[r][yColInx]);
+					if (mValues != null) {
+						for (int r = 0; r < mValues.length; r++) {
+							if ((xColInx < mValues[r].length && mValues[r][xColInx] != null)
+									&& (yColInx < mValues[r].length && mValues[r][yColInx] != null)) {
+								cLine.addPoint(Point.of(mValues[r][xColInx], mValues[r][yColInx]));
+								yMin = yMin == null ? mValues[r][yColInx] : MathUtils.min(yMin, mValues[r][yColInx]);
+								yMax = yMax == null ? mValues[r][yColInx] : MathUtils.max(yMax, mValues[r][yColInx]);
+							}
+						}
+					}
+					if (safeThresholds != null) {
+						for (int r = 0; r < safeThresholds.length; r++) {
+							if ((xColInx < safeThresholds[r].length && safeThresholds[r][xColInx] != null)
+									&& (yColInx < safeThresholds[r].length && safeThresholds[r][yColInx] != null)) {
+								cLine.setSafeThreshold(Point.of(mValues[r][xColInx], mValues[r][yColInx]));
+							}
 						}
 					}
 				}

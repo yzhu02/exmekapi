@@ -17,6 +17,9 @@ public abstract class AbstractMotorPerfMeasurementEntity extends AbstractEntity 
 
 	@Column(name = "CONDITIONS")
 	private String conditions;
+	
+	@Column(name = "SAFE_THRESHOLD")
+	private String safeThreshold;
 
 	public String getTitle() {
 		return title;
@@ -48,6 +51,14 @@ public abstract class AbstractMotorPerfMeasurementEntity extends AbstractEntity 
 
 	public void setConditions(String conditions) {
 		this.conditions = conditions;
+	}
+
+	public String getSafeThreshold() {
+		return safeThreshold;
+	}
+
+	public void setSafeThreshold(String safeThreshold) {
+		this.safeThreshold = safeThreshold;
 	}
 
 }

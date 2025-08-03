@@ -14,6 +14,9 @@ import org.springframework.util.ObjectUtils;
 
 import com.exmek.core.config.AppConfigProvider;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 public class MiscUtils {
 	
 	private MiscUtils() {
@@ -77,7 +80,12 @@ public class MiscUtils {
 		if ("null".equals(s.trim().toLowerCase())) {
 			return null;
 		}
-		return new BigDecimal(s);
+		try {
+			return new BigDecimal(s);
+		} catch (Exception ex) {
+			log.error("Failed to parse {} to BigDecimal.", s, ex);
+			return null;
+		}
 	}
 
 

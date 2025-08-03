@@ -23,6 +23,8 @@ public class CurveLine {
 	
 	private List<Point<BigDecimal>> points;
 	
+	private Point<BigDecimal> safeThreshold;
+
 	public CurveLine addPoint(Point<BigDecimal> p) {
 		if (this.points == null) {
 			this.points = new ArrayList<>();
