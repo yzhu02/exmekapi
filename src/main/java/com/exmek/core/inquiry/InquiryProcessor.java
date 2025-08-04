@@ -66,7 +66,8 @@ public class InquiryProcessor {
 	public InquiryResponse processInquiry(@NotNull @RequestBody InquiryRequest reqInquiryPayload,
 			@RequestHeader(name = RequestHeaderConsts.CLIENT_IP, required = false) String headerClientIp) {
 		if (reqInquiryPayload == null) {
-			throw new ValidationException("inquiry request payload cannot be null. ", ErrorCode.ERR_CODE_INQUIRY_MISSING_REQUEST_PAYLOAD);
+			throw new ValidationException("Inquiry request payload cannot be null. ", 
+					ErrorCode.ERR_CODE_INQUIRY_MISSING_REQUEST_PAYLOAD);
 		}
 		InquiryResponse response = new InquiryResponse();
 //		HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();

@@ -2,8 +2,6 @@ package com.exmek.core.rest;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,14 +22,19 @@ import com.exmek.core.exception.ValidationException;
 import com.exmek.core.gensearch.GeneralSearchItem;
 import com.exmek.core.gensearch.GeneralSearcher;
 import com.exmek.core.inquiry.InquiryProcessor;
+import com.exmek.core.mapper.DownloadTrackingMapper;
 import com.exmek.core.model.Company;
 import com.exmek.core.model.News;
-import com.exmek.core.resource.CompositeResourceManager;
+import com.exmek.core.persistence.entity.DownloadTrackingEntity;
+import com.exmek.core.persistence.repository.DownloadTrackingRepository;
 import com.exmek.core.resource.ResourceInfo;
 import com.exmek.core.resource.UserResourceManager;
 
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @RestController
 @RequestMapping(EndpointConsts.ENDPOINT_API_PREFIX)
 public class GeneralRestController {
@@ -44,11 +47,17 @@ public class GeneralRestController {
 	@Autowired
 	private UserResourceManager userResourceManager;
 
-	@Autowired
-	private CompositeResourceManager compositeResourceManager;
+//	@Autowired
+//	private CompositeResourceManager compositeResourceManager;
 
 	@Autowired
 	private InquiryProcessor inquiryProcessor;
+
+	@Autowired
+	private DownloadTrackingMapper downloadTrackingMapper;
+
+	@Autowired
+	private DownloadTrackingRepository downloadTrackingRepository;
 
 	@Autowired
 	private GeneralSearcher generalSearcher;
@@ -72,10 +81,30 @@ public class GeneralRestController {
 	}
 
 	@PostMapping("/inquiries")
-	public InquiryResponse createInquiry(@NotNull @RequestBody InquiryRequest reqInquiryPayload,
+	public InquiryResponse createInquiry(@NotNull @RequestBody InquiryRequest request,
 			@RequestHeader(name = RequestHeaderConsts.CLIENT_IP, required = false) String headerClientIp) {
 		
-		return inquiryProcessor.processInquiry(reqInquiryPayload, headerClientIp);
+		return inquiryProcessor.processInquiry(request, headerClientIp);
+	}
+	
+	@PostMapping("/download/trackings")
+	public DownloadTrackingResponse createDownloadTracking(
+			@NotNull @RequestBody @Valid DownloadTrackingRequest request) {
+		
+		if (request == null) {
+			throw new ValidationException("Download tracking request payload cannot be null. ", 
+					ErrorCode.ERR_CODE_DOWNLOAD_TRACKING_MISSING_REQUEST_PAYLOAD);
+		}
+		DownloadTrackingResponse response = new DownloadTrackingResponse();
+		DownloadTrackingEntity entity = downloadTrackingMapper.mapDownloadTrackingRequestToEntity(request);
+		try {
+			entity = downloadTrackingRepository.save(entity);
+			response.setStatus("SAVED");
+		} catch (Exception ex) {
+			log.error("Failed to save DownloadTrackingEntity to db.", ex);
+			response.setStatus("SAVE_FAILED");
+		}
+		return response;
 	}
 	
 	@GetMapping("/tech-docs")

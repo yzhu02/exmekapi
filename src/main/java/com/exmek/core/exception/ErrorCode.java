@@ -20,6 +20,9 @@ public interface ErrorCode {
 	String ERR_CODE_INQUIRY_MISSING_REQUEST_PAYLOAD =
 			String.valueOf(HttpStatus.BAD_REQUEST.value()) + ".inquiry.missing_request_payload";
 	
+	String ERR_CODE_DOWNLOAD_TRACKING_MISSING_REQUEST_PAYLOAD =
+			String.valueOf(HttpStatus.BAD_REQUEST.value()) + ".download.tracking.missing_request_payload";
+	
 	String ERR_CODE_REQUIRE_BOTH_OR_NONE_PAGE_PARAMS =
 			String.valueOf(HttpStatus.BAD_REQUEST.value()) + ".request.pagination.require_both_or_none_page_params";
 	
