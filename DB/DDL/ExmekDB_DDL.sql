@@ -1,12 +1,3 @@
-CREATE USER IF NOT EXISTS 'sa'@'localhost' IDENTIFIED WITH caching_sha2_password BY 'sa';
-
-GRANT ALL ON *.* TO 'sa'@'localhost' WITH GRANT OPTION;
-
-CREATE DATABASE exmek;
-
--- grant all privileges on exmek.* to sa@'%' identified by 'sa';
--- grant all privileges on exmek.* to sa@localhost identified by 'sa';
-
 USE exmek;
 
 CREATE TABLE USER (
