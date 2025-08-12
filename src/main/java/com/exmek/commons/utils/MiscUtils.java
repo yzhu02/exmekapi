@@ -35,6 +35,10 @@ public class MiscUtils {
         return true;
     }
 
+	public static boolean isNonNullNonBlankValue(String str) {
+		return StringUtils.isNotBlank(str) && !"null".equalsIgnoreCase(str.trim());
+	}
+
 	public static <T> void addNonNullToList(List<T> resultList, Supplier<T> creator) {
 		if (resultList == null) {
 			return;
@@ -67,7 +71,7 @@ public class MiscUtils {
 			String[] rowValues = valueLines[r].split(",");
 			parsedValues[r] = rowOfCellsArrayCreator.apply(rowValues.length);
 			for (int c = 0; c < rowValues.length; c++) {
-				parsedValues[r][c] = valueCreator.apply(rowValues[c].trim());
+				parsedValues[r][c] = valueCreator.apply(rowValues[c]);
 			}
 		}
 		return parsedValues;
@@ -77,7 +81,11 @@ public class MiscUtils {
 		if (s == null || ObjectUtils.isEmpty(s)) {
 			return null;
 		}
-		if ("null".equals(s.trim().toLowerCase())) {
+		s = s.trim();
+		if ("null".equals(s.toLowerCase())) {
+			return null;
+		}
+		if ("-".equals(s) || "_".equals(s)) {
 			return null;
 		}
 		try {

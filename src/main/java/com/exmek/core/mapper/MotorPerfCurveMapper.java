@@ -70,6 +70,8 @@ public class MotorPerfCurveMapper {
 			String[] mConditions = MiscUtils.split(entity.getConditions(), ",");
 			BigDecimal[][] mValues = MiscUtils.parseCSVLikeValues(entity.getValues(),
 					rows -> new BigDecimal[rows][], cells -> new BigDecimal[cells], s -> MiscUtils.parseBigDecimalValue(s));
+			String[][] safeThresholdOriginStrs = MiscUtils.parseCSVLikeValues(entity.getSafeThreshold(),
+					rows -> new String[rows][], cells -> new String[cells], s -> s);
 			BigDecimal[][] safeThresholds = MiscUtils.parseCSVLikeValues(entity.getSafeThreshold(),
 					rows -> new BigDecimal[rows][], cells -> new BigDecimal[cells], s -> MiscUtils.parseBigDecimalValue(s));
 			List<CurveLine> curveLines = new ArrayList<>();
@@ -108,11 +110,11 @@ public class MotorPerfCurveMapper {
 							}
 						}
 					}
-					if (safeThresholds != null) {
+					if (safeThresholds != null && safeThresholds.length > 0) {
 						for (int r = 0; r < safeThresholds.length; r++) {
-							if ((xColInx < safeThresholds[r].length && safeThresholds[r][xColInx] != null)
-									&& (yColInx < safeThresholds[r].length && safeThresholds[r][yColInx] != null)) {
-								cLine.setSafeThreshold(Point.of(mValues[r][xColInx], mValues[r][yColInx]));
+							if ((xColInx < safeThresholds[r].length && MiscUtils.isNonNullNonBlankValue(safeThresholdOriginStrs[r][xColInx]))
+									&& (yColInx < safeThresholds[r].length && MiscUtils.isNonNullNonBlankValue(safeThresholdOriginStrs[r][yColInx]))) {
+								cLine.setSafeThreshold(Point.of(safeThresholds[r][xColInx], safeThresholds[r][yColInx]));
 							}
 						}
 					}
@@ -126,7 +128,8 @@ public class MotorPerfCurveMapper {
 				);
 			}
 			perfCurve.setCurveLines(curveLines);
-			if (isYAxisSameMeasurementAndHasDifferentUnit) { // When two y-axis represent same measurement but with different units like "Torque(oz-in) vs Torque(Ncm)"
+			if (isYAxisSameMeasurementAndHasDifferentUnit) { 
+				// When two y-axis represent same measurement but with different units like "Torque(oz-in) vs Torque(Ncm)"
 				recalcMeasurableMinMinMaxMax(yAxisEquivalentBoundaries);
 				perfCurve.setYAxisEquivalentBoundaries(yAxisEquivalentBoundaries);
 			}
