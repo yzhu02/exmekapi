@@ -6,6 +6,7 @@ import java.lang.reflect.Modifier;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -44,7 +45,25 @@ public abstract class AbstractProductMapper {
 		model.setWeight(toMeasuredValue(entity.getWeight(), entity.getWeightUnit()));
 		model.setFrameSize(MeasuredValue.Typed.of(formatBigDecimalValue(entity.getFrameSize()), entity.getFrameSizeUnit(), entity.getFrameSizeType()));
 		model.setNemaSize(entity.getNemaSize());
+		model.setIsNew(determineIsNew(entity));
 		return model;
+	}
+
+	private Boolean determineIsNew(AbstractProductEntity entity) {
+		Integer newProductAgingDays = appConfigProvider.getNewProductAgingDays();
+		if (newProductAgingDays == null) {
+			return null;
+		}
+		Date lastUpdatedTimestamp = entity.getUpdatedTimestamp();
+		if (lastUpdatedTimestamp == null) {
+			lastUpdatedTimestamp = entity.getCreatedTimestamp();
+		}
+		if (lastUpdatedTimestamp == null) {
+			return null;
+		}
+		Date today = new Date();
+		long diffInMs = today.getTime() - lastUpdatedTimestamp.getTime();
+		return diffInMs / (1000 * 60 * 60 * 24) <= newProductAgingDays;
 	}
 
 	protected List<Spec> mapAllCombinedSpecs(AbstractProductEntity entity, List<String> configuredFields, Set<String> excludedFieldNames) {

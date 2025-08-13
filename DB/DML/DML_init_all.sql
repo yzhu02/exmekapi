@@ -59,6 +59,9 @@ VALUES
 ),
 (
 	'resource.readIndividualFolderEnabled', 'false'
+),
+(
+	'product.new.aging.days', '180'
 )
 ;
 

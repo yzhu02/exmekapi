@@ -43,4 +43,6 @@ public abstract class AbstractProduct extends AbstractModel.Namable {
 	private List<String> techDocPaths;
 
 	private Map<String, List<String>> additionalImagePaths;
+	
+	private Boolean isNew;
 }

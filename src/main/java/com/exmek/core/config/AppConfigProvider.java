@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -54,7 +55,9 @@ public class AppConfigProvider implements Scheduleable {
 	public static final String CONFIG_NAME_RESOURCE_READ_INDIVIDUAL_FOLDER_ENABLED		= "resource.readIndividualFolderEnabled";
 	
 	public static final String CONFIG_NAME_MEASURABLE_CONVERSION_RATIOS					= "measurable.conversionRatios";
-	
+
+	public static final String CONFIG_NAME_NEW_PRODUCT_AGING_DAYS						= "product.new.aging.days";
+
 
 	private static final String DEFAULT_VALUE_SMTP_EXMEKSYS_							= "{\"host\": \"smtp.gmail.com\", \"port\": 587, \"user\": \"exmeksys@gmail.com\", \"password\": \"mzuhdzrzhyeostbe\", \"properties\": {\"mail.transport.protocol\": \"smtp\", \"mail.smtp.auth\": \"true\", \"mail.smtp.starttls.enable\": \"true\"}}";
 	
@@ -62,6 +65,8 @@ public class AppConfigProvider implements Scheduleable {
 	
 	private static final String DEFAULT_VALUE_MEASURABLE_CONVERSION_RATIOS				= "{\"Torque(oz-in):Torque(Ncm)\": \"1:0.7061\"}";
 
+	private static final String DEFAULT_VALUE_NEW_PRODUCT_AGING_DAYS					= "180";
+	
 	@Autowired
 	private ConfigRepository configRepository;
 
@@ -166,5 +171,19 @@ public class AppConfigProvider implements Scheduleable {
 	public Map<String, String> getMeasurableConversionRatios() {
 		String confStr = getConfigValue(CONFIG_NAME_MEASURABLE_CONVERSION_RATIOS, DEFAULT_VALUE_MEASURABLE_CONVERSION_RATIOS);
 		return JsonMapperUtils.readValue(confStr, new TypeReference<Map<String, String>>() {});
+	}
+
+	public Integer getNewProductAgingDays() {
+		String confStr = getConfigValue(CONFIG_NAME_NEW_PRODUCT_AGING_DAYS, DEFAULT_VALUE_NEW_PRODUCT_AGING_DAYS);
+		if (StringUtils.isEmpty(confStr)) {
+			return null;
+		}
+		String daysStr = confStr.endsWith("days") ? confStr.substring(0, confStr.length() - 4) : confStr;
+		try {
+			return Integer.valueOf(daysStr);
+		} catch (Exception ex) {
+			log.error("Failed to parse {} to days. ", daysStr);
+			return null;
+		}
 	}
 }
