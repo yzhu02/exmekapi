@@ -1,6 +1,7 @@
 package com.exmek.core.persistence.repository;
 
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -21,9 +22,31 @@ import com.exmek.core.commons.model.Range;
 import com.exmek.core.model.MotorCategory;
 import com.exmek.core.persistence.JPAUtils;
 import com.exmek.core.persistence.entity.DCMotorEntity;
+import com.exmek.core.persistence.projection.LastUpdatedTimestampPerSeries;
 
-public interface DCMotorRepository extends BaseProductRepository<DCMotorEntity>, JpaRepository<DCMotorEntity, Long>, JpaSpecificationExecutor<DCMotorEntity> {
+public interface DCMotorRepository extends BaseMotorRepository<DCMotorEntity>, JpaRepository<DCMotorEntity, Long>, JpaSpecificationExecutor<DCMotorEntity> {
 
+	@Override
+	@Query(value = """
+			SELECT SERIES, 
+			       MAX(COALESCE(UPDATED_TIMESTAMP, CREATED_TIMESTAMP)) AS lastUpdated
+			FROM DC_MOTOR
+			WHERE CATEGORY = :category
+			GROUP BY SERIES
+			ORDER BY lastUpdated DESC
+			""",
+			nativeQuery = true)
+	List<LastUpdatedTimestampPerSeries> findLastUpdatedPerSeriesByCategory(@Param("category") String category);
+	
+	@Override
+	@Query(value = """
+			SELECT MAX(COALESCE(UPDATED_TIMESTAMP, CREATED_TIMESTAMP)) AS lastUpdated
+			FROM DC_MOTOR
+			WHERE SERIES = :series
+			""",
+			nativeQuery = true)
+	Date findLastUpdatedBySeries(@Param("series") String series);
+	
 	//length	
 	@Query("""
 			SELECT MIN(m.length), MAX(m.length), m.lengthUnit 

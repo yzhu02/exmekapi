@@ -19,4 +19,6 @@ public abstract class AbstractSeries extends AbstractModel {
 	private String description;
 	
 	private Map<String, String> technicalData;
+	
+	private Boolean hasNew;
 }

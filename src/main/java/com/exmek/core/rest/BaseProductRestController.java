@@ -1,6 +1,6 @@
 package com.exmek.core.rest;
 
-import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -12,9 +12,6 @@ import java.util.stream.Collectors;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.util.Pair;
 
 import com.exmek.commons.expr.LogicalOperator;
@@ -24,6 +21,7 @@ import com.exmek.core.exception.ErrorCode;
 import com.exmek.core.exception.ValidationException;
 import com.exmek.core.helper.MetaCriteriaKey;
 import com.exmek.core.mapper.AbstractSeriesMapper;
+import com.exmek.core.mapper.MapperUtils;
 import com.exmek.core.model.AbstractProduct;
 import com.exmek.core.model.AbstractSeries;
 import com.exmek.core.model.MotorCategory;
@@ -36,7 +34,6 @@ import com.exmek.core.scheduler.Scheduleable;
 import com.exmek.core.search.DbProductSearcher;
 import com.exmek.core.search.SearchMetaCriteriaBuilder;
 import com.exmek.core.service.ProductService;
-import com.exmek.core.utils.ContentUtils;
 
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.Predicate;
@@ -176,15 +173,6 @@ implements ProductService<M>, Scheduleable {
 		}
 	}
 
-	protected PageableListDataResponse<M> searchBySeries(ConditionClause conditionClause, String series, Integer pageNumber, Integer pageSize) {
-		List<Pair<String, Object>> additionalFieldMatching = new ArrayList<>();
-		if (!ObjectUtils.isEmpty(series)) {
-			additionalFieldMatching.add(Pair.of(AbstractProductEntity.FIELD_NAME_SERIES, series));
-		}
-		Map<String, Set<Object>> dataAvailableUnitsOfFieldNames = getCachedDataAvailableUnitsOfFieldNames();
-		return searchWith(conditionClause, additionalFieldMatching, pageNumber, pageSize, dataAvailableUnitsOfFieldNames);
-	}
-
 	/**
 	 * <pre>
 	 * Search with given list of criteria that act as AND.
@@ -258,30 +246,17 @@ implements ProductService<M>, Scheduleable {
 		}
 	}
 
-	protected PageableListDataResponse<S> getSerieses(Integer pageNumber, Integer pageSize) {
-		PageableListDataResponse<S> dataResponse = new PageableListDataResponse<>();
-		List<SE> entities = null;
-		if (pageNumber == null || pageSize == null) {
-			entities = getSeriesRepository().findAll();
-		} else {
-			Page<SE> page = getSeriesRepository().findAll(
-					PageRequest.of(pageNumber, pageSize, Sort.by(AbstractSeriesEntity.FIELD_NAME_SERIES)));
-			entities = page.getContent();
-			ContentUtils.populatePageableListDataResponse(dataResponse, page);
-		}
-		if (entities != null) {
-			List<S> serieses = entities.stream()
-					.map(entity -> getSeriesMapper().mapToSeriesModel(entity))
-					.collect(Collectors.toList());
-			dataResponse.setData(serieses);
-		}
-		return dataResponse;
+	protected S mapToSeriesModel(SE entity, Date lastUpdated) {
+		S series = getSeriesMapper().mapToSeriesModel(entity);
+		series.setHasNew(MapperUtils.determineIsNew(lastUpdated, appConfigProvider));
+		return series;
 	}
 
 	protected S getSeries(String series) {
 		Optional<SE> opSeries = getSeriesRepository().findBySeries(series);
 		if (opSeries.isPresent()) {
-			return getSeriesMapper().mapToSeriesModel(opSeries.get());
+			Date lastUpdated = getProductRepository().findLastUpdatedBySeries(series);
+			return mapToSeriesModel(opSeries.get(), lastUpdated);
 		} else {
 			return null;
 		}

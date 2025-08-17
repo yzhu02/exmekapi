@@ -1,6 +1,7 @@
 package com.exmek.core.persistence.repository;
 
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -19,8 +20,29 @@ import com.exmek.core.commons.enums.WeightUnit;
 import com.exmek.core.commons.model.Range;
 import com.exmek.core.persistence.JPAUtils;
 import com.exmek.core.persistence.entity.BrakeEntity;
+import com.exmek.core.persistence.projection.LastUpdatedTimestampPerSeries;
 
-public interface BrakeRepository extends BaseProductRepository<BrakeEntity>, JpaRepository<BrakeEntity, Long>, JpaSpecificationExecutor<BrakeEntity> {
+public interface BrakeRepository extends BaseNonCategoryRepository<BrakeEntity>, JpaRepository<BrakeEntity, Long>, JpaSpecificationExecutor<BrakeEntity> {
+
+	@Override
+	@Query(value = """
+			SELECT SERIES, 
+			       MAX(COALESCE(UPDATED_TIMESTAMP, CREATED_TIMESTAMP)) AS lastUpdated
+			FROM BRAKE
+			GROUP BY SERIES
+			ORDER BY lastUpdated DESC
+			""",
+			nativeQuery = true)
+	List<LastUpdatedTimestampPerSeries> findLastUpdatedPerSeries();
+
+	@Override
+	@Query(value = """
+			SELECT MAX(COALESCE(UPDATED_TIMESTAMP, CREATED_TIMESTAMP)) AS lastUpdated
+			FROM BRAKE
+			WHERE SERIES = :series
+			""",
+			nativeQuery = true)
+	Date findLastUpdatedBySeries(@Param("series") String series);
 
 	//length
 	@Query("""

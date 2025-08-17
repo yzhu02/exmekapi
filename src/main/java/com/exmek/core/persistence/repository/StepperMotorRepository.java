@@ -1,6 +1,7 @@
 package com.exmek.core.persistence.repository;
 
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -20,8 +21,30 @@ import com.exmek.core.commons.enums.WeightUnit;
 import com.exmek.core.commons.model.Range;
 import com.exmek.core.persistence.JPAUtils;
 import com.exmek.core.persistence.entity.StepperMotorEntity;
+import com.exmek.core.persistence.projection.LastUpdatedTimestampPerSeries;
 
-public interface StepperMotorRepository extends BaseProductRepository<StepperMotorEntity>, JpaRepository<StepperMotorEntity, Long>, JpaSpecificationExecutor<StepperMotorEntity> {
+public interface StepperMotorRepository extends BaseMotorRepository<StepperMotorEntity>, JpaRepository<StepperMotorEntity, Long>, JpaSpecificationExecutor<StepperMotorEntity> {
+
+	@Override
+	@Query(value = """
+			SELECT SERIES, 
+			       MAX(COALESCE(UPDATED_TIMESTAMP, CREATED_TIMESTAMP)) AS lastUpdated
+			FROM STEPPER_MOTOR
+			WHERE CATEGORY = :category
+			GROUP BY SERIES
+			ORDER BY lastUpdated DESC
+			""",
+			nativeQuery = true)
+	List<LastUpdatedTimestampPerSeries> findLastUpdatedPerSeriesByCategory(@Param("category") String category);
+
+	@Override
+	@Query(value = """
+			SELECT MAX(COALESCE(UPDATED_TIMESTAMP, CREATED_TIMESTAMP)) AS lastUpdated
+			FROM STEPPER_MOTOR
+			WHERE SERIES = :series
+			""",
+			nativeQuery = true)
+	Date findLastUpdatedBySeries(@Param("series") String series);
 
 	//length	
 	@Query("""

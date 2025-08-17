@@ -1,5 +1,6 @@
 package com.exmek.core.persistence.repository;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,4 +25,6 @@ public interface BaseProductRepository<T extends AbstractProductEntity> {
 	List<T> findByModelContaining(String keyword);
 	
 	List<T> findByDescriptionContaining(String keyword);
+
+	Date findLastUpdatedBySeries(String series);
 }

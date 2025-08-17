@@ -1,6 +1,7 @@
 package com.exmek.core.rest;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -26,7 +27,9 @@ import com.exmek.core.persistence.entity.AbstractMotorCategoryEntity;
 import com.exmek.core.persistence.entity.AbstractMotorEntity;
 import com.exmek.core.persistence.entity.AbstractMotorSeriesEntity;
 import com.exmek.core.persistence.entity.AbstractSeriesEntity;
+import com.exmek.core.persistence.projection.LastUpdatedTimestampPerSeries;
 import com.exmek.core.persistence.repository.BaseMotorCategoryRepository;
+import com.exmek.core.persistence.repository.BaseMotorRepository;
 import com.exmek.core.persistence.repository.BaseMotorSeriesRepository;
 import com.exmek.core.utils.ContentUtils;
 
@@ -50,6 +53,9 @@ extends BaseProductRestController<T, L, M, SE, MotorSeries> {
 	
 	@Override
 	protected abstract BaseMotorSeriesRepository<SE> getSeriesRepository();
+	
+	@Override
+	protected abstract BaseMotorRepository<T> getProductRepository();
 	
 	@SuppressWarnings("unchecked")
 	@Override
@@ -125,11 +131,18 @@ extends BaseProductRestController<T, L, M, SE, MotorSeries> {
 			ContentUtils.populatePageableListDataResponse(dataResponse, page);
 		}
 		if (entities != null) {
+			List<LastUpdatedTimestampPerSeries> lastUpdatedPerSeriesList = 
+					getProductRepository().findLastUpdatedPerSeriesByCategory(category);
+			Map<String, Date> lastUpdatedPerSeriesMap = Optional.ofNullable(lastUpdatedPerSeriesList).stream()
+					.flatMap(List::stream)
+					.filter(lu -> lu.getLastUpdated() != null)
+					.collect(Collectors.toMap(LastUpdatedTimestampPerSeries::getSeries, LastUpdatedTimestampPerSeries::getLastUpdated));
 			List<MotorSeries> serieses = entities.stream()
-					.map(entity -> motorSeriesMapper.mapToSeriesModel(entity))
+					.map(entity -> mapToSeriesModel(entity, lastUpdatedPerSeriesMap.get(entity.getSeries())))
 					.collect(Collectors.toList());
 			dataResponse.setData(serieses);
 		}
 		return dataResponse;
 	}
+
 }
