@@ -49,7 +49,7 @@ VALUES
 	'search.brake.metaCriteria.fields', '["frameSize", "length", "ratedVoltage", "resistance", "current", "staticTorque", "ratedPower", "startVoltage", "weight", "model"]'
 ),
 (
-	'meta.fieldDisplayNameMappings', '{"model": "Article", "ratedRotatingSpeed": "Rated Speed", "noloadRotatingSpeed": "No load Speed"}'
+	'meta.fieldDisplayNameMappings', '{"model": "Article", "ratedRotatingSpeed": "Rated Speed", "noloadCurrent": "No load Current", "noloadRotatingSpeed": "No load Speed"}'
 ),
 (
 	'search.defaultPageSize', '20'
