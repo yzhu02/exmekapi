@@ -3,6 +3,7 @@ package com.exmek.core.persistence.repository;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Sort;
 import org.springframework.data.repository.NoRepositoryBean;
 import org.springframework.data.repository.PagingAndSortingRepository;
 
@@ -13,5 +14,6 @@ public interface BaseSeriesRepository<T extends AbstractSeriesEntity> extends Pa
 	
 	Optional<T> findBySeries(String series);
 	
-	List<T> findAll();
+	@Override
+	List<T> findAll(Sort sort);
 }

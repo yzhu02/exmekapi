@@ -41,7 +41,7 @@ extends BaseProductRestController<T, L, M, SE, S> {
 		PageableListDataResponse<S> dataResponse = new PageableListDataResponse<>();
 		List<SE> entities = null;
 		if (pageNumber == null || pageSize == null) {
-			entities = getSeriesRepository().findAll();
+			entities = getSeriesRepository().findAll(Sort.by(AbstractSeriesEntity.FIELD_NAME_SERIES));
 		} else {
 			Page<SE> page = getSeriesRepository().findAll(
 					PageRequest.of(pageNumber, pageSize, Sort.by(AbstractSeriesEntity.FIELD_NAME_SERIES)));

@@ -123,7 +123,7 @@ extends BaseProductRestController<T, L, M, SE, MotorSeries> {
 		PageableListDataResponse<MotorSeries> dataResponse = new PageableListDataResponse<>();
 		List<SE> entities = null;
 		if (pageNumber == null || pageSize == null) {
-			entities = getSeriesRepository().findAllByCategory(category);
+			entities = getSeriesRepository().findAllByCategory(category, Sort.by(AbstractSeriesEntity.FIELD_NAME_SERIES));
 		} else {
 			Page<SE> page = getSeriesRepository().findAllByCategory(category,
 					PageRequest.of(pageNumber, pageSize, Sort.by(AbstractSeriesEntity.FIELD_NAME_SERIES)));
