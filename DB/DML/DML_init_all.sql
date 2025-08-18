@@ -40,7 +40,7 @@ VALUES
 	'search.dcMotor.metaCriteria.fields', '["frameSize", "length", "ratedVoltage", "ratedCurrent", "ratedPower", "ratedTorque", "ratedRotatingSpeed", "ratedLinearSpeed", "peakCurrent", "peakTorque", "maxSortingWeight", "noloadCurrent", "noloadRotatingSpeed", "weight", "model"]'
 ),
 (
-	'search.stepperMotor.metaCriteria.fields', '["frameSize", "length", "ratedVoltage", "phaseCurrent", "phaseResistance", "holdingTorque", "detentTorque", "maxThrust", "stepAngle", "weight", "model"]'
+	'search.stepperMotor.metaCriteria.fields', '["frameSize", "length", "maxThrust", "ratedVoltage", "phaseCurrent", "phaseResistance", "holdingTorque", "detentTorque", "stepAngle", "weight", "model"]'
 ),
 (
 	'search.planetaryGearbox.metaCriteria.fields', '["frameSize", "length", "numOfStages", "efficiency", "ratedContinuousTorque", "maxMomentaryTorque", "maxRadialLoad", "maxAxialLoad", "maxShaftPress", "weight", "model"]'
