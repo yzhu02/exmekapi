@@ -21,9 +21,21 @@ import com.exmek.core.commons.enums.WeightUnit;
 import com.exmek.core.commons.model.Range;
 import com.exmek.core.persistence.JPAUtils;
 import com.exmek.core.persistence.entity.StepperMotorEntity;
+import com.exmek.core.persistence.projection.LastUpdatedTimestampPerCategory;
 import com.exmek.core.persistence.projection.LastUpdatedTimestampPerSeries;
 
 public interface StepperMotorRepository extends BaseMotorRepository<StepperMotorEntity>, JpaRepository<StepperMotorEntity, Long>, JpaSpecificationExecutor<StepperMotorEntity> {
+
+	@Override
+	@Query(value = """
+			SELECT CATEGORY, 
+			       MAX(COALESCE(UPDATED_TIMESTAMP, CREATED_TIMESTAMP)) AS lastUpdated
+			FROM STEPPER_MOTOR
+			GROUP BY CATEGORY
+			ORDER BY lastUpdated DESC
+			""",
+			nativeQuery = true)
+	List<LastUpdatedTimestampPerCategory> findLastUpdatedPerCategory();
 
 	@Override
 	@Query(value = """

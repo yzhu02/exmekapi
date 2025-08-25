@@ -17,6 +17,7 @@ import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.exmek.commons.expr.LogicalOperator;
+import com.exmek.core.mapper.MapperUtils;
 import com.exmek.core.mapper.MotorCategoryMapper;
 import com.exmek.core.mapper.MotorSeriesMapper;
 import com.exmek.core.model.AbstractMotor;
@@ -27,6 +28,7 @@ import com.exmek.core.persistence.entity.AbstractMotorCategoryEntity;
 import com.exmek.core.persistence.entity.AbstractMotorEntity;
 import com.exmek.core.persistence.entity.AbstractMotorSeriesEntity;
 import com.exmek.core.persistence.entity.AbstractSeriesEntity;
+import com.exmek.core.persistence.projection.LastUpdatedTimestampPerCategory;
 import com.exmek.core.persistence.projection.LastUpdatedTimestampPerSeries;
 import com.exmek.core.persistence.repository.BaseMotorCategoryRepository;
 import com.exmek.core.persistence.repository.BaseMotorRepository;
@@ -74,11 +76,23 @@ extends BaseProductRestController<T, L, M, SE, MotorSeries> {
 		if (entities == null) {
 			return new ArrayList<>();
 		}
+		List<LastUpdatedTimestampPerCategory> lastUpdatedPerCategoryList = 
+				getProductRepository().findLastUpdatedPerCategory();
+		Map<String, Date> lastUpdatedPerCategoryMap = Optional.ofNullable(lastUpdatedPerCategoryList).stream()
+				.flatMap(List::stream)
+				.filter(lu -> lu.getLastUpdated() != null)
+				.collect(Collectors.toMap(LastUpdatedTimestampPerCategory::getCategory, LastUpdatedTimestampPerCategory::getLastUpdated));
 		return entities.stream()
-				.map(entity -> motorCategoryMapper.mapToCategoryModel(entity))
+				.map(entity -> mapToCategoryModel(entity, lastUpdatedPerCategoryMap.get(entity.getCategory())))
 				.collect(Collectors.toList());
 	}
-	
+
+	protected MotorCategory mapToCategoryModel(AbstractMotorCategoryEntity entity, Date lastUpdated) {
+		MotorCategory mc = motorCategoryMapper.mapToCategoryModel(entity);
+		mc.setHasNew(MapperUtils.determineIsNew(lastUpdated, appConfigProvider));
+		return mc;
+	}
+
 	protected MotorCategory getMotorCategory(String category) {
 		Optional<CE> opCategory = getMotorCategoryRepository().findByCategory(category);
 		if (opCategory.isPresent()) {

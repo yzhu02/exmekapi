@@ -25,4 +25,6 @@ public class MotorCategory extends AbstractModel {
 	private String description;
 	
 	private Map<String, String> technicalData;
+	
+	private Boolean hasNew;
 }

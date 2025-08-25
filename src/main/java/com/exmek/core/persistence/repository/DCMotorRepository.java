@@ -22,9 +22,21 @@ import com.exmek.core.commons.model.Range;
 import com.exmek.core.model.MotorCategory;
 import com.exmek.core.persistence.JPAUtils;
 import com.exmek.core.persistence.entity.DCMotorEntity;
+import com.exmek.core.persistence.projection.LastUpdatedTimestampPerCategory;
 import com.exmek.core.persistence.projection.LastUpdatedTimestampPerSeries;
 
 public interface DCMotorRepository extends BaseMotorRepository<DCMotorEntity>, JpaRepository<DCMotorEntity, Long>, JpaSpecificationExecutor<DCMotorEntity> {
+
+	@Override
+	@Query(value = """
+			SELECT CATEGORY, 
+			       MAX(COALESCE(UPDATED_TIMESTAMP, CREATED_TIMESTAMP)) AS lastUpdated
+			FROM DC_MOTOR
+			GROUP BY CATEGORY
+			ORDER BY lastUpdated DESC
+			""",
+			nativeQuery = true)
+	List<LastUpdatedTimestampPerCategory> findLastUpdatedPerCategory();
 
 	@Override
 	@Query(value = """
