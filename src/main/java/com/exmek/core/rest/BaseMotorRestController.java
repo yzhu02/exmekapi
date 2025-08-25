@@ -87,7 +87,35 @@ extends BaseProductRestController<T, L, M, SE, MotorSeries> {
 			return null;
 		}
 	}
-	
+
+	protected PageableListDataResponse<MotorSeries> getMotorSeriesesByCategory(String category,
+			Integer pageNumber, Integer pageSize) {
+
+		PageableListDataResponse<MotorSeries> dataResponse = new PageableListDataResponse<>();
+		List<SE> entities = null;
+		if (pageNumber == null || pageSize == null) {
+			entities = getSeriesRepository().findAllByCategory(category, Sort.by(AbstractSeriesEntity.FIELD_NAME_SERIES));
+		} else {
+			Page<SE> page = getSeriesRepository().findAllByCategory(category,
+					PageRequest.of(pageNumber, pageSize, Sort.by(AbstractSeriesEntity.FIELD_NAME_SERIES)));
+			entities = page.getContent();
+			ContentUtils.populatePageableListDataResponse(dataResponse, page);
+		}
+		if (entities != null) {
+			List<LastUpdatedTimestampPerSeries> lastUpdatedPerSeriesList = 
+					getProductRepository().findLastUpdatedPerSeriesByCategory(category);
+			Map<String, Date> lastUpdatedPerSeriesMap = Optional.ofNullable(lastUpdatedPerSeriesList).stream()
+					.flatMap(List::stream)
+					.filter(lu -> lu.getLastUpdated() != null)
+					.collect(Collectors.toMap(LastUpdatedTimestampPerSeries::getSeries, LastUpdatedTimestampPerSeries::getLastUpdated));
+			List<MotorSeries> serieses = entities.stream()
+					.map(entity -> mapToSeriesModel(entity, lastUpdatedPerSeriesMap.get(entity.getSeries())))
+					.collect(Collectors.toList());
+			dataResponse.setData(serieses);
+		}
+		return dataResponse;
+	}
+
 	protected PageableListDataResponse<M> searchMotorsByCategoryType(ConditionClause conditionClause,
 			String type, Integer pageNumber, Integer pageSize) {
 		
@@ -115,34 +143,6 @@ extends BaseProductRestController<T, L, M, SE, MotorSeries> {
 		}
 		Map<String, Set<Object>> dataAvailableUnitsOfFieldNames = getCachedDataAvailableUnitsOfFieldNames();
 		return super.searchWith(conditionClause, additionalFieldMatching, pageNumber, pageSize, dataAvailableUnitsOfFieldNames);
-	}
-
-	protected PageableListDataResponse<MotorSeries> searchMotorSeriesesByCategory(String category,
-			Integer pageNumber, Integer pageSize) {
-
-		PageableListDataResponse<MotorSeries> dataResponse = new PageableListDataResponse<>();
-		List<SE> entities = null;
-		if (pageNumber == null || pageSize == null) {
-			entities = getSeriesRepository().findAllByCategory(category, Sort.by(AbstractSeriesEntity.FIELD_NAME_SERIES));
-		} else {
-			Page<SE> page = getSeriesRepository().findAllByCategory(category,
-					PageRequest.of(pageNumber, pageSize, Sort.by(AbstractSeriesEntity.FIELD_NAME_SERIES)));
-			entities = page.getContent();
-			ContentUtils.populatePageableListDataResponse(dataResponse, page);
-		}
-		if (entities != null) {
-			List<LastUpdatedTimestampPerSeries> lastUpdatedPerSeriesList = 
-					getProductRepository().findLastUpdatedPerSeriesByCategory(category);
-			Map<String, Date> lastUpdatedPerSeriesMap = Optional.ofNullable(lastUpdatedPerSeriesList).stream()
-					.flatMap(List::stream)
-					.filter(lu -> lu.getLastUpdated() != null)
-					.collect(Collectors.toMap(LastUpdatedTimestampPerSeries::getSeries, LastUpdatedTimestampPerSeries::getLastUpdated));
-			List<MotorSeries> serieses = entities.stream()
-					.map(entity -> mapToSeriesModel(entity, lastUpdatedPerSeriesMap.get(entity.getSeries())))
-					.collect(Collectors.toList());
-			dataResponse.setData(serieses);
-		}
-		return dataResponse;
 	}
 
 }

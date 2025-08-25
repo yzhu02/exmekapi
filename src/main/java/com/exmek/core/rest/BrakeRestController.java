@@ -33,7 +33,8 @@ import jakarta.validation.constraints.NotNull;
 
 @RestController
 @RequestMapping(EndpointConsts.ENDPOINT_API_BRAKES)
-public class BrakeRestController extends BaseNonCategoryRestController<BrakeEntity, BrakeEntity.Light, Brake, BrakeSeriesEntity, BrakeSeries> implements ProductService<Brake> {
+public class BrakeRestController extends BaseNonCategoryRestController<BrakeEntity, BrakeEntity.Light, Brake, BrakeSeriesEntity, BrakeSeries> 
+implements ProductService<Brake> {
 
 	@Autowired
 	private BrakeSeriesRepository brakeSeriesRepository;

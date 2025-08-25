@@ -35,7 +35,8 @@ import jakarta.validation.constraints.NotNull;
 @RestController
 @RequestMapping(EndpointConsts.ENDPOINT_API_MOTORS)
 public class DCMotorRestController 
-extends BaseMotorRestController<DCMotorEntity, DCMotorEntity.Light, DCMotor, DCMotorSeriesEntity, DCMotorCategoryEntity> implements ProductService<DCMotor> {
+extends BaseMotorRestController<DCMotorEntity, DCMotorEntity.Light, DCMotor, DCMotorSeriesEntity, DCMotorCategoryEntity> 
+implements ProductService<DCMotor> {
 	
 	public static final String QRY_PARAM_VALUE_TYPE_BLDC	= "BLDC";
 	public static final String QRY_PARAM_VALUE_TYPE_BRUSH	= "Brush";
@@ -101,18 +102,20 @@ extends BaseMotorRestController<DCMotorEntity, DCMotorEntity.Light, DCMotor, DCM
 		return super.getMotorCategories(type);
 	}
 
+	@Override
 	@GetMapping("/DC/categories/{" + PARAM_NAME_CATEGORY + "}")
 	public MotorCategory getMotorCategory(@PathVariable(PARAM_NAME_CATEGORY) String category) {
 		return super.getMotorCategory(category);
 	}
 	
+	@Override
 	@GetMapping("/DC/{" + PARAM_NAME_CATEGORY + "}/serieses")
 	public PageableListDataResponse<MotorSeries> getMotorSeriesesByCategory(
 			@PathVariable(PARAM_NAME_CATEGORY) String category,
 			@RequestParam(value = QRY_PARAM_NAME_PAGE_NUMBER, required = false) Integer pageNumber,
 			@RequestParam(value = QRY_PARAM_NAME_PAGE_SIZE, required = false) Integer pageSize) {
 
-		return super.searchMotorSeriesesByCategory(category, pageNumber, pageSize);
+		return super.getMotorSeriesesByCategory(category, pageNumber, pageSize);
 	}
 	
 	@Override

@@ -28,15 +28,6 @@ extends BaseProductRestController<T, L, M, SE, S> {
 	@Override
 	protected abstract BaseNonCategoryRepository<T> getProductRepository();
 
-	protected PageableListDataResponse<M> searchBySeries(ConditionClause conditionClause, String series, Integer pageNumber, Integer pageSize) {
-		List<Pair<String, Object>> additionalFieldMatching = new ArrayList<>();
-		if (!ObjectUtils.isEmpty(series)) {
-			additionalFieldMatching.add(Pair.of(AbstractProductEntity.FIELD_NAME_SERIES, series));
-		}
-		Map<String, Set<Object>> dataAvailableUnitsOfFieldNames = getCachedDataAvailableUnitsOfFieldNames();
-		return searchWith(conditionClause, additionalFieldMatching, pageNumber, pageSize, dataAvailableUnitsOfFieldNames);
-	}
-
 	protected PageableListDataResponse<S> getSerieses(Integer pageNumber, Integer pageSize) {
 		PageableListDataResponse<S> dataResponse = new PageableListDataResponse<>();
 		List<SE> entities = null;
@@ -60,6 +51,15 @@ extends BaseProductRestController<T, L, M, SE, S> {
 			dataResponse.setData(serieses);
 		}
 		return dataResponse;
+	}
+
+	protected PageableListDataResponse<M> searchBySeries(ConditionClause conditionClause, String series, Integer pageNumber, Integer pageSize) {
+		List<Pair<String, Object>> additionalFieldMatching = new ArrayList<>();
+		if (!ObjectUtils.isEmpty(series)) {
+			additionalFieldMatching.add(Pair.of(AbstractProductEntity.FIELD_NAME_SERIES, series));
+		}
+		Map<String, Set<Object>> dataAvailableUnitsOfFieldNames = getCachedDataAvailableUnitsOfFieldNames();
+		return searchWith(conditionClause, additionalFieldMatching, pageNumber, pageSize, dataAvailableUnitsOfFieldNames);
 	}
 
 }

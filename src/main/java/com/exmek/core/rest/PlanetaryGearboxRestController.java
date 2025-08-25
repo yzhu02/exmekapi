@@ -33,7 +33,8 @@ import jakarta.validation.constraints.NotNull;
 @RestController
 @RequestMapping(EndpointConsts.ENDPOINT_API_GEARBOXES)
 public class PlanetaryGearboxRestController 
-extends BaseNonCategoryRestController<PlanetaryGearboxEntity, PlanetaryGearboxEntity.Light, PlanetaryGearbox, GearboxSeriesEntity, GearboxSeries> implements ProductService<PlanetaryGearbox> {
+extends BaseNonCategoryRestController<PlanetaryGearboxEntity, PlanetaryGearboxEntity.Light, PlanetaryGearbox, GearboxSeriesEntity, GearboxSeries> 
+implements ProductService<PlanetaryGearbox> {
 
 	@Autowired
 	private GearboxSeriesRepository gearboxSeriesRepository;

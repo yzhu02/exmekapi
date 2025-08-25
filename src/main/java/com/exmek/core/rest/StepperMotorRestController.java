@@ -35,7 +35,8 @@ import jakarta.validation.constraints.NotNull;
 @RestController
 @RequestMapping(EndpointConsts.ENDPOINT_API_MOTORS)
 public class StepperMotorRestController 
-extends BaseMotorRestController<StepperMotorEntity, StepperMotorEntity.Light, StepperMotor, StepperMotorSeriesEntity, StepperMotorCategoryEntity> implements ProductService<StepperMotor> {
+extends BaseMotorRestController<StepperMotorEntity, StepperMotorEntity.Light, StepperMotor, StepperMotorSeriesEntity, StepperMotorCategoryEntity> 
+implements ProductService<StepperMotor> {
 
 	@Autowired
 	protected StepperMotorCategoryRepository motorCategoryRepository;
@@ -103,13 +104,14 @@ extends BaseMotorRestController<StepperMotorEntity, StepperMotorEntity.Light, St
 		return super.getMotorCategory(category);
 	}
 
+	@Override
 	@GetMapping("/stepper/{" + PARAM_NAME_CATEGORY + "}/serieses")
 	public PageableListDataResponse<MotorSeries> getMotorSeriesesByCategory(
 			@PathVariable(PARAM_NAME_CATEGORY) String category,
 			@RequestParam(value = QRY_PARAM_NAME_PAGE_NUMBER, required = false) Integer pageNumber,
 			@RequestParam(value = QRY_PARAM_NAME_PAGE_SIZE, required = false) Integer pageSize) {
 
-		return super.searchMotorSeriesesByCategory(category, pageNumber, pageSize);
+		return super.getMotorSeriesesByCategory(category, pageNumber, pageSize);
 	}
 
 	@Override
