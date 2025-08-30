@@ -105,9 +105,9 @@ public class ClasspathResourceManager extends AbstractResourceManager {
 	private Map<String, List<String>> gearboxMechanicalImagePathsMap = new HashMap<>();
 	private Map<String, List<String>> brakeMechanicalImagePathsMap = new HashMap<>();
 	
-	private Map<String, List<String>> motor3DDrawingPathsMap = new HashMap<>();
-	private Map<String, List<String>> gearbox3DDrawingPathsMap = new HashMap<>();
-	private Map<String, List<String>> brake3DDrawingPathsMap = new HashMap<>();
+	private Map<String, List<String>> motor3DModelPathsMap = new HashMap<>();
+	private Map<String, List<String>> gearbox3DModelPathsMap = new HashMap<>();
+	private Map<String, List<String>> brake3DModelPathsMap = new HashMap<>();
 	
 	private Map<String, List<String>> motorTechDocPathsMap = new HashMap<>();
 	private Map<String, List<String>> gearboxTechDocPathsMap = new HashMap<>();
@@ -131,13 +131,13 @@ public class ClasspathResourceManager extends AbstractResourceManager {
 				UrlUtils.concatURL(MATERIALS_BRAKE_MECHANICAL_FULL_LOCATION, resFileMatch),
 				MATERIALS_BRAKE_MECHANICAL_REL_PATH);
 		
-		this.motor3DDrawingPathsMap = initResourcePathMap(
+		this.motor3DModelPathsMap = initResourcePathMap(
 				UrlUtils.concatURL(MATERIALS_MOTOR_3D_FULL_LOCATION, resFileMatch),
 				MATERIALS_MOTOR_3D_REL_PATH);
-		this.gearbox3DDrawingPathsMap = initResourcePathMap(
+		this.gearbox3DModelPathsMap = initResourcePathMap(
 				UrlUtils.concatURL(MATERIALS_GEARBOX_3D_FULL_LOCATION, resFileMatch),
 				MATERIALS_GEARBOX_3D_REL_PATH);
-		this.brake3DDrawingPathsMap = initResourcePathMap(
+		this.brake3DModelPathsMap = initResourcePathMap(
 				UrlUtils.concatURL(MATERIALS_BRAKE_3D_FULL_LOCATION, resFileMatch),
 				MATERIALS_BRAKE_3D_REL_PATH);
 		
@@ -381,18 +381,18 @@ public class ClasspathResourceManager extends AbstractResourceManager {
 	}
 	
 	@Override
-	public List<String> getMotor3DDrawingPaths(String model, String series) {
-		return getResourcePaths(model, DIR_NAME_MATERIALS, DIR_NAME_MOTOR, DIR_NAME_3D, this.motor3DDrawingPathsMap, series);
+	public List<String> getMotor3DModelPaths(String model, String series) {
+		return getResourcePaths(model, DIR_NAME_MATERIALS, DIR_NAME_MOTOR, DIR_NAME_3D, this.motor3DModelPathsMap, series);
 	}
 
 	@Override
-	public List<String> getGearbox3DDrawingPaths(String model, String series) {
-		return getResourcePaths(model, DIR_NAME_MATERIALS, DIR_NAME_GEARBOX, DIR_NAME_3D, this.gearbox3DDrawingPathsMap, series);
+	public List<String> getGearbox3DModelPaths(String model, String series) {
+		return getResourcePaths(model, DIR_NAME_MATERIALS, DIR_NAME_GEARBOX, DIR_NAME_3D, this.gearbox3DModelPathsMap, series);
 	}
 	
 	@Override
-	public List<String> getBrake3DDrawingPaths(String model, String series) {
-		return getResourcePaths(model, DIR_NAME_MATERIALS, DIR_NAME_BRAKE, DIR_NAME_3D, this.brake3DDrawingPathsMap, series);
+	public List<String> getBrake3DModelPaths(String model, String series) {
+		return getResourcePaths(model, DIR_NAME_MATERIALS, DIR_NAME_BRAKE, DIR_NAME_3D, this.brake3DModelPathsMap, series);
 	}
 
 	@Override

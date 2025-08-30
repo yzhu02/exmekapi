@@ -15,6 +15,7 @@ public interface ResourceManager {
 
 	String DIR_NAME_MICHANICAL					= "mechanical";
 	String DIR_NAME_3D							= "3d";
+	String DIR_NAME_3D_VIEW						= "3d-view";
 	String DIR_NAME_TECHDOC						= "techdoc";
 	String DIR_NAME_ADDITIONAL_IMAGES			= "additional-images";
 
@@ -25,11 +26,11 @@ public interface ResourceManager {
 	List<String> getBrakeMechanicalImagePaths(String model, String series);
 	
 
-	List<String> getMotor3DDrawingPaths(String model, String series);
+	List<String> getMotor3DModelPaths(String model, String series);
 	
-	List<String> getGearbox3DDrawingPaths(String model, String series);
+	List<String> getGearbox3DModelPaths(String model, String series);
 	
-	List<String> getBrake3DDrawingPaths(String model, String series);
+	List<String> getBrake3DModelPaths(String model, String series);
 
 
 	List<String> getMotorTechDocPaths(String model, String series);

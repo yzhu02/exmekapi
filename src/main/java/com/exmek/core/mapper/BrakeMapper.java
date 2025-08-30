@@ -41,7 +41,7 @@ public class BrakeMapper extends AbstractProductMapper {
 			model.setAllSpecs(mapAllCombinedSpecs(entity, appConfigProvider.getSearchPlanetaryGearboxMetaCriteriaFields(), EXCLUDED_FIELDS_TO_SPECS));
 			
 			model.setMechanicalImagePaths(resourceManager.getBrakeMechanicalImagePaths(entity.getModel(), entity.getSeries()));
-			model.setThreeDDrawingPaths(resourceManager.getBrake3DDrawingPaths(entity.getModel(), entity.getSeries()));
+			model.setThreeDModelPaths(resourceManager.getBrake3DModelPaths(entity.getModel(), entity.getSeries()));
 			model.setTechDocPaths(resourceManager.getBrakeTechDocPaths(entity.getModel(), entity.getSeries()));
 			model.setAdditionalImagePaths(resourceManager.getBrakeAdditionalImagePaths(entity.getModel(), entity.getSeries()));
 		}

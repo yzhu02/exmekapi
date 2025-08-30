@@ -47,7 +47,7 @@ public class PlanetaryGearboxMapper extends AbstractProductMapper {
 			model.setAllSpecs(mapAllCombinedSpecs(entity, appConfigProvider.getSearchPlanetaryGearboxMetaCriteriaFields(), EXCLUDED_FIELDS_TO_SPECS));
 			
 			model.setMechanicalImagePaths(resourceManager.getGearboxMechanicalImagePaths(entity.getModel(), entity.getSeries()));
-			model.setThreeDDrawingPaths(resourceManager.getGearbox3DDrawingPaths(entity.getModel(), entity.getSeries()));
+			model.setThreeDModelPaths(resourceManager.getGearbox3DModelPaths(entity.getModel(), entity.getSeries()));
 			model.setTechDocPaths(resourceManager.getGearboxTechDocPaths(entity.getModel(), entity.getSeries()));
 			model.setAdditionalImagePaths(resourceManager.getGearboxAdditionalImagePaths(entity.getModel(), entity.getSeries()));
 		}

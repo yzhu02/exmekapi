@@ -38,21 +38,21 @@ public class CompositeResourceManager implements ResourceManager {
 	}
 
 	@Override
-	public List<String> getMotor3DDrawingPaths(String model, String series) {
-		return getOneByOrder(() -> userResourceManager.getMotor3DDrawingPaths(model, series), 
-				() -> classpathResourceManager.getMotor3DDrawingPaths(model, series));
+	public List<String> getMotor3DModelPaths(String model, String series) {
+		return getOneByOrder(() -> userResourceManager.getMotor3DModelPaths(model, series), 
+				() -> classpathResourceManager.getMotor3DModelPaths(model, series));
 	}
 
 	@Override
-	public List<String> getGearbox3DDrawingPaths(String model, String series) {
-		return getOneByOrder(() -> userResourceManager.getGearbox3DDrawingPaths(model, series), 
-				() -> classpathResourceManager.getGearbox3DDrawingPaths(model, series));
+	public List<String> getGearbox3DModelPaths(String model, String series) {
+		return getOneByOrder(() -> userResourceManager.getGearbox3DModelPaths(model, series), 
+				() -> classpathResourceManager.getGearbox3DModelPaths(model, series));
 	}
 
 	@Override
-	public List<String> getBrake3DDrawingPaths(String model, String series) {
-		return getOneByOrder(() -> userResourceManager.getBrake3DDrawingPaths(model, series), 
-				() -> classpathResourceManager.getBrake3DDrawingPaths(model, series));
+	public List<String> getBrake3DModelPaths(String model, String series) {
+		return getOneByOrder(() -> userResourceManager.getBrake3DModelPaths(model, series), 
+				() -> classpathResourceManager.getBrake3DModelPaths(model, series));
 	}
 
 	@Override

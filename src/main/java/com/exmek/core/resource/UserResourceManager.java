@@ -399,17 +399,17 @@ public class UserResourceManager extends AbstractResourceManager {
 	}
 	
 	@Override
-	public List<String> getMotor3DDrawingPaths(String model, String series) {
+	public List<String> getMotor3DModelPaths(String model, String series) {
 		return getResourcePaths(model, DIR_NAME_MATERIALS, DIR_NAME_MOTOR, DIR_NAME_3D, series);
 	}
 
 	@Override
-	public List<String> getGearbox3DDrawingPaths(String model, String series) {
+	public List<String> getGearbox3DModelPaths(String model, String series) {
 		return getResourcePaths(model, DIR_NAME_MATERIALS, DIR_NAME_GEARBOX, DIR_NAME_3D, series);
 	}
 	
 	@Override
-	public List<String> getBrake3DDrawingPaths(String model, String series) {
+	public List<String> getBrake3DModelPaths(String model, String series) {
 		return getResourcePaths(model, DIR_NAME_MATERIALS, DIR_NAME_BRAKE, DIR_NAME_3D, series);
 	}
 
