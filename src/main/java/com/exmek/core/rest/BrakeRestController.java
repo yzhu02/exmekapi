@@ -23,17 +23,18 @@ import com.exmek.core.model.Brake;
 import com.exmek.core.model.BrakeSeries;
 import com.exmek.core.persistence.entity.BrakeEntity;
 import com.exmek.core.persistence.entity.BrakeSeriesEntity;
+import com.exmek.core.persistence.entity.LightweightBrakeEntity;
 import com.exmek.core.persistence.repository.BaseSeriesRepository;
 import com.exmek.core.persistence.repository.BrakeRepository;
 import com.exmek.core.persistence.repository.BrakeSeriesRepository;
-import com.exmek.core.persistence.repository.LightBrakeRepository;
+import com.exmek.core.persistence.repository.LightweightBrakeRepository;
 import com.exmek.core.service.ProductService;
 
 import jakarta.validation.constraints.NotNull;
 
 @RestController
 @RequestMapping(EndpointConsts.ENDPOINT_API_BRAKES)
-public class BrakeRestController extends BaseNonCategoryRestController<BrakeEntity, BrakeEntity.Light, Brake, BrakeSeriesEntity, BrakeSeries> 
+public class BrakeRestController extends BaseNonCategoryRestController<BrakeEntity, LightweightBrakeEntity, Brake, BrakeSeriesEntity, BrakeSeries> 
 implements ProductService<Brake> {
 
 	@Autowired
@@ -43,7 +44,7 @@ implements ProductService<Brake> {
 	private BrakeRepository brakeRepository;
 
 	@Autowired
-	private LightBrakeRepository lightBrakeRepository;
+	private LightweightBrakeRepository lightweightBrakeRepository;
 	
 	@Autowired
 	private BrakeMapper brakeMapper;
@@ -67,8 +68,8 @@ implements ProductService<Brake> {
 	}
 
 	@Override
-	protected LightBrakeRepository getLightProductRepository() {
-		return lightBrakeRepository;
+	protected LightweightBrakeRepository getLightweightProductRepository() {
+		return lightweightBrakeRepository;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -83,8 +84,8 @@ implements ProductService<Brake> {
 	}
 
 	@Override
-	protected Brake mapLightEntityToModel(BrakeEntity.Light entity) {
-		return brakeMapper.mapBrakeToModel(entity);
+	protected Brake mapLightweightEntityToModel(LightweightBrakeEntity entity) {
+		return brakeMapper.mapLightweightBrakeToModel(entity);
 	}
 	
 	@Override

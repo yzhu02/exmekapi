@@ -24,10 +24,11 @@ import com.exmek.core.model.MotorSeries;
 import com.exmek.core.persistence.entity.DCMotorCategoryEntity;
 import com.exmek.core.persistence.entity.DCMotorEntity;
 import com.exmek.core.persistence.entity.DCMotorSeriesEntity;
+import com.exmek.core.persistence.entity.LightweightDCMotorEntity;
 import com.exmek.core.persistence.repository.DCMotorCategoryRepository;
 import com.exmek.core.persistence.repository.DCMotorRepository;
 import com.exmek.core.persistence.repository.DCMotorSeriesRepository;
-import com.exmek.core.persistence.repository.LightDCMotorRepository;
+import com.exmek.core.persistence.repository.LightweightDCMotorRepository;
 import com.exmek.core.service.ProductService;
 
 import jakarta.validation.constraints.NotNull;
@@ -35,7 +36,7 @@ import jakarta.validation.constraints.NotNull;
 @RestController
 @RequestMapping(EndpointConsts.ENDPOINT_API_MOTORS)
 public class DCMotorRestController 
-extends BaseMotorRestController<DCMotorEntity, DCMotorEntity.Light, DCMotor, DCMotorSeriesEntity, DCMotorCategoryEntity> 
+extends BaseMotorRestController<DCMotorEntity, LightweightDCMotorEntity, DCMotor, DCMotorSeriesEntity, DCMotorCategoryEntity> 
 implements ProductService<DCMotor> {
 	
 	public static final String QRY_PARAM_VALUE_TYPE_BLDC	= "BLDC";
@@ -51,7 +52,7 @@ implements ProductService<DCMotor> {
 	private DCMotorRepository motorRepository;
 	
 	@Autowired
-	private LightDCMotorRepository lightMotorRepository;
+	private LightweightDCMotorRepository lightweightMotorRepository;
 	
 	@Autowired
 	private MotorMapper motorMapper;
@@ -77,8 +78,8 @@ implements ProductService<DCMotor> {
 	}
 
 	@Override
-	protected LightDCMotorRepository getLightProductRepository() {
-		return lightMotorRepository;
+	protected LightweightDCMotorRepository getLightweightProductRepository() {
+		return lightweightMotorRepository;
 	}
 	
 	@Override
@@ -87,8 +88,8 @@ implements ProductService<DCMotor> {
 	}
 
 	@Override
-	protected DCMotor mapLightEntityToModel(DCMotorEntity.Light entity) {
-		return motorMapper.mapDCMotorToModel(entity);
+	protected DCMotor mapLightweightEntityToModel(LightweightDCMotorEntity entity) {
+		return motorMapper.mapLightweightDCMotorToModel(entity);
 	}
 	
 	@Override

@@ -19,7 +19,7 @@ import jakarta.persistence.MappedSuperclass;
 
 @MappedSuperclass
 public abstract class AbstractDCMotorEntity extends AbstractMotorEntity {
-	
+
 	@Searchable
 	@Column(name = "RATED_CURRENT")
 	private BigDecimal ratedCurrent;
@@ -258,4 +258,5 @@ public abstract class AbstractDCMotorEntity extends AbstractMotorEntity {
 	public void setNoloadRotatingSpeedUnit(RotatingSpeedUnit noloadRotatingSpeedUnit) {
 		this.noloadRotatingSpeedUnit = noloadRotatingSpeedUnit;
 	}
+
 }

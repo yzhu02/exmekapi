@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ObjectUtils;
 
+import com.exmek.core.model.AbstractMotor;
 import com.exmek.core.model.DCMotor;
 import com.exmek.core.model.LeadDef;
 import com.exmek.core.model.LinearStepperMotor;
@@ -27,6 +28,8 @@ import com.exmek.core.persistence.entity.AbstractProductEntity;
 import com.exmek.core.persistence.entity.AbstractStepperMotorEntity;
 import com.exmek.core.persistence.entity.DCMotorEntity;
 import com.exmek.core.persistence.entity.LeadDefEntity;
+import com.exmek.core.persistence.entity.LightweightDCMotorEntity;
+import com.exmek.core.persistence.entity.LightweightStepperMotorEntity;
 import com.exmek.core.persistence.entity.StepperMotorEntity;
 
 @Component
@@ -52,11 +55,7 @@ public class MotorMapper extends AbstractProductMapper {
 	@Autowired
 	private MotorPerfCurveMapper motorPerfCurveMapper;
 	
-	public DCMotor mapDCMotorToModel(AbstractDCMotorEntity entity) {
-		if (entity == null) {
-			return null;
-		}
-		DCMotor motor = super.mapProduct(entity, DCMotor::new);
+	private void performBasicDCMotorMapping(DCMotor motor, AbstractDCMotorEntity entity) {
 		motor.setCategory(entity.getCategory());
 		motor.setRatedVoltage(toMeasuredValue(entity.getRatedVoltage(), entity.getRatedVoltageUnit()));
 		motor.setRatedCurrent(toMeasuredValue(entity.getRatedCurrent(), entity.getRatedCurrentUnit()));
@@ -69,19 +68,30 @@ public class MotorMapper extends AbstractProductMapper {
 		motor.setMaxSortingWeight(toMeasuredValue(entity.getMaxSortingWeight(), entity.getMaxSortingWeightUnit()));
 		motor.setNoloadCurrent(toMeasuredValue(entity.getNoloadCurrent(), entity.getNoloadCurrentUnit()));
 		motor.setNoloadRotatingSpeed(toMeasuredValue(entity.getNoloadRotatingSpeed(), entity.getNoloadRotatingSpeedUnit()));
-		
-		if (entity instanceof DCMotorEntity) {
-			DCMotorEntity fullEntity = (DCMotorEntity) entity;
-			motor.setMotorCategory(MotorCategoryMapper.mapEntityToCategory(fullEntity.getMotorCategory(), false));
-			motor.setProductSeries(AbstractSeriesMapper.mapEntityToSeries(fullEntity.getProductSeries(), MotorSeries::new, false));
-			motor.setAllSpecs(mapAllCombinedSpecs(entity, fullEntity.getSpecs(), appConfigProvider.getSearchDCMotorMetaCriteriaFields(), DC_MOTOR_EXCLUDED_FIELDS_TO_SPECS));
-			motor.setPerfCurves(motorPerfCurveMapper.mapToPerfCurveModels(fullEntity.getPerfMeasurements(), entity.getModel()));
-			
-			motor.setMechanicalImagePaths(resourceManager.getMotorMechanicalImagePaths(entity.getModel(), entity.getSeries()));
-			motor.setThreeDModelPaths(resourceManager.getMotor3DModelPaths(entity.getModel(), entity.getSeries()));
-			motor.setTechDocPaths(resourceManager.getMotorTechDocPaths(entity.getModel(), entity.getSeries()));
-			motor.setAdditionalImagePaths(resourceManager.getMotorAdditionalImagePaths(entity.getModel(), entity.getSeries()));
+	}
+	
+	public DCMotor mapLightweightDCMotorToModel(LightweightDCMotorEntity entity) {
+		if (entity == null) {
+			return null;
 		}
+		DCMotor motor = super.mapProduct(entity, DCMotor::new);
+		performBasicDCMotorMapping(motor, entity);
+		return motor;
+	}
+
+	public DCMotor mapDCMotorToModel(DCMotorEntity entity) {
+		if (entity == null) {
+			return null;
+		}
+		DCMotor motor = super.mapProduct(entity, DCMotor::new);
+		performBasicDCMotorMapping(motor, entity);
+		
+		motor.setMotorCategory(MotorCategoryMapper.mapEntityToCategory(entity.getMotorCategory(), false));
+		motor.setProductSeries(AbstractSeriesMapper.mapEntityToSeries(entity.getProductSeries(), MotorSeries::new, false));
+		motor.setAllSpecs(mapAllCombinedSpecs(entity, entity.getSpecs(), appConfigProvider.getSearchDCMotorMetaCriteriaFields(), DC_MOTOR_EXCLUDED_FIELDS_TO_SPECS));
+		motor.setPerfCurves(motorPerfCurveMapper.mapToPerfCurveModels(entity.getPerfMeasurements(), entity.getModel()));
+		
+		performResourceMapping(motor, entity);
 		
 		return motor;
 	}
@@ -125,20 +135,15 @@ public class MotorMapper extends AbstractProductMapper {
 		return spec;
 	}
 
-	public StepperMotor mapStepperMotorToModel(AbstractStepperMotorEntity entity) {
-		if (entity == null) {
-			return null;
-		}
-		StepperMotorEntity fullEntity = entity instanceof StepperMotorEntity ? (StepperMotorEntity) entity : null;
-		StepperMotor motor = super.mapProduct(entity, () -> {
-			if (fullEntity != null && CollectionUtils.isNotEmpty(fullEntity.getLinearStepperMotorLeads())) {
-				LinearStepperMotor linearStepperMotor = new LinearStepperMotor();
-				linearStepperMotor.setLeads(mapLeadsToModels(fullEntity.getLinearStepperMotorLeads()));
-				return linearStepperMotor;
-			} else {
-				return new StepperMotor();
-			}
-		});
+	private void performResourceMapping(AbstractMotor motor, AbstractMotorEntity entity) {
+		motor.setMechanicalImagePaths(resourceManager.getMotorMechanicalImagePaths(entity.getModel(), entity.getSeries()));
+		motor.setThreeDModelPaths(resourceManager.getMotor3DModelPaths(entity.getModel(), entity.getSeries()));
+		motor.setThreeDViewPaths(resourceManager.getMotor3DViewPaths(entity.getModel(), entity.getSeries()));
+		motor.setTechDocPaths(resourceManager.getMotorTechDocPaths(entity.getModel(), entity.getSeries()));
+		motor.setAdditionalImagePaths(resourceManager.getMotorAdditionalImagePaths(entity.getModel(), entity.getSeries()));
+	}
+
+	private void performBasicStepperMotorMapping(StepperMotor motor, AbstractStepperMotorEntity entity) {
 		motor.setCategory(entity.getCategory());
 		motor.setRatedVoltage(toMeasuredValue(entity.getRatedVoltage(), entity.getRatedVoltageUnit()));
 		motor.setPhaseCurrent(toMeasuredValue(entity.getPhaseCurrent(), entity.getPhaseCurrentUnit()));
@@ -148,22 +153,42 @@ public class MotorMapper extends AbstractProductMapper {
 		motor.setDetentTorque(toMeasuredValue(entity.getDetentTorque(), entity.getDetentTorqueUnit()));
 		motor.setStepAngle(toMeasuredValue(entity.getStepAngle(), entity.getStepAngleUnit()));
 		motor.setMaxThrust(toMeasuredValue(entity.getMaxThrust(), entity.getMaxThrustUnit()));
-		
-		if (fullEntity != null) {
-			motor.setMotorCategory(MotorCategoryMapper.mapEntityToCategory(fullEntity.getMotorCategory(), false));
-			motor.setProductSeries(AbstractSeriesMapper.mapEntityToSeries(fullEntity.getProductSeries(), MotorSeries::new, false));
-			motor.setAllSpecs(mapAllCombinedSpecs(entity, fullEntity.getSpecs(), appConfigProvider.getSearchStepperMotorMetaCriteriaFields(), STEPPER_MOTOR_EXCLUDED_FIELDS_TO_SPECS));
-			if (motor instanceof LinearStepperMotor) {
-				motor.setPerfCurves(motorPerfCurveMapper.mapToLinearStepperMotorPerfCurveModels(fullEntity.getPerfMeasurements(), entity.getModel()));
-			} else {
-				motor.setPerfCurves(motorPerfCurveMapper.mapToPerfCurveModels(fullEntity.getPerfMeasurements(), entity.getModel()));
-			}
-			
-			motor.setMechanicalImagePaths(resourceManager.getMotorMechanicalImagePaths(entity.getModel(), entity.getSeries()));
-			motor.setThreeDModelPaths(resourceManager.getMotor3DModelPaths(entity.getModel(), entity.getSeries()));
-			motor.setTechDocPaths(resourceManager.getMotorTechDocPaths(entity.getModel(), entity.getSeries()));
-			motor.setAdditionalImagePaths(resourceManager.getMotorAdditionalImagePaths(entity.getModel(), entity.getSeries()));
+	}
+
+	public StepperMotor mapLightweightStepperMotorToModel(LightweightStepperMotorEntity entity) {
+		if (entity == null) {
+			return null;
 		}
+		StepperMotor motor = super.mapProduct(entity, StepperMotor::new);
+		performBasicStepperMotorMapping(motor, entity);
+		return motor;
+	}
+
+	public StepperMotor mapStepperMotorToModel(StepperMotorEntity entity) {
+		if (entity == null) {
+			return null;
+		}
+		StepperMotor motor = super.mapProduct(entity, () -> {
+			if (CollectionUtils.isNotEmpty(entity.getLinearStepperMotorLeads())) {
+				LinearStepperMotor linearStepperMotor = new LinearStepperMotor();
+				linearStepperMotor.setLeads(mapLeadsToModels(entity.getLinearStepperMotorLeads()));
+				return linearStepperMotor;
+			} else {
+				return new StepperMotor();
+			}
+		});
+		performBasicStepperMotorMapping(motor, entity);
+		
+		motor.setMotorCategory(MotorCategoryMapper.mapEntityToCategory(entity.getMotorCategory(), false));
+		motor.setProductSeries(AbstractSeriesMapper.mapEntityToSeries(entity.getProductSeries(), MotorSeries::new, false));
+		motor.setAllSpecs(mapAllCombinedSpecs(entity, entity.getSpecs(), appConfigProvider.getSearchStepperMotorMetaCriteriaFields(), STEPPER_MOTOR_EXCLUDED_FIELDS_TO_SPECS));
+		if (motor instanceof LinearStepperMotor) {
+			motor.setPerfCurves(motorPerfCurveMapper.mapToLinearStepperMotorPerfCurveModels(entity.getPerfMeasurements(), entity.getModel()));
+		} else {
+			motor.setPerfCurves(motorPerfCurveMapper.mapToPerfCurveModels(entity.getPerfMeasurements(), entity.getModel()));
+		}
+		
+		performResourceMapping(motor, entity);
 
 		return motor;
 	}

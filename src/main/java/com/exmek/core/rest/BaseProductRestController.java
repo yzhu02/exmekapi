@@ -67,13 +67,13 @@ implements ProductService<M>, Scheduleable {
 	
 	protected abstract BaseProductRepository<T> getProductRepository();
 	
-	protected abstract BaseProductRepository<L> getLightProductRepository();
+	protected abstract BaseProductRepository<L> getLightweightProductRepository();
 	
 	protected abstract <SM extends AbstractSeriesMapper<S, SE>> SM getSeriesMapper();
 	
 	protected abstract M mapEntityToModel(T entity);
 
-	protected abstract M mapLightEntityToModel(L entity);
+	protected abstract M mapLightweightEntityToModel(L entity);
 	
 	protected abstract List<String> getSearchMetaCriteriaFields();
 
@@ -217,11 +217,11 @@ implements ProductService<M>, Scheduleable {
 			Integer pageNumber, Integer pageSize,
 			Map<String, Set<Object>> dataAvailableUnitsOfFieldNames) {
 
-		return productSearcher.search(getLightProductRepository(), 
+		return productSearcher.search(getLightweightProductRepository(), 
 				conditionClause, 
 				fAdditionalCondition, 
 				pageNumber, pageSize, 
-				entity -> mapLightEntityToModel(entity),
+				entity -> mapLightweightEntityToModel(entity),
 				dataAvailableUnitsOfFieldNames);
 	}
 

@@ -40,6 +40,8 @@ public abstract class AbstractProduct extends AbstractModel.Namable {
 	
 	private List<String> threeDModelPaths;
 	
+	private Map<String, List<String>> threeDViewPaths;
+	
 	private List<String> techDocPaths;
 
 	private Map<String, List<String>> additionalImagePaths;

@@ -139,47 +139,47 @@ public class UserResourceManager extends AbstractResourceManager {
 				.toList();
 	}
 
-	@Override
-	public List<ResourceInfo> getTechDocInfos() {
-		List<ResourceInfo> totalTechDocInfos = new ArrayList<>();
-		List<ResourceInfo> motorTechDocInfos = getTechDocInfosOfProductDir(DIR_NAME_MOTOR);
-		if (CollectionUtils.isNotEmpty(motorTechDocInfos)) {
-			totalTechDocInfos.addAll(motorTechDocInfos);
-		}
-		List<ResourceInfo> gearboxTechDocInfos = getTechDocInfosOfProductDir(DIR_NAME_GEARBOX);
-		if (CollectionUtils.isNotEmpty(gearboxTechDocInfos)) {
-			totalTechDocInfos.addAll(gearboxTechDocInfos);
-		}
-		List<ResourceInfo> brakeTechDocInfos = getTechDocInfosOfProductDir(DIR_NAME_BRAKE);
-		if (CollectionUtils.isNotEmpty(brakeTechDocInfos)) {
-			totalTechDocInfos.addAll(brakeTechDocInfos);
-		}
-		return totalTechDocInfos;
-    }
-	
-	private List<ResourceInfo> getTechDocInfosOfProductDir(String productDirName) {
-		String relResPath = UrlUtils.concatURL("/", DIR_NAME_MATERIALS, productDirName, DIR_NAME_TECHDOC);
-		String resLocation = RESOURCE_BASE_LOCATION + 
-				File.separator + DIR_NAME_MATERIALS + 
-				File.separator + productDirName + 
-				File.separator + DIR_NAME_TECHDOC;
-		File resDir = new File(resLocation);
-		if (resDir.exists()) {
-			log.info("Loading techdoc resources from {} ...", resLocation);
-			File[] resFiles = resDir.listFiles(f -> isPdfOrZip(f.getName()));
-			if (resFiles != null && resFiles.length > 0) {
-				return Arrays.stream(resFiles)
-				.map(f -> ResourceInfo.builder()
-						.name(f.getName())
-						.path(UrlUtils.concatURL(relResPath, UrlUtils.encodeBrackets(f.getName())))
-						.size(f.length())
-						.build()
-				)
-				.collect(Collectors.toList());
-			}
-		}
-		return null;
-	}
+//	@Override
+//	public List<ResourceInfo> getTechDocInfos() {
+//		List<ResourceInfo> totalTechDocInfos = new ArrayList<>();
+//		List<ResourceInfo> motorTechDocInfos = getTechDocInfosOfProductDir(DIR_NAME_MOTOR);
+//		if (CollectionUtils.isNotEmpty(motorTechDocInfos)) {
+//			totalTechDocInfos.addAll(motorTechDocInfos);
+//		}
+//		List<ResourceInfo> gearboxTechDocInfos = getTechDocInfosOfProductDir(DIR_NAME_GEARBOX);
+//		if (CollectionUtils.isNotEmpty(gearboxTechDocInfos)) {
+//			totalTechDocInfos.addAll(gearboxTechDocInfos);
+//		}
+//		List<ResourceInfo> brakeTechDocInfos = getTechDocInfosOfProductDir(DIR_NAME_BRAKE);
+//		if (CollectionUtils.isNotEmpty(brakeTechDocInfos)) {
+//			totalTechDocInfos.addAll(brakeTechDocInfos);
+//		}
+//		return totalTechDocInfos;
+//    }
+//	
+//	private List<ResourceInfo> getTechDocInfosOfProductDir(String productDirName) {
+//		String relResPath = UrlUtils.concatURL("/", DIR_NAME_MATERIALS, productDirName, DIR_NAME_TECHDOC);
+//		String resLocation = RESOURCE_BASE_LOCATION + 
+//				File.separator + DIR_NAME_MATERIALS + 
+//				File.separator + productDirName + 
+//				File.separator + DIR_NAME_TECHDOC;
+//		File resDir = new File(resLocation);
+//		if (resDir.exists()) {
+//			log.info("Loading techdoc resources from {} ...", resLocation);
+//			File[] resFiles = resDir.listFiles(f -> isPdfOrZip(f.getName()));
+//			if (resFiles != null && resFiles.length > 0) {
+//				return Arrays.stream(resFiles)
+//				.map(f -> ResourceInfo.builder()
+//						.name(f.getName())
+//						.path(UrlUtils.concatURL(relResPath, UrlUtils.encodeBrackets(f.getName())))
+//						.size(f.length())
+//						.build()
+//				)
+//				.collect(Collectors.toList());
+//			}
+//		}
+//		return null;
+//	}
 
 	private boolean isPdfOrZip(String filename) {
 		if (filename == null) {
@@ -383,6 +383,7 @@ public class UserResourceManager extends AbstractResourceManager {
 		return resName.equals(modelOrSeries);
 	}
 
+	
 	@Override
 	public List<String> getMotorMechanicalImagePaths(String model, String series) {
 		return getResourcePaths(model, DIR_NAME_MATERIALS, DIR_NAME_MOTOR, DIR_NAME_MICHANICAL, series);
@@ -397,6 +398,7 @@ public class UserResourceManager extends AbstractResourceManager {
 	public List<String> getBrakeMechanicalImagePaths(String model, String series) {
 		return getResourcePaths(model, DIR_NAME_MATERIALS, DIR_NAME_BRAKE, DIR_NAME_MICHANICAL, series);
 	}
+
 	
 	@Override
 	public List<String> getMotor3DModelPaths(String model, String series) {
@@ -413,6 +415,23 @@ public class UserResourceManager extends AbstractResourceManager {
 		return getResourcePaths(model, DIR_NAME_MATERIALS, DIR_NAME_BRAKE, DIR_NAME_3D, series);
 	}
 
+	
+	@Override
+	public Map<String, List<String>> getMotor3DViewPaths(String model, String series) {
+		return getIndexedResourcePaths(model, DIR_NAME_MATERIALS, DIR_NAME_MOTOR, DIR_NAME_3D_VIEW, series);
+	}
+
+	@Override
+	public Map<String, List<String>> getGearbox3DViewPaths(String model, String series) {
+		return getIndexedResourcePaths(model, DIR_NAME_MATERIALS, DIR_NAME_GEARBOX, DIR_NAME_3D_VIEW, series);
+	}
+	
+	@Override
+	public Map<String, List<String>> getBrake3DViewPaths(String model, String series) {
+		return getIndexedResourcePaths(model, DIR_NAME_MATERIALS, DIR_NAME_BRAKE, DIR_NAME_3D_VIEW, series);
+	}
+
+	
 	@Override
 	public List<String> getMotorTechDocPaths(String model, String series) {
 		return getResourcePaths(model, DIR_NAME_MATERIALS, DIR_NAME_MOTOR, DIR_NAME_TECHDOC, series);
@@ -428,6 +447,7 @@ public class UserResourceManager extends AbstractResourceManager {
 		return getResourcePaths(model, DIR_NAME_MATERIALS, DIR_NAME_BRAKE, DIR_NAME_TECHDOC, series);
 	}
 
+	
 	@Override
 	public Map<String, List<String>> getMotorAdditionalImagePaths(String model, String series) {
 		return getIndexedResourcePaths(model, DIR_NAME_MATERIALS, DIR_NAME_MOTOR, DIR_NAME_ADDITIONAL_IMAGES, series);

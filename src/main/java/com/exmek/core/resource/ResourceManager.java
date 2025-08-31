@@ -32,7 +32,14 @@ public interface ResourceManager {
 	
 	List<String> getBrake3DModelPaths(String model, String series);
 
+	
+	Map<String, List<String>> getMotor3DViewPaths(String model, String series);
 
+	Map<String, List<String>> getGearbox3DViewPaths(String model, String series);
+	
+	Map<String, List<String>> getBrake3DViewPaths(String model, String series);
+
+	
 	List<String> getMotorTechDocPaths(String model, String series);
 	
 	List<String> getGearboxTechDocPaths(String model, String series);
@@ -46,5 +53,5 @@ public interface ResourceManager {
 	
 	Map<String, List<String>> getBrakeAdditionalImagePaths(String model, String series);
 
-	List<ResourceInfo> getTechDocInfos();
+//	List<ResourceInfo> getTechDocInfos();
 }

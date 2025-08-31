@@ -294,7 +294,7 @@ public class MotorPerfCurveMapper {
 				conversionRatioStr = measurableConversionRatios.get(fromMeasurable + ":" + toMeasurable);
 				if (StringUtils.isNotEmpty(conversionRatioStr)) {
 					BigDecimal reciprocalRatio = parseRatio(conversionRatioStr);
-					return fromValue.divide(reciprocalRatio).setScale(4, RoundingMode.HALF_UP);
+					return fromValue.divide(reciprocalRatio, 4, RoundingMode.HALF_UP);
 				} else {
 					log.error("Unable to convert from {} to {} as can't find the respective conversion ratio, default to use original value {} ", 
 							fromMeasurable, toMeasurable, fromValue);

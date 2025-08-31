@@ -22,9 +22,10 @@ import com.exmek.core.mapper.PlanetaryGearboxMapper;
 import com.exmek.core.model.GearboxSeries;
 import com.exmek.core.model.PlanetaryGearbox;
 import com.exmek.core.persistence.entity.GearboxSeriesEntity;
+import com.exmek.core.persistence.entity.LightweightPlanetaryGearboxEntity;
 import com.exmek.core.persistence.entity.PlanetaryGearboxEntity;
 import com.exmek.core.persistence.repository.GearboxSeriesRepository;
-import com.exmek.core.persistence.repository.LightPlanetaryGearboxRepository;
+import com.exmek.core.persistence.repository.LightweightPlanetaryGearboxRepository;
 import com.exmek.core.persistence.repository.PlanetaryGearboxRepository;
 import com.exmek.core.service.ProductService;
 
@@ -33,7 +34,7 @@ import jakarta.validation.constraints.NotNull;
 @RestController
 @RequestMapping(EndpointConsts.ENDPOINT_API_GEARBOXES)
 public class PlanetaryGearboxRestController 
-extends BaseNonCategoryRestController<PlanetaryGearboxEntity, PlanetaryGearboxEntity.Light, PlanetaryGearbox, GearboxSeriesEntity, GearboxSeries> 
+extends BaseNonCategoryRestController<PlanetaryGearboxEntity, LightweightPlanetaryGearboxEntity, PlanetaryGearbox, GearboxSeriesEntity, GearboxSeries> 
 implements ProductService<PlanetaryGearbox> {
 
 	@Autowired
@@ -43,7 +44,7 @@ implements ProductService<PlanetaryGearbox> {
 	private PlanetaryGearboxRepository planetaryGearboxRepository;
 
 	@Autowired
-	private LightPlanetaryGearboxRepository lightPlanetaryGearboxRepository;
+	private LightweightPlanetaryGearboxRepository lightweightPlanetaryGearboxRepository;
 	
 	@Autowired
 	private PlanetaryGearboxMapper planetaryGearboxMapper;
@@ -67,8 +68,8 @@ implements ProductService<PlanetaryGearbox> {
 	}
 
 	@Override
-	protected LightPlanetaryGearboxRepository getLightProductRepository() {
-		return lightPlanetaryGearboxRepository;
+	protected LightweightPlanetaryGearboxRepository getLightweightProductRepository() {
+		return lightweightPlanetaryGearboxRepository;
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -83,8 +84,8 @@ implements ProductService<PlanetaryGearbox> {
 	}
 
 	@Override
-	protected PlanetaryGearbox mapLightEntityToModel(PlanetaryGearboxEntity.Light entity) {
-		return planetaryGearboxMapper.mapPlanetaryGearboxToModel(entity);
+	protected PlanetaryGearbox mapLightweightEntityToModel(LightweightPlanetaryGearboxEntity entity) {
+		return planetaryGearboxMapper.mapLightweightPlanetaryGearboxToModel(entity);
 	}
 
 	@Override

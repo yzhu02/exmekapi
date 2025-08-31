@@ -12,6 +12,7 @@ import com.exmek.core.model.GearboxSeries;
 import com.exmek.core.model.PlanetaryGearbox;
 import com.exmek.core.persistence.entity.AbstractPlanetaryGearboxEntity;
 import com.exmek.core.persistence.entity.AbstractProductEntity;
+import com.exmek.core.persistence.entity.LightweightPlanetaryGearboxEntity;
 import com.exmek.core.persistence.entity.PlanetaryGearboxEntity;
 
 @Component
@@ -25,11 +26,7 @@ public class PlanetaryGearboxMapper extends AbstractProductMapper {
 			AbstractProductEntity.FIELD_NAME_DESCRIPTION
 			));
 	
-	public PlanetaryGearbox mapPlanetaryGearboxToModel(AbstractPlanetaryGearboxEntity entity) {
-		if (entity == null) {
-			return null;
-		}
-		PlanetaryGearbox model = super.mapProduct(entity, PlanetaryGearbox::new);
+	private void performBasicMapping(PlanetaryGearbox model, AbstractPlanetaryGearboxEntity entity) {
 		model.setNumOfStages(entity.getNumOfStages());
 		model.setReductionRatios(parseReductionRatios(entity.getReductionRatios()));
 		model.setEfficiency(toMeasuredValue(entity.getEfficiency(), entity.getEfficiencyUnit()));
@@ -40,17 +37,32 @@ public class PlanetaryGearboxMapper extends AbstractProductMapper {
 		model.setMaxShaftPress(toMeasuredValue(entity.getMaxShaftPress(), entity.getMaxShaftPressUnit()));
 		model.setOperatingTemperature(entity.getOperatingTemperature());
 		model.setRecommendInputSpeed(entity.getRecommendInputSpeed());
-		
-		if (entity instanceof PlanetaryGearboxEntity) {
-			PlanetaryGearboxEntity fullEntity = (PlanetaryGearboxEntity) entity;
-			model.setProductSeries(AbstractSeriesMapper.mapEntityToSeries(fullEntity.getProductSeries(), GearboxSeries::new, false));
-			model.setAllSpecs(mapAllCombinedSpecs(entity, appConfigProvider.getSearchPlanetaryGearboxMetaCriteriaFields(), EXCLUDED_FIELDS_TO_SPECS));
-			
-			model.setMechanicalImagePaths(resourceManager.getGearboxMechanicalImagePaths(entity.getModel(), entity.getSeries()));
-			model.setThreeDModelPaths(resourceManager.getGearbox3DModelPaths(entity.getModel(), entity.getSeries()));
-			model.setTechDocPaths(resourceManager.getGearboxTechDocPaths(entity.getModel(), entity.getSeries()));
-			model.setAdditionalImagePaths(resourceManager.getGearboxAdditionalImagePaths(entity.getModel(), entity.getSeries()));
+	}
+
+	public PlanetaryGearbox mapLightweightPlanetaryGearboxToModel(LightweightPlanetaryGearboxEntity entity) {
+		if (entity == null) {
+			return null;
 		}
+		PlanetaryGearbox model = super.mapProduct(entity, PlanetaryGearbox::new);
+		performBasicMapping(model, entity);
+		return model;
+	}
+
+	public PlanetaryGearbox mapPlanetaryGearboxToModel(PlanetaryGearboxEntity entity) {
+		if (entity == null) {
+			return null;
+		}
+		PlanetaryGearbox model = super.mapProduct(entity, PlanetaryGearbox::new);
+		performBasicMapping(model, entity);
+		
+		model.setProductSeries(AbstractSeriesMapper.mapEntityToSeries(entity.getProductSeries(), GearboxSeries::new, false));
+		model.setAllSpecs(mapAllCombinedSpecs(entity, appConfigProvider.getSearchPlanetaryGearboxMetaCriteriaFields(), EXCLUDED_FIELDS_TO_SPECS));
+
+		model.setMechanicalImagePaths(resourceManager.getGearboxMechanicalImagePaths(entity.getModel(), entity.getSeries()));
+		model.setThreeDModelPaths(resourceManager.getGearbox3DModelPaths(entity.getModel(), entity.getSeries()));
+		model.setThreeDViewPaths(resourceManager.getGearbox3DViewPaths(entity.getModel(), entity.getSeries()));
+		model.setTechDocPaths(resourceManager.getGearboxTechDocPaths(entity.getModel(), entity.getSeries()));
+		model.setAdditionalImagePaths(resourceManager.getGearboxAdditionalImagePaths(entity.getModel(), entity.getSeries()));
 		
 		return model;
 	}

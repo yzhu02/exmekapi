@@ -21,6 +21,7 @@ import com.exmek.core.mapper.MotorMapper;
 import com.exmek.core.model.MotorCategory;
 import com.exmek.core.model.MotorSeries;
 import com.exmek.core.model.StepperMotor;
+import com.exmek.core.persistence.entity.LightweightStepperMotorEntity;
 import com.exmek.core.persistence.entity.StepperMotorCategoryEntity;
 import com.exmek.core.persistence.entity.StepperMotorEntity;
 import com.exmek.core.persistence.entity.StepperMotorSeriesEntity;
@@ -35,7 +36,7 @@ import jakarta.validation.constraints.NotNull;
 @RestController
 @RequestMapping(EndpointConsts.ENDPOINT_API_MOTORS)
 public class StepperMotorRestController 
-extends BaseMotorRestController<StepperMotorEntity, StepperMotorEntity.Light, StepperMotor, StepperMotorSeriesEntity, StepperMotorCategoryEntity> 
+extends BaseMotorRestController<StepperMotorEntity, LightweightStepperMotorEntity, StepperMotor, StepperMotorSeriesEntity, StepperMotorCategoryEntity> 
 implements ProductService<StepperMotor> {
 
 	@Autowired
@@ -48,7 +49,7 @@ implements ProductService<StepperMotor> {
 	private StepperMotorRepository motorRepository;
 
 	@Autowired
-	private LightStepperMotorRepository lightMotorRepository;
+	private LightStepperMotorRepository lightweightMotorRepository;
 
 	@Autowired
 	private MotorMapper motorMapper;
@@ -74,8 +75,8 @@ implements ProductService<StepperMotor> {
 	}
 
 	@Override
-	protected LightStepperMotorRepository getLightProductRepository() {
-		return lightMotorRepository;
+	protected LightStepperMotorRepository getLightweightProductRepository() {
+		return lightweightMotorRepository;
 	}
 
 	@Override
@@ -84,8 +85,8 @@ implements ProductService<StepperMotor> {
 	}
 
 	@Override
-	protected StepperMotor mapLightEntityToModel(StepperMotorEntity.Light entity) {
-		return motorMapper.mapStepperMotorToModel(entity);
+	protected StepperMotor mapLightweightEntityToModel(LightweightStepperMotorEntity entity) {
+		return motorMapper.mapLightweightStepperMotorToModel(entity);
 	}
 
 	@Override

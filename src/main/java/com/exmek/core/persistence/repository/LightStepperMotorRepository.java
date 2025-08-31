@@ -3,7 +3,7 @@ package com.exmek.core.persistence.repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
-import com.exmek.core.persistence.entity.StepperMotorEntity;
+import com.exmek.core.persistence.entity.LightweightStepperMotorEntity;
 
-public interface LightStepperMotorRepository extends BaseProductRepository<StepperMotorEntity.Light>, JpaRepository<StepperMotorEntity.Light, Long>, JpaSpecificationExecutor<StepperMotorEntity.Light> {
+public interface LightStepperMotorRepository extends BaseProductRepository<LightweightStepperMotorEntity>, JpaRepository<LightweightStepperMotorEntity, Long>, JpaSpecificationExecutor<LightweightStepperMotorEntity> {
 }
