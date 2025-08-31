@@ -154,12 +154,12 @@ public class JPAUtils {
 			}
 			ConditionLine clonedCL = cl.clone();
 			clonedCL.setUnit(unit.name());
-			double unitPropotion = originUnitBaseValue / uBaseValue;
-			String uNumberValue = calcNumberStringByPropotion(cl.getNumberValue(), unitPropotion);
+			double unitProportion = originUnitBaseValue / uBaseValue;
+			String uNumberValue = calcNumberStringByProportion(cl.getNumberValue(), unitProportion);
 			clonedCL.setNumberValue(uNumberValue);
 			clonedCL.setValue(uNumberValue);
 			if (StringUtils.isNotEmpty(cl.getNumberValue2())) {
-				String uNumberValue2 = calcNumberStringByPropotion(cl.getNumberValue2(), unitPropotion);
+				String uNumberValue2 = calcNumberStringByProportion(cl.getNumberValue2(), unitProportion);
 				clonedCL.setNumberValue2(uNumberValue2);
 				clonedCL.setValue2(uNumberValue2 + unit.name());
 			}
@@ -170,7 +170,7 @@ public class JPAUtils {
 		return JPAUtils.buildConjunctPredicate(builder, combinedPredicates, LogicalOperator.OR);
 	}
 	
-	private static String calcNumberStringByPropotion(String numberString, double proportion) {
+	private static String calcNumberStringByProportion(String numberString, double proportion) {
 		return String.valueOf(new BigDecimal(numberString).multiply(BigDecimal.valueOf(proportion)));
 	}
 
@@ -223,6 +223,19 @@ public class JPAUtils {
 		}
 	}
 
+	/**
+	 * 
+	 * Build {@link Predicate} for given {@link ConditionClause} input and pre-cached per-fieldname units.
+	 * The pre-cached units is provided in case it's already available for performance optimization, 
+	 * otherwise the units will be resolved from the Enum class and add to where clause if {@link ConditionClause} contains unit.
+	 * 
+	 * @param <T>
+	 * @param builder
+	 * @param root
+	 * @param conditionClause
+	 * @param dataAvailableUnitsOfFieldNames
+	 * @return
+	 */
 	public static <T> Predicate buildPredicate(CriteriaBuilder builder, Root<T> root, 
 			ConditionClause conditionClause, 
 			Map<String, Set<Object>> dataAvailableUnitsOfFieldNames) {
