@@ -18,10 +18,12 @@ import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ObjectUtils;
 
 import com.exmek.commons.utils.JsonMapperUtils;
+import com.exmek.commons.utils.MiscUtils;
 import com.exmek.commons.utils.UrlUtils;
 import com.exmek.core.model.News;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -204,10 +206,10 @@ public class UserResourceManager extends AbstractResourceManager {
 			return resPaths;
 		}
 		Set<String> resExtensionSet = resPaths.stream()
-				.map(p -> getFileNameExtension(p))
+				.map(p -> MiscUtils.getFileNameExtension(p))
 				.collect(Collectors.toSet());
 		for (String bySeriesResPath : bySeriesResPaths) {
-			if (!resExtensionSet.contains(getFileNameExtension(bySeriesResPath))) {
+			if (!resExtensionSet.contains(MiscUtils.getFileNameExtension(bySeriesResPath))) {
 				// If it contains model specific file like MB057GA100.stl and 
 				// series specific file MB057GA.stl then only model specific file will be returned.
 				// Only if the series specific file has different extension like MB057GA.zip then both will be returned.
@@ -219,36 +221,11 @@ public class UserResourceManager extends AbstractResourceManager {
 
 	private List<String> getResourcePaths(String modelOrSeries, String baseDirName, String productDirName, String resSubCatDirName) {
 
-		File[] resFiles = null;
-
-		String relResPath = UrlUtils.concatURL("/", baseDirName, productDirName, modelOrSeries, resSubCatDirName);
-		String resLocation = RESOURCE_BASE_LOCATION + 
-				File.separator + baseDirName + 
-				File.separator + productDirName + 
-				File.separator + modelOrSeries + 
-				File.separator + resSubCatDirName;
-		File resDir = new File(resLocation);
-		if (resDir.exists()) {
-			log.info("Loading resource for {} from {} ...", modelOrSeries, resLocation);
-			resFiles = resDir.listFiles();
-		} else {
-			relResPath = UrlUtils.concatURL("/", baseDirName, productDirName, resSubCatDirName);
-			resLocation = RESOURCE_BASE_LOCATION + 
-					File.separator + baseDirName + 
-					File.separator + productDirName + 
-					File.separator + resSubCatDirName;
-			resDir = new File(resLocation);
-			if (resDir.exists()) {
-				log.info("Loading resource for {} from {} ...", modelOrSeries, resLocation);
-				resFiles = resDir.listFiles(f -> isMatchingResourceFile(f, modelOrSeries));
-			} else {
-				log.warn("Can't load resources as the location {} doesn't exist. ", resLocation);
-				return null;
-			}
-		}
+		Pair<String, File[]> pPathAndFiles = getParentPathAndResFiles(baseDirName, productDirName, modelOrSeries, resSubCatDirName);
 		
+		File[] resFiles = pPathAndFiles.getRight();
 		if (resFiles == null || resFiles.length == 0) {
-			log.warn("No resource loaded for {} from {} ", modelOrSeries, resLocation);
+			log.warn("No resource loaded for {} ", modelOrSeries);
 			return null;
 		}
 		if (resFiles.length > 1) {
@@ -256,7 +233,7 @@ public class UserResourceManager extends AbstractResourceManager {
 				return f1.getName().compareTo(f2.getName());
 			});
 		}
-		String resParentPath = relResPath;
+		String resParentPath = pPathAndFiles.getLeft();
 		return Arrays.stream(resFiles)
 				.map(f -> UrlUtils.concatURL(resParentPath, UrlUtils.encodeBrackets(f.getName())))
 				.collect(Collectors.toList());
@@ -279,11 +256,11 @@ public class UserResourceManager extends AbstractResourceManager {
 		for (Map.Entry<String, List<String>> entry : indexedResPaths.entrySet()) {
 			List<String> resPaths = entry.getValue();
 			Set<String> resExtensionSet = resPaths.stream()
-					.map(p -> getFileNameExtension(p))
+					.map(p -> MiscUtils.getFileNameExtension(p))
 					.collect(Collectors.toSet());
 			List<String> bySeriesResPaths = bySeriesIndexedResPaths.get(entry.getKey());
 			for (String bySeriesResPath : bySeriesResPaths) {
-				if (!resExtensionSet.contains(getFileNameExtension(bySeriesResPath))) {
+				if (!resExtensionSet.contains(MiscUtils.getFileNameExtension(bySeriesResPath))) {
 					// If it contains model specific file like MPC023-[Implication For Name].jpg and 
 					// series specific file MPC023[Implication For Name].jpg then only model specific file will be returned.
 					// Only if the series specific file has different extension like MPC023[Implication For Name].png then both will be returned.
@@ -296,36 +273,12 @@ public class UserResourceManager extends AbstractResourceManager {
 
 	private Map<String, List<String>> getIndexedResourcePaths(String modelOrSeries, String baseDirName, String productDirName, String resSubCatDirName) {
 
-		File[] resFiles = null;
-
-		String relResPath = UrlUtils.concatURL("/", baseDirName, productDirName, modelOrSeries, resSubCatDirName);
-		String resLocation = RESOURCE_BASE_LOCATION + 
-				File.separator + baseDirName + 
-				File.separator + productDirName + 
-				File.separator + modelOrSeries + 
-				File.separator + resSubCatDirName;
-		File resDir = new File(resLocation);
-		if (resDir.exists()) {
-			log.info("Loading indexed resource for {} from {} ...", modelOrSeries, resLocation);
-			resFiles = resDir.listFiles();
-		} else {
-			relResPath = UrlUtils.concatURL("/", baseDirName, productDirName, resSubCatDirName);
-			resLocation = RESOURCE_BASE_LOCATION + 
-					File.separator + baseDirName + 
-					File.separator + productDirName + 
-					File.separator + resSubCatDirName;
-			resDir = new File(resLocation);
-			if (resDir.exists()) {
-				log.info("Loading indexed resource for {} from {} ...", modelOrSeries, resLocation);
-				resFiles = resDir.listFiles(f -> isMatchingResourceFile(f, modelOrSeries));
-			} else {
-				log.warn("Can't load indexed resources as the location {} doesn't exist. ", resLocation);
-				return null;
-			}
-		}
+		Pair<String, File[]> pPathAndFiles = getParentPathAndResFiles(baseDirName, productDirName, modelOrSeries, resSubCatDirName);
 		
+		File[] resFiles = pPathAndFiles.getRight();;
+
 		if (resFiles == null || resFiles.length == 0) {
-			log.warn("No indexed resource loaded for {} from {} ", modelOrSeries, resLocation);
+			log.warn("No indexed resource loaded for {} ", modelOrSeries);
 			return null;
 		}
 		if (resFiles.length > 1) {
@@ -334,7 +287,7 @@ public class UserResourceManager extends AbstractResourceManager {
 			});
 		}
 		Map<String, List<String>> indexedResPaths = new HashMap<>();
-		String resParentPath = relResPath;
+		String resParentPath = pPathAndFiles.getLeft();
 		for (File file : resFiles) {
 			String filename = file.getName();
 			int dotInx = filename.lastIndexOf('.');
@@ -357,18 +310,6 @@ public class UserResourceManager extends AbstractResourceManager {
 		return indexedResPaths;
 	}
 	
-	private String getFileNameExtension(String filePath) {
-		if (filePath == null) {
-			return null;
-		}
-		int dotInx = filePath.lastIndexOf('.');
-		if (dotInx >= 0) {
-			return filePath.substring(dotInx + 1);
-		} else {
-			return "";
-		}
-	}
-
 	private boolean isMatchingResourceFile(File file, String modelOrSeries) {
 		String filename = file.getName();
 		String resName = filename;
@@ -383,6 +324,47 @@ public class UserResourceManager extends AbstractResourceManager {
 		return resName.equals(modelOrSeries);
 	}
 
+	private Pair<String, File[]> getParentPathAndResFiles(String baseDirName, String productDirName, String modelOrSeries, String resSubCatDirName) {
+		File[] resFiles = null;
+		// For a single product item specific folder, example: /materials/motor/MB057GA100/mechanical
+		String relResPath = UrlUtils.concatURL("/", baseDirName, productDirName, modelOrSeries, resSubCatDirName);
+		String resLocation = RESOURCE_BASE_LOCATION + 
+				File.separator + baseDirName + 
+				File.separator + productDirName + 
+				File.separator + modelOrSeries + 
+				File.separator + resSubCatDirName;
+		File resDir = new File(resLocation);
+		if (resDir.exists()) {
+			log.info("Loading resource for {} from {} ...", modelOrSeries, resLocation);
+			resFiles = resDir.listFiles();
+		} else {
+			// For a single product item specific folder, example: /materials/motor/mechanical/MB057GA100
+			relResPath = UrlUtils.concatURL("/", baseDirName, productDirName, resSubCatDirName, modelOrSeries);
+			resLocation = RESOURCE_BASE_LOCATION + 
+					File.separator + baseDirName + 
+					File.separator + productDirName + 
+					File.separator + resSubCatDirName +
+					File.separator + modelOrSeries;
+			resDir = new File(resLocation);
+			if (resDir.exists()) {
+				log.info("Loading resource for {} from {} ...", modelOrSeries, resLocation);
+				resFiles = resDir.listFiles();
+			} else {
+				// For generic folder containing many product items, example: /materials/motor/mechanical
+				relResPath = UrlUtils.concatURL("/", baseDirName, productDirName, resSubCatDirName);
+				resLocation = RESOURCE_BASE_LOCATION + 
+						File.separator + baseDirName + 
+						File.separator + productDirName + 
+						File.separator + resSubCatDirName;
+				resDir = new File(resLocation);
+				if (resDir.exists()) {
+					log.info("Loading resource for {} from {} ...", modelOrSeries, resLocation);
+					resFiles = resDir.listFiles(f -> isMatchingResourceFile(f, modelOrSeries));
+				}
+			}
+		}
+		return Pair.of(relResPath, resFiles);
+	}
 	
 	@Override
 	public List<String> getMotorMechanicalImagePaths(String model, String series) {

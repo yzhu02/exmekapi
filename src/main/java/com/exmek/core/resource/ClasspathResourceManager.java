@@ -309,10 +309,16 @@ public class ClasspathResourceManager extends AbstractResourceManager {
 		if (Boolean.FALSE.equals(appConfigProvider.getResourceReadIndividualFolderEnabled())) {
 			return defaultResMap.get(modelOrSeries);
 		}
+		// For a single product item specific folder, example: /materials/motor/MB057GA100/mechanical
 		String relResPath = UrlUtils.concatURL("/", baseDirName, productDirName, modelOrSeries, resSubCatDirName);
 		Resource[] resources = readIndividualResources(relResPath, modelOrSeries);
 		if (resources == null || resources.length == 0) {
-			return defaultResMap.get(modelOrSeries);
+			// For a single product item specific folder, example: /materials/motor/mechanical/MB057GA100
+			relResPath = UrlUtils.concatURL("/", baseDirName, productDirName, resSubCatDirName, modelOrSeries);
+			resources = readIndividualResources(relResPath, modelOrSeries);
+			if (resources == null || resources.length == 0) {
+				return defaultResMap.get(modelOrSeries);
+			}
 		}
 		List<String> resPaths = new ArrayList<>();
 		if (resources.length > 1) {
@@ -345,7 +351,11 @@ public class ClasspathResourceManager extends AbstractResourceManager {
 		String relResPath = UrlUtils.concatURL("/", baseDirName, productDirName, modelOrSeries, resSubCatDirName);
 		Resource[] resources = readIndividualResources(relResPath, modelOrSeries);
 		if (resources == null || resources.length == 0) {
-			return defaultResMap.get(modelOrSeries);
+			relResPath = UrlUtils.concatURL("/", baseDirName, productDirName, resSubCatDirName, modelOrSeries);
+			resources = readIndividualResources(relResPath, modelOrSeries);
+			if (resources == null || resources.length == 0) {
+				return defaultResMap.get(modelOrSeries);
+			}
 		}
 		Map<String, List<String>> indexedResPaths = new HashMap<>();
 		if (resources.length > 1) {

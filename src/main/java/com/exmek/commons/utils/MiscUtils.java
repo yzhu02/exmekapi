@@ -202,4 +202,16 @@ public class MiscUtils {
 		return -1;
 	}
 
+	public static String getFileNameExtension(String filePath) {
+		if (filePath == null) {
+			return null;
+		}
+		int dotInx = filePath.lastIndexOf('.');
+		if (dotInx >= 0) {
+			return filePath.substring(dotInx + 1);
+		} else {
+			return "";
+		}
+	}
+
 }
