@@ -3,6 +3,8 @@ package com.exmek.core.mapper;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -119,6 +121,7 @@ public class MotorPerfCurveMapper {
 						}
 					}
 				}
+				sortPointsByX(cLine.getPoints());
 				curveLines.add(cLine);
 				yAxisEquivalentBoundaries.add(Range.<BigDecimal>builder()
 						.min(yMin)
@@ -234,6 +237,22 @@ public class MotorPerfCurveMapper {
 		}
 		int parenthesesEndInx = axisName.indexOf(')', parenthesesStartInx + 1);
 		return parenthesesEndInx > 0 ? axisName.substring(parenthesesStartInx + 1, parenthesesEndInx) : axisName.substring(parenthesesStartInx + 1);
+	}
+	
+	private void sortPointsByX(List<Point<BigDecimal>> points) {
+		if (CollectionUtils.isEmpty(points)) {
+			return;
+		}
+		if (points.size() < 2) {
+			return;
+		}
+		Collections.sort(points, new Comparator<Point<BigDecimal>>() {
+			@Override
+			public int compare(Point<BigDecimal> p1, Point<BigDecimal> p2) {
+				return p1.getX().compareTo(p2.getX());
+			}
+			
+		});
 	}
 
 	/**
