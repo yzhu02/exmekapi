@@ -6,6 +6,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
@@ -19,6 +21,9 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class MiscUtils {
 	
+	// The regex pattern "\\d+" matches one or more consecutive digits.
+	private static Pattern DIGITS_REGEX = Pattern.compile("\\d+");
+
 	private MiscUtils() {
 	}
 
@@ -214,4 +219,22 @@ public class MiscUtils {
 		}
 	}
 
+	public static Integer extractFirstNumber(String s) {
+		if (s == null) {
+			return null;
+		}
+		Matcher m = DIGITS_REGEX.matcher(s);
+		String nStr = null;
+		if (m.find()) {
+			nStr = m.group();
+		} else {
+			return null;
+		}
+		try {
+			return Integer.valueOf(nStr);
+		} catch (Exception ex) {
+			log.error("Unable to extract first number occurance from string {} ", s, ex);
+			return null;
+		}
+	}
 }

@@ -1,6 +1,8 @@
 package com.exmek.core.rest;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -14,6 +16,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.util.Pair;
 
+import com.exmek.commons.utils.MiscUtils;
 import com.exmek.core.model.AbstractProduct;
 import com.exmek.core.model.AbstractSeries;
 import com.exmek.core.persistence.entity.AbstractProductEntity;
@@ -48,6 +51,25 @@ extends BaseProductRestController<T, L, M, SE, S> {
 			List<S> serieses = entities.stream()
 					.map(entity -> mapToSeriesModel(entity, lastUpdatedPerSeriesMap.get(entity.getSeries())))
 					.collect(Collectors.toList());
+			
+			if (serieses.size() > 1) {
+				//Sort by the extract number from the series as per requested
+				Collections.sort(serieses, new Comparator<> () {
+					@Override
+					public int compare(S s1, S s2) {
+						Integer n1 = MiscUtils.extractFirstNumber(s1.getSeries());
+						Integer n2 = MiscUtils.extractFirstNumber(s2.getSeries());
+						if (n1 != null && n2 != null) {
+							return n1.compareTo(n2);
+						} else if (n2 == null) {
+							return -1; // put at end in case no number extracted: n1, n2
+						} else {
+							return 1; // put at end in case no number extracted: n2, n1
+						}
+					}
+				});
+			}
+			
 			dataResponse.setData(serieses);
 		}
 		return dataResponse;

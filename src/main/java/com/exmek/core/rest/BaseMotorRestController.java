@@ -1,6 +1,8 @@
 package com.exmek.core.rest;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -17,6 +19,7 @@ import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.exmek.commons.expr.LogicalOperator;
+import com.exmek.commons.utils.MiscUtils;
 import com.exmek.core.mapper.MapperUtils;
 import com.exmek.core.mapper.MotorCategoryMapper;
 import com.exmek.core.mapper.MotorSeriesMapper;
@@ -124,7 +127,26 @@ extends BaseProductRestController<T, L, M, SE, MotorSeries> {
 					.collect(Collectors.toMap(LastUpdatedTimestampPerSeries::getSeries, LastUpdatedTimestampPerSeries::getLastUpdated));
 			List<MotorSeries> serieses = entities.stream()
 					.map(entity -> mapToSeriesModel(entity, lastUpdatedPerSeriesMap.get(entity.getSeries())))
-					.collect(Collectors.toList());
+					.collect(Collectors.toCollection(ArrayList::new));
+			
+			if (serieses.size() > 1) {
+				//Sort by the extract number from the series as per requested
+				Collections.sort(serieses, new Comparator<> () {
+					@Override
+					public int compare(MotorSeries s1, MotorSeries s2) {
+						Integer n1 = MiscUtils.extractFirstNumber(s1.getSeries());
+						Integer n2 = MiscUtils.extractFirstNumber(s2.getSeries());
+						if (n1 != null && n2 != null) {
+							return n1.compareTo(n2);
+						} else if (n2 == null) {
+							return -1; // put at end in case no number extracted: n1, n2
+						} else {
+							return 1; // put at end in case no number extracted: n2, n1
+						}
+					}
+				});
+			}
+
 			dataResponse.setData(serieses);
 		}
 		return dataResponse;
