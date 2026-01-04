@@ -11,6 +11,9 @@ import lombok.ToString;
 @ToString
 public class ConditionClause {
 
+	/**
+	 * Representing AND, OR, NOT
+	 */
 	private LogicalOperator operator;
 
 	/**

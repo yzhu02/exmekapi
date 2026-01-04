@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.util.NumberUtils;
 
 import com.exmek.commons.expr.LogicalOperator;
 import com.exmek.commons.expr.RelationalOperator;
@@ -34,62 +35,86 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class JPAUtils {
 
-	public static Number getNumberValue(Class<? extends Object> fieldType, String strValue) {
-		Number nValue = null;
-		if (Long.class == fieldType) {
-			nValue = Long.valueOf(strValue);
-		} else if (Integer.class == fieldType) {
-			nValue = Integer.valueOf(strValue);
-		} else if (Double.class == fieldType)  {
-			nValue = Double.valueOf(strValue);
-		} else if (Float.class == fieldType) {
-			nValue = Float.valueOf(strValue);
-		} else {
-			nValue = new BigDecimal(strValue);
-		}
-		return nValue;
-	}
-
+	/**
+	 * 
+	 * Build {@link Predicate} for given {@link ConditionClause} input and pre-cached per-fieldname units.
+	 * The pre-cached units is provided in case it's already available for performance optimization, 
+	 * otherwise the units will be resolved from the Enum class and add to where clause if {@link ConditionClause} contains unit.
+	 * 
+	 * @param <T>
+	 * @param builder
+	 * @param root
+	 * @param conditionClause
+	 * @param dataAvailableUnitsOfFieldNames
+	 * @return
+	 */
 	@SuppressWarnings("unchecked")
-	static <N extends Number> Predicate buildNumberBetween(CriteriaBuilder builder, Path<N> attrPath, Class<? extends Object> fieldType,
-			Number nValue1, Number nValue2) {
-		
-		if (Long.class == fieldType) {
-			return builder.between((Path<Long>) attrPath, (Long) nValue1, (Long) nValue2);
-		} else if (Integer.class == fieldType) {
-			return builder.between((Path<Integer>) attrPath, (Integer) nValue1, (Integer) nValue2);
-		} else if (Double.class == fieldType)  {
-			return builder.between((Path<Double>) attrPath, (Double) nValue1, (Double) nValue2);
-		} else if (Float.class == fieldType) {
-			return builder.between((Path<Float>) attrPath, (Float) nValue1, (Float) nValue2);
-		} else {
-			return builder.between((Path<BigDecimal>) attrPath, (BigDecimal) nValue1, (BigDecimal) nValue2);
-		}
-	}
+	public static <T> Predicate buildPredicate(CriteriaBuilder builder, Root<T> root, 
+			ConditionClause conditionClause, 
+			Map<String, Set<Object>> dataAvailableUnitsOfFieldNames) {
 
-	public static <N extends Number> Predicate buildPredicateForNumber(CriteriaBuilder builder,
-			Path<N> attrPath, Class<? extends Object> fieldType, ConditionLine cl) {
-		Number nValue = getNumberValue(fieldType, cl.getNumberValue());
-		if (RelationalOperator.EQ == cl.getOperator()) {
-			return builder.equal(attrPath, nValue);
-		} else if (RelationalOperator.GT == cl.getOperator()) {
-			return builder.gt(attrPath, nValue);
-		} else if (RelationalOperator.GTE == cl.getOperator()) {
-			return builder.ge(attrPath, nValue);
-		} else if (RelationalOperator.LT == cl.getOperator()) {
-			return builder.lt(attrPath, nValue);
-		} else if (RelationalOperator.LTE == cl.getOperator()) {
-			return builder.le(attrPath, nValue);
-		} else if (RelationalOperator.NE == cl.getOperator()) {
-			return builder.notEqual(attrPath, nValue);
-		} else if (RelationalOperator.BETWEEN == cl.getOperator()) {
-			return buildNumberBetween(builder, attrPath, fieldType, nValue, getNumberValue(fieldType, cl.getNumberValue2()));
+		if (conditionClause == null) {
+			return null;
 		}
-		return null;
+		List<String> conditions = conditionClause.getConditions();
+		List<ConditionClause> subConditionClauses = conditionClause.getSubConditionClauses();
+		if (ObjectUtils.isEmpty(conditions) && ObjectUtils.isEmpty(subConditionClauses)) {
+			return null;
+		}
+		if (log.isDebugEnabled()) {
+			log.debug("Building query {} ", conditionClause);
+		}
+		List<Predicate> predicates = new ArrayList<>();
+		if (conditions != null) {
+			for (String condition : conditions) {
+				Predicate predicate = null;
+				ConditionLine cl = ConditionLine.parse(condition);
+				Class<? extends Object> fieldType = root.get(cl.getFieldName()).getJavaType();
+				if (Number.class.isAssignableFrom(fieldType)) {
+					if (StringUtils.isNotEmpty(cl.getUnit())) {
+						Enum<?>[] units = null;
+						if (dataAvailableUnitsOfFieldNames != null) {
+							Set<Object> unitObjects = dataAvailableUnitsOfFieldNames.get(cl.getFieldName());
+							if (unitObjects != null) {
+								units = unitObjects.stream().filter(u -> u.getClass().isEnum()).toArray(Enum<?>[]::new);
+							}
+						}
+						predicate = JPAUtils.buildUnitBasedPredicateForNumber(builder, root, (Class<? extends Number>) fieldType, cl, units);
+					} else {
+						predicate = JPAUtils.buildPredicateForNumber(builder, root.get(cl.getFieldName()), (Class<? extends Number>) fieldType, cl);
+					}
+				} else if (Boolean.class == fieldType) {
+					if (cl.getOperator() == RelationalOperator.EQ || cl.getOperator() == RelationalOperator.IS) {
+						Boolean booleanVal = Boolean.valueOf(cl.getValue());
+						if (booleanVal == true) {
+							predicate = builder.isTrue(root.get(cl.getFieldName()));
+						} else {
+							predicate = builder.isFalse(root.get(cl.getFieldName()));
+						}
+					} else {
+						log.error("Unable to parse boolean condition {} ", condition);
+					}
+				} else {
+					predicate = JPAUtils.buildPredicateForString(builder, root.get(cl.getFieldName()), cl);
+				}
+				if (predicate != null) {
+					predicates.add(predicate);
+				}
+			}
+		}
+		if (subConditionClauses != null) {
+			for (ConditionClause subCond : subConditionClauses) {
+				Predicate subPredicate = buildPredicate(builder, root, subCond, dataAvailableUnitsOfFieldNames);
+				if (subPredicate != null) {
+					predicates.add(subPredicate);
+				}
+			}
+		}
+		return JPAUtils.buildConjunctPredicate(builder, predicates, conditionClause.getOperator());
 	}
 
 	public static <T> Predicate buildUnitBasedPredicateForNumber(CriteriaBuilder builder, Root<T> root, 
-			Class<? extends Object> fieldType, ConditionLine cl, Enum<?>[] units) {
+			Class<? extends Number> fieldType, ConditionLine cl, Enum<?>[] units) {
 
 		Predicate originPredicate = JPAUtils.buildPredicateForNumber(builder, root.get(cl.getFieldName()), fieldType, cl);
 		
@@ -169,12 +194,69 @@ public class JPAUtils {
 		}
 		return JPAUtils.buildConjunctPredicate(builder, combinedPredicates, LogicalOperator.OR);
 	}
+
+	public static Predicate buildConjunctPredicate(CriteriaBuilder builder,
+			List<Predicate> predicates, LogicalOperator operator) {
+		if (operator == LogicalOperator.AND) {
+			return builder.and(predicates.toArray(new Predicate[] {}));
+		} else if (operator == LogicalOperator.OR) {
+			return builder.or(predicates.toArray(new Predicate[] {}));
+		} else if (operator == LogicalOperator.NOT) {
+			List<Predicate> notPredicates = new ArrayList<>();
+			for (Predicate p : predicates) {
+				notPredicates.add(p.not());
+			}
+			return builder.and(notPredicates.toArray(new Predicate[] {}));
+		} else {
+			// default to AND if 'operator' not specified
+			return builder.and(predicates.toArray(new Predicate[] {}));
+		}
+	}
+
 	
-	private static String calcNumberStringByProportion(String numberString, double proportion) {
+	static <N extends Number> Predicate buildPredicateForNumber(CriteriaBuilder builder,
+			Path<N> attrPath, Class<? extends Number> fieldType, ConditionLine cl) {
+		Number nValue = NumberUtils.parseNumber(cl.getNumberValue(), fieldType);
+		if (RelationalOperator.EQ == cl.getOperator()) {
+			return builder.equal(attrPath, nValue);
+		} else if (RelationalOperator.GT == cl.getOperator()) {
+			return builder.gt(attrPath, nValue);
+		} else if (RelationalOperator.GTE == cl.getOperator()) {
+			return builder.ge(attrPath, nValue);
+		} else if (RelationalOperator.LT == cl.getOperator()) {
+			return builder.lt(attrPath, nValue);
+		} else if (RelationalOperator.LTE == cl.getOperator()) {
+			return builder.le(attrPath, nValue);
+		} else if (RelationalOperator.NE == cl.getOperator()) {
+			return builder.notEqual(attrPath, nValue);
+		} else if (RelationalOperator.BETWEEN == cl.getOperator()) {
+			return buildNumberBetween(builder, attrPath, fieldType, nValue, NumberUtils.parseNumber(cl.getNumberValue2(), fieldType));
+		}
+		return null;
+	}
+	
+	@SuppressWarnings("unchecked")
+	static <N extends Number> Predicate buildNumberBetween(CriteriaBuilder builder, Path<N> attrPath, Class<? extends Object> fieldType,
+			Number nValue1, Number nValue2) {
+		
+		if (Long.class == fieldType) {
+			return builder.between((Path<Long>) attrPath, (Long) nValue1, (Long) nValue2);
+		} else if (Integer.class == fieldType) {
+			return builder.between((Path<Integer>) attrPath, (Integer) nValue1, (Integer) nValue2);
+		} else if (Double.class == fieldType)  {
+			return builder.between((Path<Double>) attrPath, (Double) nValue1, (Double) nValue2);
+		} else if (Float.class == fieldType) {
+			return builder.between((Path<Float>) attrPath, (Float) nValue1, (Float) nValue2);
+		} else {
+			return builder.between((Path<BigDecimal>) attrPath, (BigDecimal) nValue1, (BigDecimal) nValue2);
+		}
+	}
+
+	static String calcNumberStringByProportion(String numberString, double proportion) {
 		return String.valueOf(new BigDecimal(numberString).multiply(BigDecimal.valueOf(proportion)));
 	}
 
-	public static Predicate buildPredicateForString(CriteriaBuilder builder, Path<String> attrPath, ConditionLine cl) {
+	static Predicate buildPredicateForString(CriteriaBuilder builder, Path<String> attrPath, ConditionLine cl) {
 		if (RelationalOperator.EQ == cl.getOperator()) {
 			return builder.equal(attrPath, cl.getValue());
 		} else if (RelationalOperator.GT == cl.getOperator()) {
@@ -205,100 +287,6 @@ public class JPAUtils {
 		return null;
 	}
 
-	public static Predicate buildConjunctPredicate(CriteriaBuilder builder,
-			List<Predicate> predicates, LogicalOperator operator) {
-		if (operator == LogicalOperator.AND) {
-			return builder.and(predicates.toArray(new Predicate[] {}));
-		} else if (operator == LogicalOperator.OR) {
-			return builder.or(predicates.toArray(new Predicate[] {}));
-		} else if (operator == LogicalOperator.NOT) {
-			List<Predicate> notPredicates = new ArrayList<>();
-			for (Predicate p : predicates) {
-				notPredicates.add(p.not());
-			}
-			return builder.and(notPredicates.toArray(new Predicate[] {}));
-		} else {
-			// default to AND if 'operator' not specified
-			return builder.and(predicates.toArray(new Predicate[] {}));
-		}
-	}
-
-	/**
-	 * 
-	 * Build {@link Predicate} for given {@link ConditionClause} input and pre-cached per-fieldname units.
-	 * The pre-cached units is provided in case it's already available for performance optimization, 
-	 * otherwise the units will be resolved from the Enum class and add to where clause if {@link ConditionClause} contains unit.
-	 * 
-	 * @param <T>
-	 * @param builder
-	 * @param root
-	 * @param conditionClause
-	 * @param dataAvailableUnitsOfFieldNames
-	 * @return
-	 */
-	public static <T> Predicate buildPredicate(CriteriaBuilder builder, Root<T> root, 
-			ConditionClause conditionClause, 
-			Map<String, Set<Object>> dataAvailableUnitsOfFieldNames) {
-
-		if (conditionClause == null) {
-			return null;
-		}
-		List<String> conditions = conditionClause.getConditions();
-		List<ConditionClause> subConditionClauses = conditionClause.getSubConditionClauses();
-		if (ObjectUtils.isEmpty(conditions) && ObjectUtils.isEmpty(subConditionClauses)) {
-			return null;
-		}
-		if (log.isDebugEnabled()) {
-			log.debug("Building query {} ", conditionClause);
-		}
-		List<Predicate> predicates = new ArrayList<>();
-		if (conditions != null) {
-			for (String condition : conditions) {
-				Predicate predicate = null;
-				ConditionLine cl = ConditionLine.parse(condition);
-				Class<? extends Object> fieldType = root.get(cl.getFieldName()).getJavaType();
-				if (Number.class.isAssignableFrom(fieldType)) {
-					if (StringUtils.isNotEmpty(cl.getUnit())) {
-						Enum<?>[] units = null;
-						if (dataAvailableUnitsOfFieldNames != null) {
-							Set<Object> unitObjects = dataAvailableUnitsOfFieldNames.get(cl.getFieldName());
-							if (unitObjects != null) {
-								units = unitObjects.stream().filter(u -> u.getClass().isEnum()).toArray(Enum<?>[]::new);
-							}
-						}
-						predicate = JPAUtils.buildUnitBasedPredicateForNumber(builder, root, fieldType, cl, units);
-					} else {
-						predicate = JPAUtils.buildPredicateForNumber(builder, root.get(cl.getFieldName()), fieldType, cl);
-					}
-				} else if (Boolean.class == fieldType) {
-					if (cl.getOperator() == RelationalOperator.EQ || cl.getOperator() == RelationalOperator.IS) {
-						Boolean booleanVal = Boolean.valueOf(cl.getValue());
-						if (booleanVal == true) {
-							predicate = builder.isTrue(root.get(cl.getFieldName()));
-						} else {
-							predicate = builder.isFalse(root.get(cl.getFieldName()));
-						}
-					} else {
-						log.error("Unable to parse boolean condition {} ", condition);
-					}
-				} else {
-					predicate = JPAUtils.buildPredicateForString(builder, root.get(cl.getFieldName()), cl);
-				}
-				if (predicate != null) {
-					predicates.add(predicate);
-				}
-			}
-		}
-		if (subConditionClauses != null) {
-			for (ConditionClause subCond : subConditionClauses) {
-				Predicate subPredicate = buildPredicate(builder, root, subCond, dataAvailableUnitsOfFieldNames);
-				if (subPredicate != null) {
-					predicates.add(subPredicate);
-				}
-			}
-		}
-		return JPAUtils.buildConjunctPredicate(builder, predicates, conditionClause.getOperator());
-	}
 	
 	@SuppressWarnings("unchecked")
 	public static <U, N extends Number> Map<U, Range<N>> findMinMaxByUnits(MotorCategory.Type type, String category, String series,
