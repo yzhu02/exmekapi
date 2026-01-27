@@ -5,5 +5,5 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
 import com.exmek.core.persistence.entity.LightweightStepperMotorEntity;
 
-public interface LightStepperMotorRepository extends BaseProductRepository<LightweightStepperMotorEntity>, JpaRepository<LightweightStepperMotorEntity, Long>, JpaSpecificationExecutor<LightweightStepperMotorEntity> {
+public interface LightweightStepperMotorRepository extends BaseProductRepository<LightweightStepperMotorEntity>, JpaRepository<LightweightStepperMotorEntity, Long>, JpaSpecificationExecutor<LightweightStepperMotorEntity> {
 }

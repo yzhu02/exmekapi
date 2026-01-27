@@ -12,7 +12,7 @@ public class LightweightStepperMotorEntity extends AbstractStepperMotorEntity {
 
 	@Override
 	public AbstractMotorCategoryEntity getMotorCategory() {
-		DCMotorCategoryEntity entity = new DCMotorCategoryEntity();
+		StepperMotorCategoryEntity entity = new StepperMotorCategoryEntity();
 		entity.setCategory(getCategory());
 		return entity;
 	}

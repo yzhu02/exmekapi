@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.BiFunction;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.apache.commons.beanutils.PropertyUtils;
@@ -29,7 +30,6 @@ import com.exmek.core.rest.ConditionLine;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.Path;
 import jakarta.persistence.criteria.Predicate;
-import jakarta.persistence.criteria.Root;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -43,13 +43,13 @@ public class JPAUtils {
 	 * 
 	 * @param <T>
 	 * @param builder
-	 * @param root
+	 * @param rootPathResolver
 	 * @param conditionClause
 	 * @param dataAvailableUnitsOfFieldNames
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	public static <T> Predicate buildPredicate(CriteriaBuilder builder, Root<T> root, 
+	public static Predicate buildPredicate(CriteriaBuilder builder, Function<String, Path<?>> rootPathResolver, 
 			ConditionClause conditionClause, 
 			Map<String, Set<Object>> dataAvailableUnitsOfFieldNames) {
 
@@ -69,6 +69,7 @@ public class JPAUtils {
 			for (String condition : conditions) {
 				Predicate predicate = null;
 				ConditionLine cl = ConditionLine.parse(condition);
+				Path<?> root = rootPathResolver.apply(cl.getFieldName());
 				Class<? extends Object> fieldType = root.get(cl.getFieldName()).getJavaType();
 				if (Number.class.isAssignableFrom(fieldType)) {
 					if (StringUtils.isNotEmpty(cl.getUnit())) {
@@ -79,7 +80,7 @@ public class JPAUtils {
 								units = unitObjects.stream().filter(u -> u.getClass().isEnum()).toArray(Enum<?>[]::new);
 							}
 						}
-						predicate = JPAUtils.buildUnitBasedPredicateForNumber(builder, root, (Class<? extends Number>) fieldType, cl, units);
+						predicate = JPAUtils.buildUnitBasedPredicateForNumber(builder, rootPathResolver, (Class<? extends Number>) fieldType, cl, units);
 					} else {
 						predicate = JPAUtils.buildPredicateForNumber(builder, root.get(cl.getFieldName()), (Class<? extends Number>) fieldType, cl);
 					}
@@ -104,7 +105,7 @@ public class JPAUtils {
 		}
 		if (subConditionClauses != null) {
 			for (ConditionClause subCond : subConditionClauses) {
-				Predicate subPredicate = buildPredicate(builder, root, subCond, dataAvailableUnitsOfFieldNames);
+				Predicate subPredicate = buildPredicate(builder, rootPathResolver, subCond, dataAvailableUnitsOfFieldNames);
 				if (subPredicate != null) {
 					predicates.add(subPredicate);
 				}
@@ -113,12 +114,13 @@ public class JPAUtils {
 		return JPAUtils.buildConjunctPredicate(builder, predicates, conditionClause.getOperator());
 	}
 
-	public static <T> Predicate buildUnitBasedPredicateForNumber(CriteriaBuilder builder, Root<T> root, 
+	public static <T> Predicate buildUnitBasedPredicateForNumber(CriteriaBuilder builder, Function<String, Path<?>> rootPathResolver, 
 			Class<? extends Number> fieldType, ConditionLine cl, Enum<?>[] units) {
 
+		Path<?> root = rootPathResolver.apply(cl.getFieldName());
 		Predicate originPredicate = JPAUtils.buildPredicateForNumber(builder, root.get(cl.getFieldName()), fieldType, cl);
 		
-		Class<? extends T> entityClass = root.getJavaType();
+		Class<?> entityClass = root.getJavaType();
 		String unitFieldName = cl.getFieldName() + AbstractProductEntity.UNIT_FIELD_SUFFIX;
 		Field unitField = null;
 		try {

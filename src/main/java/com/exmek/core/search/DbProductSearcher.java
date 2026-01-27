@@ -44,7 +44,7 @@ public class DbProductSearcher {
 		
 		log.info("Searching product with query {} and pageNumber {}, pageSize {} ", conditionClause, pageNumber, pageSize);
 		Specification<T> jpaSpec = (root, query, builder) -> {
-			Predicate pConditions = JPAUtils.buildPredicate(builder, root, conditionClause, dataAvailableUnitsOfFieldNames);
+			Predicate pConditions = JPAUtils.buildPredicate(builder, fn -> root, conditionClause, dataAvailableUnitsOfFieldNames);
 			if (fAdditionalCondition != null) {
 				Pair<Predicate, LogicalOperator> pAdditionalCondition = fAdditionalCondition.apply(root, builder);
 				if (pAdditionalCondition != null) {

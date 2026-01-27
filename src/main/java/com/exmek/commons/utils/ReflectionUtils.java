@@ -4,9 +4,13 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.function.Predicate;
 
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -182,4 +186,25 @@ public class ReflectionUtils {
 		}
 		return enumObject.name();
 	}
+
+	public static Map<String, Field> collectFields(Class<?> clazz, Predicate<Field> filter) {
+		Map<String, Field> fieldsMap = new HashMap<>();
+		while (clazz != null && clazz != Object.class) {
+			Field[] fields = clazz.getDeclaredFields();
+			for (Field field : fields) {
+				if (Modifier.isStatic(field.getModifiers()) 
+						|| Modifier.isTransient(field.getModifiers()) 
+						|| Modifier.isVolatile(field.getModifiers())) {
+					continue;
+				}
+				if (filter.test(field)) {
+					fieldsMap.put(field.getName(), field);
+				}
+			}
+			clazz = clazz.getSuperclass();
+		}
+		return fieldsMap;
+	}
+
+
 }

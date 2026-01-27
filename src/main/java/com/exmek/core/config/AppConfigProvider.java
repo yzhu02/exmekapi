@@ -57,6 +57,8 @@ public class AppConfigProvider implements Scheduleable {
 	public static final String CONFIG_NAME_MEASURABLE_CONVERSION_RATIOS					= "measurable.conversionRatios";
 
 	public static final String CONFIG_NAME_NEW_PRODUCT_AGING_DAYS						= "product.new.aging.days";
+	
+	public static final String CONFIG_LINEAR_STEPPER_MOTOR_MODEL_WITH_LEAD_CODE_ENABLED	= "linearStepperMotor.modelWithLeadCode.enabled";
 
 
 	private static final String DEFAULT_VALUE_SMTP_EXMEKSYS_							= "{\"host\": \"smtp.gmail.com\", \"port\": 587, \"user\": \"exmeksys@gmail.com\", \"password\": \"mzuhdzrzhyeostbe\", \"properties\": {\"mail.transport.protocol\": \"smtp\", \"mail.smtp.auth\": \"true\", \"mail.smtp.starttls.enable\": \"true\"}}";
@@ -185,5 +187,9 @@ public class AppConfigProvider implements Scheduleable {
 			log.error("Failed to parse {} to days. ", daysStr);
 			return null;
 		}
+	}
+	
+	public Boolean getLinearStepperMotorModelWithLeadCodeEnabled() {
+		return BooleanUtils.toBoolean(getConfigValue(CONFIG_LINEAR_STEPPER_MOTOR_MODEL_WITH_LEAD_CODE_ENABLED, "true"));
 	}
 }

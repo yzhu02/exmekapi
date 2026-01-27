@@ -17,6 +17,7 @@ import org.springframework.util.ObjectUtils;
 import com.exmek.core.model.AbstractMotor;
 import com.exmek.core.model.DCMotor;
 import com.exmek.core.model.LeadDef;
+import com.exmek.core.model.LeadFlattenLinearStepperMotor;
 import com.exmek.core.model.LinearStepperMotor;
 import com.exmek.core.model.MotorSeries;
 import com.exmek.core.model.Spec;
@@ -31,6 +32,7 @@ import com.exmek.core.persistence.entity.LeadDefEntity;
 import com.exmek.core.persistence.entity.LightweightDCMotorEntity;
 import com.exmek.core.persistence.entity.LightweightStepperMotorEntity;
 import com.exmek.core.persistence.entity.StepperMotorEntity;
+import com.exmek.core.persistence.projection.LightweightLeadFlattenLinearStepperMotorProjection;
 
 @Component
 public class MotorMapper extends AbstractProductMapper {
@@ -216,5 +218,18 @@ public class MotorMapper extends AbstractProductMapper {
 		lead.setScrewDiameterMM(leadEntity.getScrewDiameterMM());
 		lead.setThreads(leadEntity.getThreads());
 		return lead;
+	}
+
+	public LeadFlattenLinearStepperMotor mapToLeadFlattenLinearStepperMotor(LightweightLeadFlattenLinearStepperMotorProjection source) {
+		LeadFlattenLinearStepperMotor linearStepperMotor = super.mapProduct(source, LeadFlattenLinearStepperMotor::new);
+		performBasicStepperMotorMapping(linearStepperMotor, source);
+		linearStepperMotor.setModel(source.getModel() + "-" + source.getCode()); // Overwrite the model by appending "-{LEAD_CODE}"
+		linearStepperMotor.setLeadCode(source.getCode());
+		linearStepperMotor.setScrewDiameterInch(source.getScrewDiameterInch());
+		linearStepperMotor.setScrewDiameterMM(source.getScrewDiameterMM());
+		linearStepperMotor.setLeadInch(source.getLeadInch());
+		linearStepperMotor.setLeadMM(source.getLeadMM());
+		linearStepperMotor.setThreads(source.getThreads());
+		return linearStepperMotor;
 	}
 }

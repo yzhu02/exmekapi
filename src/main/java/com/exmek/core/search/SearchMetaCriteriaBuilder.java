@@ -1,9 +1,7 @@
 package com.exmek.core.search;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.BiFunction;
@@ -13,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.exmek.commons.utils.MiscUtils;
+import com.exmek.commons.utils.ReflectionUtils;
 import com.exmek.core.annotation.Searchable;
 import com.exmek.core.commons.model.Range;
 import com.exmek.core.config.AppConfigProvider;
@@ -46,7 +45,7 @@ public class SearchMetaCriteriaBuilder {
 		if (entityClass == null) {
 			throw new RuntimeException("Unable to initialize 'fieldMetaCriteria' as 'entityClass' is not defined.");
 		}
-		Map<String, Field> fieldsMap = collectFields(entityClass);
+		Map<String, Field> fieldsMap = ReflectionUtils.collectFields(entityClass, f -> true);
 		for (String searchMetaFieldName : searchMetaFieldNames) {
 			if (!fieldsMap.containsKey(searchMetaFieldName)) {
 				continue;
@@ -66,37 +65,13 @@ public class SearchMetaCriteriaBuilder {
 		if (entityClass == null) {
 			throw new RuntimeException("Unable to initialize 'fieldMetaCriteria' as 'entityClass' is not defined.");
 		}
-		Map<String, Field> fieldsMap = collectFields(entityClass);
-		Class<?> clazz = entityClass;
-		while (clazz != null && clazz != Object.class) {
-			Field[] fields = clazz.getDeclaredFields();
-			for (Field field : fields) {
-				if (!field.isAnnotationPresent(Searchable.class)) {
-					continue;
-				}
-				FieldMetaCriterion c = createFieldMetaCriterion(field.getName(), fieldsMap, criteriaKey, minMaxByUnitsLoader);
-				fieldMetaCriteria.add(c);
-			}
-			clazz = clazz.getSuperclass();
+		Map<String, Field> fieldsMap = ReflectionUtils.collectFields(entityClass, f -> f.isAnnotationPresent(Searchable.class));
+		for (Map.Entry<String, Field> entry : fieldsMap.entrySet()) {
+			Field f = entry.getValue();
+			FieldMetaCriterion c = createFieldMetaCriterion(f.getName(), fieldsMap, criteriaKey, minMaxByUnitsLoader);
+			fieldMetaCriteria.add(c);
 		}
 		return fieldMetaCriteria;
-	}
-
-	Map<String, Field> collectFields(Class<?> clazz) {
-		Map<String, Field> fieldsMap = new HashMap<>();
-		while (clazz != null && clazz != Object.class) {
-			Field[] fields = clazz.getDeclaredFields();
-			for (Field field : fields) {
-				if (Modifier.isStatic(field.getModifiers()) 
-						|| Modifier.isTransient(field.getModifiers()) 
-						|| Modifier.isVolatile(field.getModifiers())) {
-					continue;
-				}
-				fieldsMap.put(field.getName(), field);
-			}
-			clazz = clazz.getSuperclass();
-		}
-		return fieldsMap;
 	}
 
 	private FieldMetaCriterion createFieldMetaCriterion(String searchMetaFieldName, 
