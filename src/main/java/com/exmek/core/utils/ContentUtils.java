@@ -12,9 +12,10 @@ public class ContentUtils {
 	public static <M, T> void populatePageableListDataResponse(PageableListDataResponse<M> dataResponse, Page<T> page) {
 		dataResponse.setPageNumber(page.getNumber());
 		dataResponse.setPageSize(page.getSize());
-		dataResponse.setTotalPages(page.getTotalPages());
-		dataResponse.setTotalElementsOfAllPages(Long.valueOf(page.getTotalElements()).intValue());
 		dataResponse.setTotalElementsOfCurrPage(page.getNumberOfElements());
+		
+		dataResponse.setTotalElementsOfAllPages(Long.valueOf(page.getTotalElements()).intValue());
+		dataResponse.setTotalPages(page.getTotalPages());
 	}
 
 }

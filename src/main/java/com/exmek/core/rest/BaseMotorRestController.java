@@ -10,11 +10,11 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.util.Pair;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -156,10 +156,10 @@ extends BaseProductRestController<T, L, M, SE, MotorSeries> {
 			String type, Integer pageNumber, Integer pageSize) {
 		
 		if (ObjectUtils.isEmpty(type)) {
-			return super.searchBy(conditionClause, null, pageNumber, pageSize, null);
+			return searchBy(conditionClause, null, pageNumber, pageSize, null);
 		}
 		Map<String, Set<Object>> dataAvailableUnitsOfFieldNames = getCachedDataAvailableUnitsOfFieldNames();
-		return super.searchBy(conditionClause, (root, builder) -> {
+		return searchBy(conditionClause, (root, builder) -> {
 			Join<T, CE> categoryJoin = root.join(AbstractMotorEntity.FIELD_NAME_MOTOR_CATEGORY);
 			Predicate pType = builder.equal(categoryJoin.get(AbstractMotorCategoryEntity.FIELD_NAME_TYPE), Type.valueOf(type.toUpperCase()));
 			return Pair.of(pType, LogicalOperator.AND);
@@ -178,7 +178,7 @@ extends BaseProductRestController<T, L, M, SE, MotorSeries> {
 			additionalFieldMatching.add(Pair.of(AbstractMotorEntity.FIELD_NAME_SERIES, series));
 		}
 		Map<String, Set<Object>> dataAvailableUnitsOfFieldNames = getCachedDataAvailableUnitsOfFieldNames();
-		return super.searchWith(conditionClause, additionalFieldMatching, pageNumber, pageSize, dataAvailableUnitsOfFieldNames);
+		return searchWith(conditionClause, additionalFieldMatching, pageNumber, pageSize, dataAvailableUnitsOfFieldNames);
 	}
 
 }

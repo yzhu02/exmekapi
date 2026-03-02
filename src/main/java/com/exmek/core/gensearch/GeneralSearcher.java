@@ -2,17 +2,25 @@ package com.exmek.core.gensearch;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import java.util.function.Function;
 
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.ObjectUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.exmek.core.config.AppConfigProvider;
 import com.exmek.core.persistence.entity.AbstractProductEntity;
+import com.exmek.core.persistence.entity.LeadDefEntity;
+import com.exmek.core.persistence.entity.StepperMotorEntity;
 import com.exmek.core.persistence.repository.BrakeRepository;
 import com.exmek.core.persistence.repository.DCMotorRepository;
 import com.exmek.core.persistence.repository.PlanetaryGearboxRepository;
 import com.exmek.core.persistence.repository.StepperMotorRepository;
+import com.exmek.core.utils.MotorUtils;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -20,6 +28,9 @@ import lombok.extern.slf4j.Slf4j;
 @Component
 public class GeneralSearcher {
 
+	@Autowired
+	protected AppConfigProvider appConfigProvider;
+	
 	@Autowired
 	private DCMotorRepository dcMotorRepository;
 	
@@ -38,6 +49,26 @@ public class GeneralSearcher {
 		log.info("Searching product by model for keyword {} ", keyword);
 		findToAdd(keyword, k -> dcMotorRepository.findByModelContaining(k), GeneralSearchItem.Type.DC_MOTOR, matchingField, result);
 		findToAdd(keyword, k -> stepperMotorRepository.findByModelContaining(k), GeneralSearchItem.Type.STEPPER_MOTOR, matchingField, result);
+		if (BooleanUtils.isTrue(appConfigProvider.getLinearStepperMotorModelWithLeadCodeEnabled())
+				&& MotorUtils.maybeLinearStepperMotor(keyword)) {
+			String[] modelAndLeadCode = keyword.split("-");
+			Optional<StepperMotorEntity> opEntity = stepperMotorRepository.findByModel(modelAndLeadCode[0]);
+			if (opEntity.isPresent()) {
+				StepperMotorEntity linearStepperMotorEntity = opEntity.get();
+				Set<LeadDefEntity> leads = linearStepperMotorEntity.getLinearStepperMotorLeads();
+				if (leads != null) {
+					if (leads.stream().anyMatch(lead -> StringUtils.equals(lead.getCode(), modelAndLeadCode[1]))) {
+						result.add(GeneralSearchItem.builder()
+								.type(GeneralSearchItem.Type.STEPPER_MOTOR)
+								.model(MotorUtils.makeLinearStepperMotorLeadFlattenModel(linearStepperMotorEntity.getModel(), modelAndLeadCode[1]))
+								.resourceKey(linearStepperMotorEntity.getModel())
+								.description(linearStepperMotorEntity.getDescription())
+								.matchingField(matchingField)
+								.build());
+					}
+				}
+			}
+		}
 		findToAdd(keyword, k -> planetaryGearboxRepository.findByModelContaining(k), GeneralSearchItem.Type.PLANETARY_GEARBOX, matchingField, result);
 		findToAdd(keyword, k -> brakeRepository.findByModelContaining(k), GeneralSearchItem.Type.BRAKE, matchingField, result);
 		return result;
@@ -68,6 +99,7 @@ public class GeneralSearcher {
 		foundProducts.forEach(p -> result.add(GeneralSearchItem.builder()
 				.type(type)
 				.model(p.getModel())
+				.resourceKey(p.getModel())
 				.description(p.getDescription())
 				.matchingField(matchingField)
 				.build())

@@ -10,8 +10,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -21,12 +23,15 @@ import com.exmek.commons.utils.ReflectionUtils;
 import com.exmek.core.persistence.JPAUtils;
 import com.exmek.core.persistence.entity.LeadDefEntity;
 import com.exmek.core.persistence.entity.StepperMotorEntity;
+import com.exmek.core.persistence.projection.LeadFlattenLinearStepperMotorProjection;
 import com.exmek.core.persistence.projection.LightweightLeadFlattenLinearStepperMotorProjection;
 import com.exmek.core.rest.ConditionClause;
+import com.exmek.core.rest.ConditionLine;
 
 import jakarta.annotation.PostConstruct;
 import jakarta.persistence.Column;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.TypedQuery;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
@@ -38,6 +43,7 @@ import jakarta.persistence.criteria.Root;
 import jakarta.persistence.criteria.Selection;
 import lombok.RequiredArgsConstructor;
 
+@Deprecated
 @Repository
 @RequiredArgsConstructor
 public class LeadFlattenLinearStepperMotorRepository {
@@ -55,19 +61,22 @@ public class LeadFlattenLinearStepperMotorRepository {
     private void init() {
     	fieldOwnerMap = new HashMap<>();
     	
-    	Map<String, Field> stepperMotorEntityFields = ReflectionUtils.collectFields(StepperMotorEntity.class, f -> f.isAnnotationPresent(Column.class));
+    	Map<String, Field> stepperMotorEntityFields = ReflectionUtils.collectFields(StepperMotorEntity.class, 
+    			f -> f.isAnnotationPresent(Column.class) || f.isAnnotationPresent(JoinColumn.class));
     	for (Map.Entry<String, Field> entry : stepperMotorEntityFields.entrySet()) {
     		Field f = entry.getValue();
     		fieldOwnerMap.put(f.getName(), FieldOwner.STEPPER_MOTOR_ENTITY);
     	}
     	
-    	Map<String, Field> leadJoinFields = ReflectionUtils.collectFields(LeadDefEntity.class, f -> f.isAnnotationPresent(Column.class));
+    	Map<String, Field> leadJoinFields = ReflectionUtils.collectFields(LeadDefEntity.class, 
+    			f -> f.isAnnotationPresent(Column.class) || f.isAnnotationPresent(JoinColumn.class));
     	for (Map.Entry<String, Field> entry : leadJoinFields.entrySet()) {
     		Field f = entry.getValue();
     		fieldOwnerMap.put(f.getName(), FieldOwner.LEAD_JOIN);
     	}
     }
 
+    @Deprecated
     public Page<LightweightLeadFlattenLinearStepperMotorProjection> findLightweightLeadFlattenLinearStepperMotorProjections(
             ConditionClause conditionClause,
             String category,
@@ -101,6 +110,7 @@ public class LeadFlattenLinearStepperMotorRepository {
 			};
 		};
         if (conditionClause != null) {
+        	resolveDynamicModelAndLeadCode(conditionClause.getConditions());
         	Predicate dynamicPredicate = JPAUtils.buildPredicate(cb, rootPathResolver, conditionClause, null);
         	if (dynamicPredicate != null) {
         		predicates.add(dynamicPredicate);
@@ -164,8 +174,40 @@ public class LeadFlattenLinearStepperMotorRepository {
         	return new PageImpl<>(data);
         }
     }
-        
-    private Selection<?>[] resolveSelectionsBasedOnConstructor(Class<?> clazz, Function<String, Path<?>> rootPathResolver) {
+
+    private void resolveDynamicModelAndLeadCode(List<String> conditions) {
+		if (CollectionUtils.isEmpty(conditions)) {
+			return;
+		}
+		String modelLikePrefix = "model LIKE ";
+		List<String> toAddLeadCodeConditions = new ArrayList<>();
+		for (int i = 0; i < conditions.size(); i++) {
+			String c = conditions.get(i);
+			if (c.startsWith(modelLikePrefix)) {
+				ConditionLine cl = ConditionLine.parse(c);
+				Pair<String, String> pModelAndLeadCode = parseLinearStepperMotorModelAndLeadCode(cl.getValue()); // like "LS057NB103-K0050"
+				if (pModelAndLeadCode != null) {
+					conditions.set(i, modelLikePrefix + pModelAndLeadCode.getLeft());
+					toAddLeadCodeConditions.add("code LIKE " + pModelAndLeadCode.getRight());
+				}
+			}
+		}
+		if (CollectionUtils.isNotEmpty(toAddLeadCodeConditions)) {
+			for (String toAddLeadCode : toAddLeadCodeConditions) {
+				conditions.add(toAddLeadCode);
+			}
+		}
+	}
+    
+    private Pair<String, String> parseLinearStepperMotorModelAndLeadCode(String linearStepperMotorCombinedModel) {
+    	if (linearStepperMotorCombinedModel.contains("-")) {
+			String[] splitted = linearStepperMotorCombinedModel.split("-");
+			return Pair.of(splitted[0], splitted[1]);
+		}
+    	return null;
+    }
+
+	private Selection<?>[] resolveSelectionsBasedOnConstructor(Class<?> clazz, Function<String, Path<?>> rootPathResolver) {
     	Constructor<?>[] constructors = clazz.getDeclaredConstructors();
     	Constructor<?> selectedConstructor = Arrays.stream(constructors)
     			.filter(c -> ObjectUtils.isNotEmpty(c.getParameters()))
@@ -180,4 +222,47 @@ public class LeadFlattenLinearStepperMotorRepository {
         return selections;
     }
 
+	@Deprecated
+    public LeadFlattenLinearStepperMotorProjection findLeadFlattenLinearStepperMotorProjection(String linearStepperMotorModel) {
+
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+
+        CriteriaQuery<LeadFlattenLinearStepperMotorProjection> mainQuery =
+                cb.createQuery(LeadFlattenLinearStepperMotorProjection.class);
+
+        Root<StepperMotorEntity> stepperMotorRoot = mainQuery.from(StepperMotorEntity.class);
+        Join<StepperMotorEntity, LeadDefEntity> leadJoin =
+                stepperMotorRoot.join("linearStepperMotorLeads", JoinType.INNER);
+
+        List<Predicate> predicates = new ArrayList<>();
+        
+        Pair<String, String> pModelAndLeadCode = parseLinearStepperMotorModelAndLeadCode(linearStepperMotorModel); // like "LS057NB103-K0050"
+        if (pModelAndLeadCode != null) {
+        	predicates.add(cb.equal(stepperMotorRoot.get("model"), pModelAndLeadCode.getLeft()));
+        	predicates.add(cb.equal(leadJoin.get("code"), pModelAndLeadCode.getRight()));
+        } else {
+        	predicates.add(cb.equal(stepperMotorRoot.get("model"), linearStepperMotorModel));
+        }
+        
+        Function<String, Path<?>> rootPathResolver = fn -> {
+    		return switch (fieldOwnerMap.get(fn)) {
+				case STEPPER_MOTOR_ENTITY -> stepperMotorRoot;
+				case LEAD_JOIN -> leadJoin;
+			};
+		};
+        
+        mainQuery.where(predicates.toArray(new Predicate[0]));
+
+        // Projection
+        mainQuery.select(
+        		cb.construct(LeadFlattenLinearStepperMotorProjection.class, 
+        				resolveSelectionsBasedOnConstructor(LeadFlattenLinearStepperMotorProjection.class, rootPathResolver)
+        ));
+
+        TypedQuery<LeadFlattenLinearStepperMotorProjection> query = entityManager.createQuery(mainQuery);
+
+        
+        return query.getSingleResult();
+
+    }
 }

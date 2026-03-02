@@ -2,14 +2,17 @@ package com.exmek.core.mapper;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ObjectUtils;
@@ -30,9 +33,11 @@ import com.exmek.core.persistence.entity.AbstractStepperMotorEntity;
 import com.exmek.core.persistence.entity.DCMotorEntity;
 import com.exmek.core.persistence.entity.LeadDefEntity;
 import com.exmek.core.persistence.entity.LightweightDCMotorEntity;
-import com.exmek.core.persistence.entity.LightweightStepperMotorEntity;
+import com.exmek.core.persistence.entity.LightweightLeadFlattenStepperMotorEntity;
 import com.exmek.core.persistence.entity.StepperMotorEntity;
+import com.exmek.core.persistence.projection.LeadFlattenLinearStepperMotorProjection;
 import com.exmek.core.persistence.projection.LightweightLeadFlattenLinearStepperMotorProjection;
+import com.exmek.core.utils.MotorUtils;
 
 @Component
 public class MotorMapper extends AbstractProductMapper {
@@ -157,7 +162,7 @@ public class MotorMapper extends AbstractProductMapper {
 		motor.setMaxThrust(toMeasuredValue(entity.getMaxThrust(), entity.getMaxThrustUnit()));
 	}
 
-	public StepperMotor mapLightweightStepperMotorToModel(LightweightStepperMotorEntity entity) {
+	public StepperMotor mapLightweightStepperMotorToModel(AbstractStepperMotorEntity entity) {
 		if (entity == null) {
 			return null;
 		}
@@ -220,10 +225,73 @@ public class MotorMapper extends AbstractProductMapper {
 		return lead;
 	}
 
+	
+	
+	public LeadFlattenLinearStepperMotor mapToLeadFlattenLinearStepperMotor(StepperMotorEntity entity, String leadCode) {
+		LeadFlattenLinearStepperMotor linearStepperMotor = super.mapProduct(entity, LeadFlattenLinearStepperMotor::new);
+		performBasicStepperMotorMapping(linearStepperMotor, entity);
+		linearStepperMotor.setMotorCategory(MotorCategoryMapper.mapEntityToCategory(entity.getMotorCategory(), false));
+		linearStepperMotor.setProductSeries(AbstractSeriesMapper.mapEntityToSeries(entity.getProductSeries(), MotorSeries::new, false));
+		linearStepperMotor.setAllSpecs(mapAllCombinedSpecs(entity, entity.getSpecs(), appConfigProvider.getSearchStepperMotorMetaCriteriaFields(), STEPPER_MOTOR_EXCLUDED_FIELDS_TO_SPECS));
+		linearStepperMotor.setPerfCurves(motorPerfCurveMapper.mapToLinearStepperMotorPerfCurveModels(entity.getPerfMeasurements(), entity.getModel()));
+		performResourceMapping(linearStepperMotor, entity);
+		
+		Set<LeadDefEntity> leads = entity.getLinearStepperMotorLeads();
+		if (CollectionUtils.isEmpty(leads)) {
+			return linearStepperMotor;
+		}
+		Optional<LeadDefEntity> opLeadEntity = leads.stream()
+			.filter(lead -> StringUtils.equals(lead.getCode(), leadCode))
+			.findFirst();
+		if (opLeadEntity.isPresent()) {
+			LeadDefEntity leadEntity = opLeadEntity.get();
+			linearStepperMotor.setModel(MotorUtils.makeLinearStepperMotorLeadFlattenModel(entity.getModel(), leadEntity.getCode())); // Overwrite the model by appending "-{LEAD_CODE}"
+			linearStepperMotor.setLeadCode(leadEntity.getCode());
+			linearStepperMotor.setScrewDiameterInch(leadEntity.getScrewDiameterInch());
+			linearStepperMotor.setScrewDiameterMM(leadEntity.getScrewDiameterMM());
+			linearStepperMotor.setLeadInch(leadEntity.getLeadInch());
+			linearStepperMotor.setLeadMM(leadEntity.getLeadMM());
+			linearStepperMotor.setThreads(leadEntity.getThreads());
+		}
+		return linearStepperMotor;
+	}
+	
+	public List<LeadFlattenLinearStepperMotor> mapToLeadFlattenLinearStepperMotors(LightweightLeadFlattenStepperMotorEntity entity) {
+		return mapToLeadFlattenLinearStepperMotors(entity, entity.getLinearStepperMotorLeads());
+	}
+
+	// To map to List of LeadFlattenLinearStepperMotor with specified Collection of LeadDefEntity
+	public List<LeadFlattenLinearStepperMotor> mapToLeadFlattenLinearStepperMotors(LightweightLeadFlattenStepperMotorEntity entity, Collection<LeadDefEntity> mappingLeadEntities) {
+		if (CollectionUtils.isEmpty(mappingLeadEntities)) {
+			LeadFlattenLinearStepperMotor linearStepperMotor = super.mapProduct(entity, LeadFlattenLinearStepperMotor::new);
+			performBasicStepperMotorMapping(linearStepperMotor, entity);
+			return List.of(linearStepperMotor);
+		}
+		
+		
+		List<LeadFlattenLinearStepperMotor> flattenLinearStepperMotors = new ArrayList<>();
+		for (LeadDefEntity leadEntity : mappingLeadEntities) {
+			LeadFlattenLinearStepperMotor linearStepperMotor = super.mapProduct(entity, LeadFlattenLinearStepperMotor::new);
+			performBasicStepperMotorMapping(linearStepperMotor, entity);
+			linearStepperMotor.setModel(MotorUtils.makeLinearStepperMotorLeadFlattenModel(entity.getModel(), leadEntity.getCode())); // Overwrite the model by appending "-{LEAD_CODE}"
+			linearStepperMotor.setLeadCode(leadEntity.getCode());
+			linearStepperMotor.setScrewDiameterInch(leadEntity.getScrewDiameterInch());
+			linearStepperMotor.setScrewDiameterMM(leadEntity.getScrewDiameterMM());
+			linearStepperMotor.setLeadInch(leadEntity.getLeadInch());
+			linearStepperMotor.setLeadMM(leadEntity.getLeadMM());
+			linearStepperMotor.setThreads(leadEntity.getThreads());
+			flattenLinearStepperMotors.add(linearStepperMotor);
+		}
+		return flattenLinearStepperMotors;
+	}
+	
+	@Deprecated
 	public LeadFlattenLinearStepperMotor mapToLeadFlattenLinearStepperMotor(LightweightLeadFlattenLinearStepperMotorProjection source) {
 		LeadFlattenLinearStepperMotor linearStepperMotor = super.mapProduct(source, LeadFlattenLinearStepperMotor::new);
 		performBasicStepperMotorMapping(linearStepperMotor, source);
-		linearStepperMotor.setModel(source.getModel() + "-" + source.getCode()); // Overwrite the model by appending "-{LEAD_CODE}"
+		if (StringUtils.isNotEmpty(source.getCode())) {
+			linearStepperMotor.setModel(MotorUtils.makeLinearStepperMotorLeadFlattenModel(source.getModel(), source.getCode())); // Overwrite the model by appending "-{LEAD_CODE}"
+		}
 		linearStepperMotor.setLeadCode(source.getCode());
 		linearStepperMotor.setScrewDiameterInch(source.getScrewDiameterInch());
 		linearStepperMotor.setScrewDiameterMM(source.getScrewDiameterMM());
@@ -232,4 +300,29 @@ public class MotorMapper extends AbstractProductMapper {
 		linearStepperMotor.setThreads(source.getThreads());
 		return linearStepperMotor;
 	}
+
+	@Deprecated
+	public LeadFlattenLinearStepperMotor mapToLeadFlattenLinearStepperMotor(LeadFlattenLinearStepperMotorProjection source) {
+		LeadFlattenLinearStepperMotor linearStepperMotor = super.mapProduct(source, LeadFlattenLinearStepperMotor::new);
+		performBasicStepperMotorMapping(linearStepperMotor, source);
+		if (StringUtils.isNotEmpty(source.getCode())) {
+			linearStepperMotor.setModel(MotorUtils.makeLinearStepperMotorLeadFlattenModel(source.getModel(), source.getCode())); // Overwrite the model by appending "-{LEAD_CODE}"
+		}
+		
+		linearStepperMotor.setMotorCategory(MotorCategoryMapper.mapEntityToCategory(source.getMotorCategory(), false));
+		linearStepperMotor.setProductSeries(AbstractSeriesMapper.mapEntityToSeries(source.getProductSeries(), MotorSeries::new, false));
+		linearStepperMotor.setAllSpecs(mapAllCombinedSpecs(source, source.getSpecs(), appConfigProvider.getSearchStepperMotorMetaCriteriaFields(), STEPPER_MOTOR_EXCLUDED_FIELDS_TO_SPECS));
+		linearStepperMotor.setPerfCurves(motorPerfCurveMapper.mapToLinearStepperMotorPerfCurveModels(source.getPerfMeasurements(), source.getModel()));
+		
+		performResourceMapping(linearStepperMotor, source);
+		
+		linearStepperMotor.setLeadCode(source.getCode());
+		linearStepperMotor.setScrewDiameterInch(source.getScrewDiameterInch());
+		linearStepperMotor.setScrewDiameterMM(source.getScrewDiameterMM());
+		linearStepperMotor.setLeadInch(source.getLeadInch());
+		linearStepperMotor.setLeadMM(source.getLeadMM());
+		linearStepperMotor.setThreads(source.getThreads());
+		return linearStepperMotor;
+	}
+	
 }

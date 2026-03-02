@@ -3,6 +3,16 @@ package com.exmek.core.persistence.projection;
 import java.math.BigDecimal;
 import java.util.Set;
 
+import com.exmek.core.commons.enums.AngleUnit;
+import com.exmek.core.commons.enums.CurrentUnit;
+import com.exmek.core.commons.enums.ForceUnit;
+import com.exmek.core.commons.enums.InductanceUnit;
+import com.exmek.core.commons.enums.LengthUnit;
+import com.exmek.core.commons.enums.ResistanceUnit;
+import com.exmek.core.commons.enums.SizeMeasurementType;
+import com.exmek.core.commons.enums.TorqueUnit;
+import com.exmek.core.commons.enums.VoltageUnit;
+import com.exmek.core.commons.enums.WeightUnit;
 import com.exmek.core.persistence.entity.AbstractStepperMotorEntity;
 import com.exmek.core.persistence.entity.StepperMotorCategoryEntity;
 import com.exmek.core.persistence.entity.StepperMotorPerfMeasurementEntity;
@@ -16,6 +26,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 
+@Deprecated
 public class LeadFlattenLinearStepperMotorProjection extends AbstractStepperMotorEntity {
 
 	@ManyToOne(fetch = FetchType.EAGER)
@@ -53,6 +64,86 @@ public class LeadFlattenLinearStepperMotorProjection extends AbstractStepperMoto
 	@Column(name = "THREADS")
 	private Integer threads;
 
+	
+	/**
+	 * The parameter names must match with the field names in order to be used by LeadFlattenLinearStepperMotorRepository 
+	 */
+	public LeadFlattenLinearStepperMotorProjection(
+			String model,
+			BigDecimal length,
+			LengthUnit lengthUnit,
+			BigDecimal weight,
+			WeightUnit weightUnit,
+			BigDecimal frameSize,
+			LengthUnit frameSizeUnit,
+			SizeMeasurementType frameSizeType,
+			BigDecimal nemaSize,
+			BigDecimal ratedVoltage,
+			VoltageUnit ratedVoltageUnit,
+			BigDecimal phaseCurrent,
+			CurrentUnit phaseCurrentUnit,
+			BigDecimal phaseResistance,
+			ResistanceUnit phaseResistanceUnit,
+			BigDecimal phaseInductance,
+			InductanceUnit phaseInductanceUnit,
+			BigDecimal holdingTorque,
+			TorqueUnit holdingTorqueUnit,
+			BigDecimal detentTorque,
+			BigDecimal stepAngle,
+			AngleUnit stepAngleUnit,
+			BigDecimal maxThrust,
+			ForceUnit maxThrustUnit,
+			
+			StepperMotorCategoryEntity motorCategory,
+			StepperMotorSeriesEntity productSeries,
+			Set<StepperMotorSpecEntity> specs,
+			Set<StepperMotorPerfMeasurementEntity> perfMeasurements,
+			
+			String code,
+			BigDecimal screwDiameterInch,
+			BigDecimal screwDiameterMM,
+			BigDecimal leadInch,
+			BigDecimal leadMM,
+			Integer threads) {
+		
+		setModel(model);
+		setLength(length);
+		setLengthUnit(lengthUnit);
+		setWeight(weight);
+		setWeightUnit(weightUnit);
+		setFrameSize(frameSize);
+		setFrameSizeUnit(frameSizeUnit);
+		setFrameSizeType(frameSizeType);
+		setNemaSize(nemaSize);
+		setRatedVoltage(ratedVoltage);
+		setRatedVoltageUnit(ratedVoltageUnit);
+		setPhaseCurrent(phaseCurrent);
+		setPhaseCurrentUnit(phaseCurrentUnit);
+		setPhaseResistance(phaseResistance);
+		setPhaseResistanceUnit(phaseResistanceUnit);
+		setPhaseInductance(phaseInductance);
+		setPhaseInductanceUnit(phaseInductanceUnit);
+		setHoldingTorque(holdingTorque);
+		setHoldingTorqueUnit(holdingTorqueUnit);
+		setDetentTorque(detentTorque);
+		setStepAngle(stepAngle);
+		setStepAngleUnit(stepAngleUnit);
+		setMaxThrust(maxThrust);
+		setMaxThrustUnit(maxThrustUnit);
+		
+		
+		this.motorCategory = motorCategory;
+		this.productSeries = productSeries;
+		this.specs = specs;
+		this.perfMeasurements = perfMeasurements;
+		
+		this.code = code;
+		this.screwDiameterInch = screwDiameterInch;
+		this.screwDiameterMM = screwDiameterMM;
+		this.leadInch = leadInch;
+		this.leadMM = leadMM;
+		this.threads = threads; 
+	}
 	
 	@Override
 	public StepperMotorCategoryEntity getMotorCategory() {

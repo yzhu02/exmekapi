@@ -16,6 +16,7 @@ import com.exmek.core.persistence.entity.LightweightStepperMotorEntity;
 
 import jakarta.persistence.Column;
 
+@Deprecated
 public class LightweightLeadFlattenLinearStepperMotorProjection extends LightweightStepperMotorEntity {
 
 	@Column(name = "CODE")
@@ -64,6 +65,7 @@ public class LightweightLeadFlattenLinearStepperMotorProjection extends Lightwei
 			AngleUnit stepAngleUnit,
 			BigDecimal maxThrust,
 			ForceUnit maxThrustUnit,
+			
 			String code,
 			BigDecimal screwDiameterInch,
 			BigDecimal screwDiameterMM,
@@ -95,6 +97,7 @@ public class LightweightLeadFlattenLinearStepperMotorProjection extends Lightwei
 		setStepAngleUnit(stepAngleUnit);
 		setMaxThrust(maxThrust);
 		setMaxThrustUnit(maxThrustUnit);
+		
 		this.code = code;
 		this.screwDiameterInch = screwDiameterInch;
 		this.screwDiameterMM = screwDiameterMM;

@@ -11,8 +11,9 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.ObjectUtils;
+import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.util.Pair;
+import org.springframework.data.domain.Page;
 
 import com.exmek.commons.expr.LogicalOperator;
 import com.exmek.core.commons.model.Range;
@@ -34,6 +35,7 @@ import com.exmek.core.scheduler.Scheduleable;
 import com.exmek.core.search.DbProductSearcher;
 import com.exmek.core.search.SearchMetaCriteriaBuilder;
 import com.exmek.core.service.ProductService;
+import com.exmek.core.utils.ContentUtils;
 
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.Predicate;
@@ -198,17 +200,23 @@ implements ProductService<M>, Scheduleable {
 			Integer pageNumber, Integer pageSize,
 			Map<String, Set<Object>> dataAvailableUnitsOfFieldNames) {
 		return searchBy(conditionClause, (root, builder) -> {
-			if (!ObjectUtils.isEmpty(additionalFieldMatching)) {
-				List<Predicate> predicates = additionalFieldMatching.stream()
-						.filter(p -> !ObjectUtils.isEmpty(p.getFirst()) && !ObjectUtils.isEmpty(p.getSecond()))
-						.map(p -> builder.equal(root.get(p.getFirst()), p.getSecond()))
-						.collect(Collectors.toList());
-				Predicate combinedPredicate = JPAUtils.buildConjunctPredicate(builder, predicates, LogicalOperator.AND);
-				return Pair.of(combinedPredicate, LogicalOperator.AND);
-			} else {
-				return null;
-			}
+			return toPredicateWithOperator(additionalFieldMatching, root, builder);
 		}, pageNumber, pageSize, dataAvailableUnitsOfFieldNames);
+	}
+	
+	static <X extends AbstractProductEntity> Pair<Predicate, LogicalOperator> toPredicateWithOperator(
+			List<Pair<String, Object>> additionalFieldMatching, Root<X> root, CriteriaBuilder builder) {
+
+		if (!ObjectUtils.isEmpty(additionalFieldMatching)) {
+			List<Predicate> predicates = additionalFieldMatching.stream()
+					.filter(p -> !ObjectUtils.isEmpty(p.getLeft()) && !ObjectUtils.isEmpty(p.getRight()))
+					.map(p -> builder.equal(root.get(p.getLeft()), p.getRight()))
+					.collect(Collectors.toList());
+			Predicate combinedPredicate = JPAUtils.buildConjunctPredicate(builder, predicates, LogicalOperator.AND);
+			return Pair.of(combinedPredicate, LogicalOperator.AND);
+		} else {
+			return null;
+		}
 	}
 	
 	protected PageableListDataResponse<M> searchBy(
@@ -217,12 +225,35 @@ implements ProductService<M>, Scheduleable {
 			Integer pageNumber, Integer pageSize,
 			Map<String, Set<Object>> dataAvailableUnitsOfFieldNames) {
 
-		return productSearcher.search(getLightweightProductRepository(), 
-				conditionClause, 
-				fAdditionalCondition, 
-				pageNumber, pageSize, 
-				entity -> mapLightweightEntityToModel(entity),
-				dataAvailableUnitsOfFieldNames);
+		PageableListDataResponse<M> dataResponse = new PageableListDataResponse<>();
+		
+		List<L> entities = null;
+		if (pageNumber == null || pageSize == null) {
+			entities = productSearcher.search(getLightweightProductRepository(), 
+					conditionClause, 
+					fAdditionalCondition, 
+					dataAvailableUnitsOfFieldNames);
+		} else {
+			Page<L> page = productSearcher.search(getLightweightProductRepository(), 
+					conditionClause, 
+					fAdditionalCondition, 
+					pageNumber, pageSize, 
+					dataAvailableUnitsOfFieldNames);
+			entities = page.getContent();
+			ContentUtils.populatePageableListDataResponse(dataResponse, page);
+		}
+		dataResponse.setData(mapToLightweightModels(entities));
+		
+		return dataResponse;
+	}
+		
+	protected List<M> mapToLightweightModels(List<L> entities) {
+		if (entities == null) {
+			return null;
+		}
+		return entities.stream()
+				.map(entity -> mapLightweightEntityToModel(entity))
+				.collect(Collectors.toList());
 	}
 
 	protected void validateSearchRequest(ConditionClause conditionClause,

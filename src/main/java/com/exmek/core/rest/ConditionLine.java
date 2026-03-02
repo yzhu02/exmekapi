@@ -5,6 +5,7 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.exmek.commons.expr.LogicalOperator;
 import com.exmek.commons.expr.RelationalOperator;
 import com.exmek.commons.utils.MiscUtils;
 
@@ -62,11 +63,10 @@ public class ConditionLine implements Cloneable {
 				c.setUnit(m.group(5));
 			}
 			if (RelationalOperator.BETWEEN == c.getOperator()) {
-				String AND = "AND";
-				int inx = value.indexOf(AND);
+				int inx = value.indexOf(LogicalOperator.AND.name());
 				if (inx > 1) {
 					c.setValue(value.substring(0, inx - 1).trim());
-					String value2 = value.substring(inx + AND.length() + 1, value.length()).trim();
+					String value2 = value.substring(inx + LogicalOperator.AND.name().length() + 1, value.length()).trim();
 					c.setValue2(value2);
 					int lastDigitInx = MiscUtils.findLastDigitIndexBackward(value2);
 					if (lastDigitInx > -1) {

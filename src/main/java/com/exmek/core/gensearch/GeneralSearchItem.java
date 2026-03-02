@@ -18,6 +18,8 @@ public class GeneralSearchItem {
 
 	private String model;
 	
+	private String resourceKey;
+	
 	private String description;
 	
 	private String matchingField;
