@@ -143,7 +143,7 @@ implements ProductService<StepperMotor> {
 	@GetMapping("/stepper/{idOrModel}")
 	public StepperMotor getMotor(@NotNull @PathVariable("idOrModel") String idOrModel) {
 		StepperMotor stepperMotor = null;
-		if (BooleanUtils.isTrue(appConfigProvider.getLinearStepperMotorModelWithLeadCodeEnabled())
+		if (BooleanUtils.isTrue(appConfigProvider.getLinearStepperMotorModelFlattenWithLeadCodeEnabled())
 				&& MotorUtils.maybeLinearStepperMotor(idOrModel)) {
 
 			String[] modelAndLeadCode = idOrModel.split("-");
@@ -254,7 +254,7 @@ implements ProductService<StepperMotor> {
 			List<Pair<String, Object>> additionalFieldMatching, Integer pageNumber, Integer pageSize,
 			Map<String, Set<Object>> dataAvailableUnitsOfFieldNames) {
 		
-		if (BooleanUtils.isTrue(appConfigProvider.getLinearStepperMotorModelWithLeadCodeEnabled())) {
+		if (BooleanUtils.isTrue(appConfigProvider.getLinearStepperMotorModelFlattenWithLeadCodeEnabled())) {
 			return searchWithLeadFlattenStepperMotors(conditionClause, additionalFieldMatching, pageNumber, pageSize, dataAvailableUnitsOfFieldNames);
 		} else {
 			return super.searchWith(conditionClause, additionalFieldMatching, pageNumber, pageSize, dataAvailableUnitsOfFieldNames);

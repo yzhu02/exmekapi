@@ -49,7 +49,7 @@ public class GeneralSearcher {
 		log.info("Searching product by model for keyword {} ", keyword);
 		findToAdd(keyword, k -> dcMotorRepository.findByModelContaining(k), GeneralSearchItem.Type.DC_MOTOR, matchingField, result);
 		findToAdd(keyword, k -> stepperMotorRepository.findByModelContaining(k), GeneralSearchItem.Type.STEPPER_MOTOR, matchingField, result);
-		if (BooleanUtils.isTrue(appConfigProvider.getLinearStepperMotorModelWithLeadCodeEnabled())
+		if (BooleanUtils.isTrue(appConfigProvider.getLinearStepperMotorModelFlattenWithLeadCodeEnabled())
 				&& MotorUtils.maybeLinearStepperMotor(keyword)) {
 			String[] modelAndLeadCode = keyword.split("-");
 			Optional<StepperMotorEntity> opEntity = stepperMotorRepository.findByModel(modelAndLeadCode[0]);

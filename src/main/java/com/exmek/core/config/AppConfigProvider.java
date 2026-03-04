@@ -58,7 +58,7 @@ public class AppConfigProvider implements Scheduleable {
 
 	public static final String CONFIG_NAME_NEW_PRODUCT_AGING_DAYS						= "product.new.aging.days";
 	
-	public static final String CONFIG_LINEAR_STEPPER_MOTOR_MODEL_WITH_LEAD_CODE_ENABLED	= "linearStepperMotor.modelWithLeadCode.enabled";
+	public static final String CONFIG_LINEAR_STEPPER_MOTOR_MODEL_FLATTEN_WITH_LEAD_CODE_ENABLED	= "linearStepperMotor.modelFlattenWithLeadCode.enabled";
 
 
 	private static final String DEFAULT_VALUE_SMTP_EXMEKSYS_							= "{\"host\": \"smtp.gmail.com\", \"port\": 587, \"user\": \"exmeksys@gmail.com\", \"password\": \"mzuhdzrzhyeostbe\", \"properties\": {\"mail.transport.protocol\": \"smtp\", \"mail.smtp.auth\": \"true\", \"mail.smtp.starttls.enable\": \"true\"}}";
@@ -189,7 +189,7 @@ public class AppConfigProvider implements Scheduleable {
 		}
 	}
 	
-	public Boolean getLinearStepperMotorModelWithLeadCodeEnabled() {
-		return BooleanUtils.toBoolean(getConfigValue(CONFIG_LINEAR_STEPPER_MOTOR_MODEL_WITH_LEAD_CODE_ENABLED, "true"));
+	public Boolean getLinearStepperMotorModelFlattenWithLeadCodeEnabled() {
+		return BooleanUtils.toBoolean(getConfigValue(CONFIG_LINEAR_STEPPER_MOTOR_MODEL_FLATTEN_WITH_LEAD_CODE_ENABLED, "true"));
 	}
 }
