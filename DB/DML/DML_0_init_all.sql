@@ -62,6 +62,9 @@ VALUES
 ),
 (
 	'product.new.aging.days', '180'
+),
+(
+	'linearStepperMotor.modelFlattenWithLeadCode.enabled', 'true'
 )
 ;
 
