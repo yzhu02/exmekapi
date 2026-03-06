@@ -262,7 +262,7 @@ implements ProductService<StepperMotor> {
 		if ((StringUtils.equals(MotorCategory.STEPPER_LINEAR, category) || MotorUtils.isLinearStepperMotorSeries(series)) 
 				&& BooleanUtils.isTrue(appConfigProvider.getLinearStepperMotorModelFlattenWithLeadCodeEnabled())) {
 			List<Pair<String, Object>> additionalFieldMatchings = asFieldMatchings(category, series);
-			return searchWithLeadFlattenStepperMotors(conditionClause, additionalFieldMatchings, pageNumber, pageSize, getCachedDataAvailableUnitsOfFieldNames());
+			return searchWithLeadFlattenStepperMotors(conditionClause, additionalFieldMatchings, pageNumber, pageSize, getCachedUnitsOfFieldNames(null, category, series));
 		}
 		
 		return super.searchMotorsByCategoryBySeries(conditionClause, category, series, pageNumber, pageSize);

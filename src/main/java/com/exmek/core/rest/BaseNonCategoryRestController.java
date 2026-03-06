@@ -7,7 +7,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.ObjectUtils;
@@ -80,8 +79,7 @@ extends BaseProductRestController<T, L, M, SE, S> {
 		if (!ObjectUtils.isEmpty(series)) {
 			additionalFieldMatching.add(Pair.of(AbstractProductEntity.FIELD_NAME_SERIES, series));
 		}
-		Map<String, Set<Object>> dataAvailableUnitsOfFieldNames = getCachedDataAvailableUnitsOfFieldNames();
-		return searchWith(conditionClause, additionalFieldMatching, pageNumber, pageSize, dataAvailableUnitsOfFieldNames);
+		return searchWith(conditionClause, additionalFieldMatching, pageNumber, pageSize, getCachedUnitsOfFieldNames(null, null, series));
 	}
 
 }

@@ -158,7 +158,7 @@ extends BaseProductRestController<T, L, M, SE, MotorSeries> {
 		if (ObjectUtils.isEmpty(type)) {
 			return searchBy(conditionClause, null, pageNumber, pageSize, null);
 		}
-		Map<String, Set<Object>> dataAvailableUnitsOfFieldNames = getCachedDataAvailableUnitsOfFieldNames();
+		Map<String, Set<Object>> dataAvailableUnitsOfFieldNames = getCachedUnitsOfFieldNames(type, null, null);
 		return searchBy(conditionClause, (root, builder) -> {
 			Join<T, CE> categoryJoin = root.join(AbstractMotorEntity.FIELD_NAME_MOTOR_CATEGORY);
 			Predicate pType = builder.equal(categoryJoin.get(AbstractMotorCategoryEntity.FIELD_NAME_TYPE), Type.valueOf(type.toUpperCase()));
@@ -171,7 +171,7 @@ extends BaseProductRestController<T, L, M, SE, MotorSeries> {
 			Integer pageNumber, Integer pageSize) {
 
 		List<Pair<String, Object>> additionalFieldMatchings = asFieldMatchings(category, series);
-		return searchWith(conditionClause, additionalFieldMatchings, pageNumber, pageSize, getCachedDataAvailableUnitsOfFieldNames());
+		return searchWith(conditionClause, additionalFieldMatchings, pageNumber, pageSize, getCachedUnitsOfFieldNames(null, category, series));
 	}
 
 	protected List<Pair<String, Object>> asFieldMatchings(String category, String series) {
