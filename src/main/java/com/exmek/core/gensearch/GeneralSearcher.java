@@ -50,7 +50,7 @@ public class GeneralSearcher {
 		findToAdd(keyword, k -> dcMotorRepository.findByModelContaining(k), GeneralSearchItem.Type.DC_MOTOR, matchingField, result);
 		findToAdd(keyword, k -> stepperMotorRepository.findByModelContaining(k), GeneralSearchItem.Type.STEPPER_MOTOR, matchingField, result);
 		if (BooleanUtils.isTrue(appConfigProvider.getLinearStepperMotorModelFlattenWithLeadCodeEnabled())
-				&& MotorUtils.maybeLinearStepperMotor(keyword)) {
+				&& MotorUtils.isLeadFlattenLinearStepperMotor(keyword)) {
 			String[] modelAndLeadCode = keyword.split("-");
 			Optional<StepperMotorEntity> opEntity = stepperMotorRepository.findByModel(modelAndLeadCode[0]);
 			if (opEntity.isPresent()) {

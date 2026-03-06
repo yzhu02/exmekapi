@@ -5,7 +5,11 @@ public class MotorUtils {
 	private MotorUtils() {
 	}
 
-	public static boolean maybeLinearStepperMotor(String model) {
+	public static boolean isLinearStepperMotorSeries(String series) {
+		return series != null && series.startsWith("LS");
+	}
+	
+	public static boolean isLeadFlattenLinearStepperMotor(String model) {
 		return model != null && model.startsWith("LS") && model.contains("-");
 	}
 

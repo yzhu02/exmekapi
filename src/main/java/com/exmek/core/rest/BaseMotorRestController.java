@@ -170,15 +170,18 @@ extends BaseProductRestController<T, L, M, SE, MotorSeries> {
 			String category, String series,
 			Integer pageNumber, Integer pageSize) {
 
-		List<Pair<String, Object>> additionalFieldMatching = new ArrayList<>();
-		if (category != null) {
-			additionalFieldMatching.add(Pair.of(AbstractMotorEntity.FIELD_NAME_CATEGORY, category));
-		}
-		if (!ObjectUtils.isEmpty(series)) {
-			additionalFieldMatching.add(Pair.of(AbstractMotorEntity.FIELD_NAME_SERIES, series));
-		}
-		Map<String, Set<Object>> dataAvailableUnitsOfFieldNames = getCachedDataAvailableUnitsOfFieldNames();
-		return searchWith(conditionClause, additionalFieldMatching, pageNumber, pageSize, dataAvailableUnitsOfFieldNames);
+		List<Pair<String, Object>> additionalFieldMatchings = asFieldMatchings(category, series);
+		return searchWith(conditionClause, additionalFieldMatchings, pageNumber, pageSize, getCachedDataAvailableUnitsOfFieldNames());
 	}
 
+	protected List<Pair<String, Object>> asFieldMatchings(String category, String series) {
+		List<Pair<String, Object>> fieldMatchings = new ArrayList<>();
+		if (category != null) {
+			fieldMatchings.add(Pair.of(AbstractMotorEntity.FIELD_NAME_CATEGORY, category));
+		}
+		if (!ObjectUtils.isEmpty(series)) {
+			fieldMatchings.add(Pair.of(AbstractMotorEntity.FIELD_NAME_SERIES, series));
+		}
+		return fieldMatchings;
+	}
 }

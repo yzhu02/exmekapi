@@ -1,7 +1,6 @@
 package com.exmek.core.rest;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -30,6 +29,7 @@ import com.exmek.core.mapper.MotorMapper;
 import com.exmek.core.model.MotorCategory;
 import com.exmek.core.model.MotorSeries;
 import com.exmek.core.model.StepperMotor;
+import com.exmek.core.persistence.entity.AbstractStepperMotorEntity;
 import com.exmek.core.persistence.entity.LeadDefEntity;
 import com.exmek.core.persistence.entity.LightweightLeadFlattenStepperMotorEntity;
 import com.exmek.core.persistence.entity.LightweightStepperMotorEntity;
@@ -144,7 +144,7 @@ implements ProductService<StepperMotor> {
 	public StepperMotor getMotor(@NotNull @PathVariable("idOrModel") String idOrModel) {
 		StepperMotor stepperMotor = null;
 		if (BooleanUtils.isTrue(appConfigProvider.getLinearStepperMotorModelFlattenWithLeadCodeEnabled())
-				&& MotorUtils.maybeLinearStepperMotor(idOrModel)) {
+				&& MotorUtils.isLeadFlattenLinearStepperMotor(idOrModel)) {
 
 			String[] modelAndLeadCode = idOrModel.split("-");
 			stepperMotor = getLeadFlattenLinearStepperMotor(modelAndLeadCode[0], modelAndLeadCode[1]);
@@ -173,7 +173,12 @@ implements ProductService<StepperMotor> {
 			@RequestParam(value = QRY_PARAM_NAME_FETCH_ALL, required = false) Boolean fetchAll) {
 		
 		validateSearchRequest(conditionClause, pageNumber, pageSize, fetchAll);
-		return searchWith(conditionClause, pageNumber, pageSize);
+		
+		if (BooleanUtils.isTrue(appConfigProvider.getLinearStepperMotorModelFlattenWithLeadCodeEnabled())) {
+			return searchWithLeadFlattenStepperMotors(conditionClause, null, pageNumber, pageSize, getCachedDataAvailableUnitsOfFieldNames());
+		}
+		
+		return searchWith(conditionClause, null, pageNumber, pageSize, getCachedDataAvailableUnitsOfFieldNames());
 	}
 
 	@PostMapping("/stepper/{" + PARAM_NAME_CATEGORY + "}/search")
@@ -184,7 +189,7 @@ implements ProductService<StepperMotor> {
 			@RequestParam(value = QRY_PARAM_NAME_FETCH_ALL, required = false) Boolean fetchAll) {
 		
 		validateSearchRequest(conditionClause, pageNumber, pageSize, fetchAll);
-		return super.searchMotorsByCategoryBySeries(conditionClause, category, null, pageNumber, pageSize);
+		return searchMotorsByCategoryBySeries(conditionClause, category, null, pageNumber, pageSize);
 	}
 	
 	@PostMapping("/stepper/{" + PARAM_NAME_CATEGORY + "}/{" + PARAM_NAME_SERIES + "}/search")
@@ -196,7 +201,7 @@ implements ProductService<StepperMotor> {
 			@RequestParam(value = QRY_PARAM_NAME_FETCH_ALL, required = false) Boolean fetchAll) {
 		
 		validateSearchRequest(conditionClause, pageNumber, pageSize, fetchAll);
-		return super.searchMotorsByCategoryBySeries(conditionClause, category, series, pageNumber, pageSize);
+		return searchMotorsByCategoryBySeries(conditionClause, category, series, pageNumber, pageSize);
 	}
 		
 	@GetMapping("/stepper/criteria")
@@ -250,17 +255,19 @@ implements ProductService<StepperMotor> {
 	}
 	
 	@Override
-	protected PageableListDataResponse<StepperMotor> searchWith(ConditionClause conditionClause,
-			List<Pair<String, Object>> additionalFieldMatching, Integer pageNumber, Integer pageSize,
-			Map<String, Set<Object>> dataAvailableUnitsOfFieldNames) {
-		
-		if (BooleanUtils.isTrue(appConfigProvider.getLinearStepperMotorModelFlattenWithLeadCodeEnabled())) {
-			return searchWithLeadFlattenStepperMotors(conditionClause, additionalFieldMatching, pageNumber, pageSize, dataAvailableUnitsOfFieldNames);
-		} else {
-			return super.searchWith(conditionClause, additionalFieldMatching, pageNumber, pageSize, dataAvailableUnitsOfFieldNames);
+	protected PageableListDataResponse<StepperMotor> searchMotorsByCategoryBySeries(ConditionClause conditionClause,
+			String category, String series,
+			Integer pageNumber, Integer pageSize) {
+
+		if ((StringUtils.equals(MotorCategory.STEPPER_LINEAR, category) || MotorUtils.isLinearStepperMotorSeries(series)) 
+				&& BooleanUtils.isTrue(appConfigProvider.getLinearStepperMotorModelFlattenWithLeadCodeEnabled())) {
+			List<Pair<String, Object>> additionalFieldMatchings = asFieldMatchings(category, series);
+			return searchWithLeadFlattenStepperMotors(conditionClause, additionalFieldMatchings, pageNumber, pageSize, getCachedDataAvailableUnitsOfFieldNames());
 		}
+		
+		return super.searchMotorsByCategoryBySeries(conditionClause, category, series, pageNumber, pageSize);
 	}
-	
+		
 	// Search for any StepperMotor but in case of LinearStepperMotor then flatten it with lead codes
 	private PageableListDataResponse<StepperMotor> searchWithLeadFlattenStepperMotors(ConditionClause conditionClause,
 			List<Pair<String, Object>> additionalFieldMatching, Integer pageNumber, Integer pageSize,
@@ -306,52 +313,36 @@ implements ProductService<StepperMotor> {
 				}
 			});
 		} else {
-			Integer offset = pageNumber * pageSize;
-			int currFlattenPosition = 0;
+			List<Pair<AbstractStepperMotorEntity, LeadDefEntity>> pAllFlatten = new ArrayList<>();
 			for (int i = 0; i < entities.size(); i++) {
-				if (stepperMotors.size() >= pageSize) {
-					break;
-				}
 				LightweightLeadFlattenStepperMotorEntity entity = entities.get(i);
 				Set<LeadDefEntity> linearStepperMotorLeads = entity.getLinearStepperMotorLeads();
 				if (CollectionUtils.isEmpty(linearStepperMotorLeads)) {
-					if (currFlattenPosition >= offset) {
-						stepperMotors.add(motorMapper.mapLightweightStepperMotorToModel(entity));
-					}
-					currFlattenPosition++;
+					pAllFlatten.add(Pair.of(entity, null));
 				} else {
-					if (currFlattenPosition + linearStepperMotorLeads.size() < offset + pageSize) {
-						stepperMotors.addAll(motorMapper.mapToLeadFlattenLinearStepperMotors(entity));
-						currFlattenPosition += linearStepperMotorLeads.size();
-					} else {
-						List<LeadDefEntity> leadEntities = new ArrayList<>(entity.getLinearStepperMotorLeads());
-						Collections.sort(leadEntities, (ld0, ld1) -> ld0.getCode().compareTo(ld1.getCode()));
-						int limitN = offset + pageSize - currFlattenPosition;
-						List<LeadDefEntity> subLeadEntities = leadEntities.subList(0, limitN);
-						stepperMotors.addAll(motorMapper.mapToLeadFlattenLinearStepperMotors(entity, subLeadEntities));
-						currFlattenPosition += limitN;
+					for (LeadDefEntity leadEntity : linearStepperMotorLeads) {
+						pAllFlatten.add(Pair.of(entity, leadEntity));
 					}
 				}
-
 			}
+			Integer offset = pageNumber * pageSize;
+			for (int i = offset; i < offset + pageSize && i < pAllFlatten.size(); i++) {
+				Pair<AbstractStepperMotorEntity, LeadDefEntity> p = pAllFlatten.get(i);
+				if (p.getRight() == null) {
+					stepperMotors.add(motorMapper.mapLightweightStepperMotorToModel(p.getLeft()));
+				} else {
+					stepperMotors.add(motorMapper.mapToLeadFlattenLinearStepperMotor(p.getLeft(), p.getRight()));
+				}
+			}
+			
 			dataResponse.setPageNumber(pageNumber);
 			dataResponse.setPageSize(pageSize);
 			dataResponse.setTotalElementsOfCurrPage(stepperMotors.size());
 			
 			
 			// Calculate totalElementsOfAllPages and totalPages
-			int totalInAll = 0;
-			for (int i = 0; i < entities.size(); i++) {
-				LightweightLeadFlattenStepperMotorEntity entity = entities.get(i);
-				Set<LeadDefEntity> linearStepperMotorLeads = entity.getLinearStepperMotorLeads();
-				if (CollectionUtils.isEmpty(linearStepperMotorLeads)) {
-					totalInAll++;
-				} else {
-					totalInAll += linearStepperMotorLeads.size();
-				}
-			}
-			dataResponse.setTotalElementsOfAllPages(totalInAll);
-			dataResponse.setTotalPages(totalInAll / pageSize);
+			dataResponse.setTotalElementsOfAllPages(pAllFlatten.size());
+			dataResponse.setTotalPages((pAllFlatten.size() + pageSize - 1) / pageSize);
 		}
 		
 		dataResponse.setData(stepperMotors);

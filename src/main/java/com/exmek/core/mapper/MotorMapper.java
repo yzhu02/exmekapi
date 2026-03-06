@@ -261,16 +261,15 @@ public class MotorMapper extends AbstractProductMapper {
 	}
 
 	// To map to List of LeadFlattenLinearStepperMotor with specified Collection of LeadDefEntity
-	public List<LeadFlattenLinearStepperMotor> mapToLeadFlattenLinearStepperMotors(LightweightLeadFlattenStepperMotorEntity entity, Collection<LeadDefEntity> mappingLeadEntities) {
-		if (CollectionUtils.isEmpty(mappingLeadEntities)) {
+	public List<LeadFlattenLinearStepperMotor> mapToLeadFlattenLinearStepperMotors(AbstractStepperMotorEntity entity, Collection<LeadDefEntity> leadEntities) {
+		if (CollectionUtils.isEmpty(leadEntities)) {
 			LeadFlattenLinearStepperMotor linearStepperMotor = super.mapProduct(entity, LeadFlattenLinearStepperMotor::new);
 			performBasicStepperMotorMapping(linearStepperMotor, entity);
 			return List.of(linearStepperMotor);
 		}
 		
-		
 		List<LeadFlattenLinearStepperMotor> flattenLinearStepperMotors = new ArrayList<>();
-		for (LeadDefEntity leadEntity : mappingLeadEntities) {
+		for (LeadDefEntity leadEntity : leadEntities) {
 			LeadFlattenLinearStepperMotor linearStepperMotor = super.mapProduct(entity, LeadFlattenLinearStepperMotor::new);
 			performBasicStepperMotorMapping(linearStepperMotor, entity);
 			linearStepperMotor.setModel(MotorUtils.makeLinearStepperMotorLeadFlattenModel(entity.getModel(), leadEntity.getCode())); // Overwrite the model by appending "-{LEAD_CODE}"
@@ -283,6 +282,19 @@ public class MotorMapper extends AbstractProductMapper {
 			flattenLinearStepperMotors.add(linearStepperMotor);
 		}
 		return flattenLinearStepperMotors;
+	}
+	
+	public LeadFlattenLinearStepperMotor mapToLeadFlattenLinearStepperMotor(AbstractStepperMotorEntity entity, LeadDefEntity leadEntity) {
+		LeadFlattenLinearStepperMotor linearStepperMotor = super.mapProduct(entity, LeadFlattenLinearStepperMotor::new);
+		performBasicStepperMotorMapping(linearStepperMotor, entity);
+		linearStepperMotor.setModel(MotorUtils.makeLinearStepperMotorLeadFlattenModel(entity.getModel(), leadEntity.getCode())); // Overwrite the model by appending "-{LEAD_CODE}"
+		linearStepperMotor.setLeadCode(leadEntity.getCode());
+		linearStepperMotor.setScrewDiameterInch(leadEntity.getScrewDiameterInch());
+		linearStepperMotor.setScrewDiameterMM(leadEntity.getScrewDiameterMM());
+		linearStepperMotor.setLeadInch(leadEntity.getLeadInch());
+		linearStepperMotor.setLeadMM(leadEntity.getLeadMM());
+		linearStepperMotor.setThreads(leadEntity.getThreads());
+		return linearStepperMotor;
 	}
 	
 	@Deprecated
