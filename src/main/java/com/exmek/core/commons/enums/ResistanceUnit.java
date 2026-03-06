@@ -3,7 +3,7 @@ package com.exmek.core.commons.enums;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
-public enum ResistanceUnit {
+public enum ResistanceUnit implements Symbolizable {
 
 	ohm("Ω");
 	

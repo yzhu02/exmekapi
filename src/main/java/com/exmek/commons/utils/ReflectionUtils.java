@@ -15,6 +15,7 @@ import java.util.function.Predicate;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 
+import com.exmek.core.commons.enums.Symbolizable;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 import lombok.extern.slf4j.Slf4j;
@@ -145,22 +146,36 @@ public class ReflectionUtils {
 		}
 	}
 	
-	public static Enum<?> readEnumConstant(Class<? extends Enum<?>> enumClass, String enumConstName) {
-		if (enumClass == null || StringUtils.isEmpty(enumConstName)) {
+	public static Enum<?> readEnumConstant(Class<? extends Enum<?>> enumClass, String enumStrVal) {
+		if (enumClass == null || StringUtils.isEmpty(enumStrVal)) {
 			return null;
 		}
-		Method valueOfMethod = null;
+		Enum<?> enumConstValue = null;
+		if (Symbolizable.class.isAssignableFrom(enumClass)) {
+			enumConstValue = readEnumConstant(enumClass, enumStrVal, "fromSymbol");
+		}
+		if (enumConstValue == null) {
+			enumConstValue = readEnumConstant(enumClass, enumStrVal, "valueOf");
+		}
+		return enumConstValue;
+	}
+
+	private static Enum<?> readEnumConstant(Class<? extends Enum<?>> enumClass, String enumStrVal, String readMethodName) {
+		if (enumClass == null || StringUtils.isEmpty(enumStrVal)) {
+			return null;
+		}
+		Method readMethod = null;
 		try {
-			valueOfMethod = enumClass.getMethod("valueOf", String.class);
+			readMethod = enumClass.getMethod(readMethodName, String.class);
 		} catch (Exception e) {
-			log.error("Unable to find method of valueOf(String) from {} ", enumClass, e);
+			log.warn("No method of {}(String) of {} ", readMethodName, enumClass);
 			return null;
 		}
 		Enum<?> enumConstValue = null;
 		try {
-			enumConstValue = (Enum<?>) valueOfMethod.invoke(null, enumConstName);
+			enumConstValue = (Enum<?>) readMethod.invoke(null, enumStrVal);
 		} catch (Exception e) {
-			log.error("Unable to read from {}.valueOf(String) ", enumClass, e);
+			log.error("Unable to read from {}.{}(String) ", enumClass, readMethodName, e);
 		}
 		return enumConstValue;
 	}

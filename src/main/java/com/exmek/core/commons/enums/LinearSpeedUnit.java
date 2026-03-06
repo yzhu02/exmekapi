@@ -3,7 +3,7 @@ package com.exmek.core.commons.enums;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
-public enum LinearSpeedUnit {
+public enum LinearSpeedUnit implements Symbolizable {
 
 	mps("m/s");
 	

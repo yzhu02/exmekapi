@@ -3,7 +3,7 @@ package com.exmek.core.commons.enums;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
-public enum SizeMeasurementType {
+public enum SizeMeasurementType implements Symbolizable {
 
 	DIAMETER("φ"),
 
