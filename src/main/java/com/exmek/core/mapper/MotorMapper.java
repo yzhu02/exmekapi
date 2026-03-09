@@ -153,6 +153,8 @@ public class MotorMapper extends AbstractProductMapper {
 	private void performBasicStepperMotorMapping(StepperMotor motor, AbstractStepperMotorEntity entity) {
 		motor.setCategory(entity.getCategory());
 		motor.setRatedVoltage(toMeasuredValue(entity.getRatedVoltage(), entity.getRatedVoltageUnit()));
+		motor.setRatedCurrent(toMeasuredValue(entity.getRatedCurrent(), entity.getRatedCurrentUnit()));
+		motor.setPeakCurrent(toMeasuredValue(entity.getPeakCurrent(), entity.getPeakCurrentUnit()));
 		motor.setPhaseCurrent(toMeasuredValue(entity.getPhaseCurrent(), entity.getPhaseCurrentUnit()));
 		motor.setPhaseResistance(toMeasuredValue(entity.getPhaseResistance(), entity.getPhaseResistanceUnit()));
 		motor.setPhaseInductance(toMeasuredValue(entity.getPhaseInductance(), entity.getPhaseInductanceUnit()));

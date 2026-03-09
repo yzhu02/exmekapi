@@ -3,6 +3,7 @@ package com.exmek.core.persistence.entity;
 import java.math.BigDecimal;
 
 import com.exmek.core.annotation.Searchable;
+import com.exmek.core.commons.enums.CurrentUnit;
 import com.exmek.core.commons.enums.VoltageUnit;
 
 import jakarta.persistence.Column;
@@ -27,6 +28,22 @@ public abstract class AbstractMotorEntity extends AbstractProductEntity {
 	@Column(name = "RATED_VOLTAGE_UNIT")
 	@Enumerated(EnumType.STRING)
 	private VoltageUnit ratedVoltageUnit;
+
+	@Searchable
+	@Column(name = "RATED_CURRENT")
+	private BigDecimal ratedCurrent;
+	
+	@Column(name = "RATED_CURRENT_UNIT")
+	@Enumerated(EnumType.STRING)
+	private CurrentUnit ratedCurrentUnit;
+
+	@Searchable
+	@Column(name = "PEAK_CURRENT")
+	private BigDecimal peakCurrent;
+	
+	@Column(name = "PEAK_CURRENT_UNIT")
+	@Enumerated(EnumType.STRING)
+	private CurrentUnit peakCurrentUnit;
 
 	public abstract AbstractMotorCategoryEntity getMotorCategory();
 
@@ -54,4 +71,35 @@ public abstract class AbstractMotorEntity extends AbstractProductEntity {
 		this.ratedVoltageUnit = ratedVoltageUnit;
 	}
 
+	public BigDecimal getRatedCurrent() {
+		return ratedCurrent;
+	}
+
+	public void setRatedCurrent(BigDecimal ratedCurrent) {
+		this.ratedCurrent = ratedCurrent;
+	}
+
+	public CurrentUnit getRatedCurrentUnit() {
+		return ratedCurrentUnit;
+	}
+
+	public void setRatedCurrentUnit(CurrentUnit ratedCurrentUnit) {
+		this.ratedCurrentUnit = ratedCurrentUnit;
+	}
+
+	public BigDecimal getPeakCurrent() {
+		return peakCurrent;
+	}
+
+	public void setPeakCurrent(BigDecimal peakCurrent) {
+		this.peakCurrent = peakCurrent;
+	}
+
+	public CurrentUnit getPeakCurrentUnit() {
+		return peakCurrentUnit;
+	}
+
+	public void setPeakCurrentUnit(CurrentUnit peakCurrentUnit) {
+		this.peakCurrentUnit = peakCurrentUnit;
+	}
 }

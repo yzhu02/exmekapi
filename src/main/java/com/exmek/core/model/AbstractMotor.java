@@ -3,6 +3,7 @@ package com.exmek.core.model;
 import java.math.BigDecimal;
 import java.util.List;
 
+import com.exmek.core.commons.enums.CurrentUnit;
 import com.exmek.core.commons.enums.VoltageUnit;
 import com.exmek.core.commons.model.MeasuredValue;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -20,6 +21,10 @@ public abstract class AbstractMotor extends AbstractProduct {
 	private MotorCategory motorCategory;
 	
 	private MeasuredValue<BigDecimal, VoltageUnit> ratedVoltage;
+	
+	private MeasuredValue<BigDecimal, CurrentUnit> ratedCurrent;
+	
+	private MeasuredValue<BigDecimal, CurrentUnit> peakCurrent;
 
 	private List<? extends MotorPerfCurve> perfCurves;
 

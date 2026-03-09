@@ -18,8 +18,6 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class DCMotor extends AbstractMotor {
-
-	private MeasuredValue<BigDecimal, CurrentUnit> ratedCurrent;
 	
 	private MeasuredValue<BigDecimal, PowerUnit> ratedPower;
 	
@@ -28,8 +26,6 @@ public class DCMotor extends AbstractMotor {
 	private MeasuredValue<Integer, RotatingSpeedUnit> ratedRotatingSpeed;
 	
 	private MeasuredValue<BigDecimal, LinearSpeedUnit> ratedLinearSpeed;
-
-	private MeasuredValue<BigDecimal, CurrentUnit> peakCurrent;
 
 	private MeasuredValue<BigDecimal, TorqueUnit> peakTorque;
 	

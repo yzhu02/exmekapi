@@ -20,13 +20,6 @@ import jakarta.persistence.MappedSuperclass;
 @MappedSuperclass
 public abstract class AbstractDCMotorEntity extends AbstractMotorEntity {
 
-	@Searchable
-	@Column(name = "RATED_CURRENT")
-	private BigDecimal ratedCurrent;
-	
-	@Column(name = "RATED_CURRENT_UNIT")
-	@Enumerated(EnumType.STRING)
-	private CurrentUnit ratedCurrentUnit;
 
 	@Searchable
 	@Column(name = "RATED_POWER")
@@ -60,14 +53,6 @@ public abstract class AbstractDCMotorEntity extends AbstractMotorEntity {
 //	@Enumerated(EnumType.STRING)
 	@Convert(converter = LinearSpeedUnitConverter.class)
 	private LinearSpeedUnit ratedLinearSpeedUnit;
-
-	@Searchable
-	@Column(name = "PEAK_CURRENT")
-	private BigDecimal peakCurrent;
-	
-	@Column(name = "PEAK_CURRENT_UNIT")
-	@Enumerated(EnumType.STRING)
-	private CurrentUnit peakCurrentUnit;
 	
 	@Searchable
 	@Column(name = "PEAK_TORQUE")
@@ -98,22 +83,6 @@ public abstract class AbstractDCMotorEntity extends AbstractMotorEntity {
 	@Column(name = "NOLOAD_ROTATING_SPEED_UNIT")
 	@Enumerated(EnumType.STRING)
 	private RotatingSpeedUnit noloadRotatingSpeedUnit;
-
-	public BigDecimal getRatedCurrent() {
-		return ratedCurrent;
-	}
-
-	public void setRatedCurrent(BigDecimal ratedCurrent) {
-		this.ratedCurrent = ratedCurrent;
-	}
-
-	public CurrentUnit getRatedCurrentUnit() {
-		return ratedCurrentUnit;
-	}
-
-	public void setRatedCurrentUnit(CurrentUnit ratedCurrentUnit) {
-		this.ratedCurrentUnit = ratedCurrentUnit;
-	}
 
 	public BigDecimal getRatedPower() {
 		return ratedPower;
@@ -177,22 +146,6 @@ public abstract class AbstractDCMotorEntity extends AbstractMotorEntity {
 
 	public void setRatedLinearSpeedUnit(LinearSpeedUnit ratedLinearSpeedUnit) {
 		this.ratedLinearSpeedUnit = ratedLinearSpeedUnit;
-	}
-
-	public BigDecimal getPeakCurrent() {
-		return peakCurrent;
-	}
-
-	public void setPeakCurrent(BigDecimal peakCurrent) {
-		this.peakCurrent = peakCurrent;
-	}
-
-	public CurrentUnit getPeakCurrentUnit() {
-		return peakCurrentUnit;
-	}
-
-	public void setPeakCurrentUnit(CurrentUnit peakCurrentUnit) {
-		this.peakCurrentUnit = peakCurrentUnit;
 	}
 
 	public BigDecimal getPeakTorque() {
