@@ -61,7 +61,7 @@ public class GeneralSearcher {
 						result.add(GeneralSearchItem.builder()
 								.type(GeneralSearchItem.Type.STEPPER_MOTOR)
 								.model(MotorUtils.makeLinearStepperMotorLeadFlattenModel(linearStepperMotorEntity.getModel(), modelAndLeadCode[1]))
-								.resourceKey(linearStepperMotorEntity.getModel())
+								.series(linearStepperMotorEntity.getSeries())
 								.description(linearStepperMotorEntity.getDescription())
 								.matchingField(matchingField)
 								.build());
@@ -99,7 +99,7 @@ public class GeneralSearcher {
 		foundProducts.forEach(p -> result.add(GeneralSearchItem.builder()
 				.type(type)
 				.model(p.getModel())
-				.resourceKey(p.getModel())
+				.series(p.getSeries())
 				.description(p.getDescription())
 				.matchingField(matchingField)
 				.build())

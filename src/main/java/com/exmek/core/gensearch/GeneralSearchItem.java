@@ -18,7 +18,7 @@ public class GeneralSearchItem {
 
 	private String model;
 	
-	private String resourceKey;
+	private String series;
 	
 	private String description;
 	

@@ -38,7 +38,6 @@ public abstract class AbstractProductMapper {
 //		model.setId(entity.getId());
 		model.setSeries(entity.getSeries());
 		model.setModel(entity.getModel());
-		model.setResourceKey(entity.getModel());
 		model.setName(entity.getName());
 		model.setDescription(entity.getDescription());
 		model.setLength(toMeasuredValue(entity.getLength(), entity.getLengthUnit()));

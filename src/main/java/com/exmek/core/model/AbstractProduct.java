@@ -23,9 +23,6 @@ public abstract class AbstractProduct extends AbstractModel.Namable {
 	private AbstractSeries productSeries;
 	
 	private String model;
-	// By default it's same as model. 
-	// Different only when used to use different key rather than model to locate the resources like images.
-	private String resourceKey;
 
 	private String description;
 
