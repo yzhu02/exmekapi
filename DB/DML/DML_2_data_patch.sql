@@ -1536,7 +1536,7 @@ INSERT INTO DC_MOTOR (
 	NOLOAD_CURRENT, NOLOAD_CURRENT_UNIT, NOLOAD_ROTATING_SPEED, NOLOAD_ROTATING_SPEED_UNIT
 ) 
 VALUES (
-	'BLDC_WITH_GEARBOX', 'MB063KG-SG80', 'MB063KG100-SG0010', 'Brush motor with gearbox', 
+	'BRUSH_WITH_GEARBOX', 'MB063KG-SG80', 'MB063KG100-SG0010', 'Brush motor with gearbox', 
 	63, 'mm', 'φ', 165.5, 'mm', 
 	24, 'V', 2.7, 'A', 50, 'W', 88.2, 'Ncm', 330, 'rpm', 
 	null, null, 400, 'Ncm', 
@@ -1557,7 +1557,7 @@ INSERT INTO DC_MOTOR (
 	NOLOAD_CURRENT, NOLOAD_CURRENT_UNIT, NOLOAD_ROTATING_SPEED, NOLOAD_ROTATING_SPEED_UNIT
 ) 
 VALUES (
-	'BLDC_WITH_GEARBOX', 'MB063KG-SG80', 'MB063KG150-SG0015', 'Brush motor with gearbox', 
+	'BRUSH_WITH_GEARBOX', 'MB063KG-SG80', 'MB063KG150-SG0015', 'Brush motor with gearbox', 
 	63, 'mm', 'φ', 165.5, 'mm', 
 	12, 'V', 5.2, 'A', 50, 'W', 106.8, 'Ncm', 207, 'rpm', 
 	null, null, 400, 'Ncm', 
@@ -1578,7 +1578,7 @@ INSERT INTO DC_MOTOR (
 	NOLOAD_CURRENT, NOLOAD_CURRENT_UNIT, NOLOAD_ROTATING_SPEED, NOLOAD_ROTATING_SPEED_UNIT
 ) 
 VALUES (
-	'BLDC_WITH_GEARBOX', 'MB063KG-SG80', 'MB063KG200-SG0036', 'Brush motor with gearbox', 
+	'BRUSH_WITH_GEARBOX', 'MB063KG-SG80', 'MB063KG200-SG0036', 'Brush motor with gearbox', 
 	63, 'mm', 'φ', 195.5, 'mm', 
 	24, 'V', 4.9, 'A', 100, 'W', 388.8, 'Ncm', 93, 'rpm', 
 	null, null, 400, 'Ncm', 
@@ -1599,7 +1599,7 @@ INSERT INTO DC_MOTOR (
 	NOLOAD_CURRENT, NOLOAD_CURRENT_UNIT, NOLOAD_ROTATING_SPEED, NOLOAD_ROTATING_SPEED_UNIT
 ) 
 VALUES (
-	'BLDC_WITH_GEARBOX', 'MB063KG-SG80', 'MB063KG250-SG0050', 'Brush motor with gearbox', 
+	'BRUSH_WITH_GEARBOX', 'MB063KG-SG80', 'MB063KG250-SG0050', 'Brush motor with gearbox', 
 	63, 'mm', 'φ', 195.5, 'mm', 
 	12, 'V', 8.7, 'A', 100, 'W', 396, 'Ncm', 60, 'rpm', 
 	null, null, 400, 'Ncm', 
