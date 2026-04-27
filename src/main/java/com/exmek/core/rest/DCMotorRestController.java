@@ -3,6 +3,7 @@ package com.exmek.core.rest;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -41,6 +42,11 @@ implements ProductService<DCMotor> {
 	
 	public static final String QRY_PARAM_VALUE_TYPE_BLDC	= "BLDC";
 	public static final String QRY_PARAM_VALUE_TYPE_BRUSH	= "Brush";
+
+  /// BLDC_INTEGRATED is displayed as separate independent category (no longer under BLDC type) in the frontend right now///
+  private static final String[] CATEGORIES_DISPLAY_AS_SEPARATE = {
+      MotorCategory.BLDC_INTEGRATED
+  };
 
 	@Autowired
 	protected DCMotorCategoryRepository motorCategoryRepository;
@@ -100,7 +106,10 @@ implements ProductService<DCMotor> {
 	@Override
 	@GetMapping("/DC/categories")
 	public List<MotorCategory> getMotorCategories(@RequestParam(value = QRY_PARAM_NAME_TYPE, required = false) String type) {
-		return super.getMotorCategories(type);
+    List<MotorCategory> categories = super.getMotorCategories(type);
+    return categories.stream()
+        .filter(cat -> !ArrayUtils.contains(CATEGORIES_DISPLAY_AS_SEPARATE, cat.getCategory()))
+        .toList();
 	}
 
 	@Override

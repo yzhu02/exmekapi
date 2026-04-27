@@ -60,7 +60,7 @@ extends BaseMotorRestController<StepperMotorEntity, LightweightStepperMotorEntit
 implements ProductService<StepperMotor> {
 
 	/// STEPPER_INTEGRATED and STEPPER_LINEAR are displayed as separate independent categories (no longer under STEPPER type) in the frontend right now///
-	private static final String[] DISPLAY_AS_SEPARATE_CATEGORIES = {
+	private static final String[] CATEGORIES_DISPLAY_AS_SEPARATE = {
 			MotorCategory.STEPPER_INTEGRATED,
 			MotorCategory.STEPPER_LINEAR
 	};
@@ -127,7 +127,7 @@ implements ProductService<StepperMotor> {
 	public List<MotorCategory> getMotorCategories() {
     List<MotorCategory> categories = super.getMotorCategories(null);
     return categories.stream()
-        .filter(cat -> !ArrayUtils.contains(DISPLAY_AS_SEPARATE_CATEGORIES, cat.getCategory()))
+        .filter(cat -> !ArrayUtils.contains(CATEGORIES_DISPLAY_AS_SEPARATE, cat.getCategory()))
         .toList();
 	}
 	
@@ -187,11 +187,11 @@ implements ProductService<StepperMotor> {
 		
 		validateSearchRequest(conditionClause, pageNumber, pageSize, fetchAll);
 
-    List<ConditionLine> additionalFilters = Arrays.stream(DISPLAY_AS_SEPARATE_CATEGORIES)
+    List<ConditionLine> additionalFilters = Arrays.stream(CATEGORIES_DISPLAY_AS_SEPARATE)
         .map(category -> ConditionLine.of(AbstractMotorEntity.FIELD_NAME_CATEGORY, ComparisonOperator.NE, category))
         .toList();
     if (BooleanUtils.isTrue(appConfigProvider.getLinearStepperMotorModelFlattenWithLeadCodeEnabled())
-        && !ArrayUtils.contains(DISPLAY_AS_SEPARATE_CATEGORIES, MotorCategory.STEPPER_LINEAR)) {
+        && !ArrayUtils.contains(CATEGORIES_DISPLAY_AS_SEPARATE, MotorCategory.STEPPER_LINEAR)) {
       // Specially handle linear stepper motors only when the switch is enabled and linear stepper motors are not displayed as separate categories but as a part of stepper motors
       return searchWithLeadFlattenStepperMotors(conditionClause, additionalFilters, pageNumber, pageSize, getCachedDataAvailableUnitsOfFieldNames());
     }
