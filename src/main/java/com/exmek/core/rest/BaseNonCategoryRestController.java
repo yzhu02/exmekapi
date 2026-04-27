@@ -9,8 +9,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import com.exmek.commons.expr.RelationalOperator;
 import org.apache.commons.lang3.ObjectUtils;
-import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -75,9 +75,9 @@ extends BaseProductRestController<T, L, M, SE, S> {
 	}
 
 	protected PageableListDataResponse<M> searchBySeries(ConditionClause conditionClause, String series, Integer pageNumber, Integer pageSize) {
-		List<Pair<String, Object>> additionalFieldMatching = new ArrayList<>();
+		List<ConditionLine> additionalFieldMatching = new ArrayList<>();
 		if (!ObjectUtils.isEmpty(series)) {
-			additionalFieldMatching.add(Pair.of(AbstractProductEntity.FIELD_NAME_SERIES, series));
+			additionalFieldMatching.add(ConditionLine.of(AbstractProductEntity.FIELD_NAME_SERIES, RelationalOperator.EQ, series));
 		}
 		return searchWith(conditionClause, additionalFieldMatching, pageNumber, pageSize, getCachedUnitsOfFieldNames(null, null, series));
 	}

@@ -11,6 +11,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.apache.commons.beanutils.PropertyUtils;
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.util.NumberUtils;
@@ -40,15 +41,13 @@ public class JPAUtils {
 	 * Build {@link Predicate} for given {@link ConditionClause} input and pre-cached per-fieldname units.
 	 * The pre-cached units is provided in case it's already available for performance optimization, 
 	 * otherwise the units will be resolved from the Enum class and add to where clause if {@link ConditionClause} contains unit.
-	 * 
-	 * @param <T>
+	 *
 	 * @param builder
 	 * @param rootPathResolver
 	 * @param conditionClause
 	 * @param dataAvailableUnitsOfFieldNames
 	 * @return
 	 */
-	@SuppressWarnings("unchecked")
 	public static Predicate buildPredicate(CriteriaBuilder builder, Function<String, Path<?>> rootPathResolver, 
 			ConditionClause conditionClause, 
 			Map<String, Set<Object>> dataAvailableUnitsOfFieldNames) {
@@ -67,37 +66,8 @@ public class JPAUtils {
 		List<Predicate> predicates = new ArrayList<>();
 		if (conditions != null) {
 			for (String condition : conditions) {
-				Predicate predicate = null;
 				ConditionLine cl = ConditionLine.parse(condition);
-				Path<?> root = rootPathResolver.apply(cl.getFieldName());
-				Class<? extends Object> fieldType = root.get(cl.getFieldName()).getJavaType();
-				if (Number.class.isAssignableFrom(fieldType)) {
-					if (StringUtils.isNotEmpty(cl.getUnit())) {
-						Enum<?>[] units = null;
-						if (dataAvailableUnitsOfFieldNames != null) {
-							Set<Object> unitObjects = dataAvailableUnitsOfFieldNames.get(cl.getFieldName());
-							if (unitObjects != null) {
-								units = unitObjects.stream().filter(u -> u.getClass().isEnum()).toArray(Enum<?>[]::new);
-							}
-						}
-						predicate = JPAUtils.buildUnitBasedPredicateForNumber(builder, rootPathResolver, (Class<? extends Number>) fieldType, cl, units);
-					} else {
-						predicate = JPAUtils.buildPredicateForNumber(builder, root.get(cl.getFieldName()), (Class<? extends Number>) fieldType, cl);
-					}
-				} else if (Boolean.class == fieldType) {
-					if (cl.getOperator() == RelationalOperator.EQ || cl.getOperator() == RelationalOperator.IS) {
-						Boolean booleanVal = Boolean.valueOf(cl.getValue());
-						if (booleanVal == true) {
-							predicate = builder.isTrue(root.get(cl.getFieldName()));
-						} else {
-							predicate = builder.isFalse(root.get(cl.getFieldName()));
-						}
-					} else {
-						log.error("Unable to parse boolean condition {} ", condition);
-					}
-				} else {
-					predicate = JPAUtils.buildPredicateForString(builder, root.get(cl.getFieldName()), cl);
-				}
+        Predicate predicate = buildPredicate(builder, rootPathResolver, cl, dataAvailableUnitsOfFieldNames);
 				if (predicate != null) {
 					predicates.add(predicate);
 				}
@@ -113,6 +83,41 @@ public class JPAUtils {
 		}
 		return JPAUtils.buildConjunctPredicate(builder, predicates, conditionClause.getOperator());
 	}
+
+  public static Predicate buildPredicate(CriteriaBuilder builder, Function<String, Path<?>> rootPathResolver,
+      ConditionLine cl, Map<String, Set<Object>> dataAvailableUnitsOfFieldNames) {
+    Predicate predicate = null;
+    Path<?> root = rootPathResolver.apply(cl.getFieldName());
+    Class<? extends Object> fieldType = root.get(cl.getFieldName()).getJavaType();
+    if (Number.class.isAssignableFrom(fieldType)) {
+      if (StringUtils.isNotEmpty(cl.getUnit())) {
+        Enum<?>[] units = null;
+        if (dataAvailableUnitsOfFieldNames != null) {
+          Set<Object> unitObjects = dataAvailableUnitsOfFieldNames.get(cl.getFieldName());
+          if (unitObjects != null) {
+            units = unitObjects.stream().filter(u -> u.getClass().isEnum()).toArray(Enum<?>[]::new);
+          }
+        }
+        predicate = JPAUtils.buildUnitBasedPredicateForNumber(builder, rootPathResolver, (Class<? extends Number>) fieldType, cl, units);
+      } else {
+        predicate = JPAUtils.buildPredicateForNumber(builder, root.get(cl.getFieldName()), (Class<? extends Number>) fieldType, cl);
+      }
+    } else if (Boolean.class == fieldType) {
+      if (cl.getOperator() == RelationalOperator.EQ || cl.getOperator() == RelationalOperator.IS) {
+        boolean isTrue = BooleanUtils.toBoolean(cl.getValue());
+        if (isTrue) {
+          predicate = builder.isTrue(root.get(cl.getFieldName()));
+        } else {
+          predicate = builder.isFalse(root.get(cl.getFieldName()));
+        }
+      } else {
+        log.error("Unable to parse boolean for {} ", cl.getValue());
+      }
+    } else {
+      predicate = JPAUtils.buildPredicateForString(builder, root.get(cl.getFieldName()), cl);
+    }
+    return predicate;
+  }
 
 	public static <T> Predicate buildUnitBasedPredicateForNumber(CriteriaBuilder builder, Function<String, Path<?>> rootPathResolver, 
 			Class<? extends Number> fieldType, ConditionLine cl, Enum<?>[] units) {

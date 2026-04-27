@@ -3,6 +3,7 @@ package com.exmek.core.rest;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import lombok.Builder;
 import org.apache.commons.lang3.StringUtils;
 
 import com.exmek.commons.expr.LogicalOperator;
@@ -45,7 +46,7 @@ public class ConditionLine implements Cloneable {
 	private String unit;
 	
 	public static ConditionLine parse(String conditionStr) {
-		if (conditionStr == null || conditionStr.length() == 0) {
+		if (conditionStr == null || conditionStr.isEmpty()) {
 			return null;
 		}
 		Pattern p = Pattern.compile(CONDITION_LINE_REGEX);
@@ -81,17 +82,25 @@ public class ConditionLine implements Cloneable {
 		}
 		return null;
 	}
-		
+
+  public static ConditionLine of(String fieldName, RelationalOperator operator, String value) {
+    ConditionLine cl = new ConditionLine();
+    cl.setFieldName(fieldName);
+    cl.setOperator(operator);
+    cl.setValue(value);
+    return cl;
+  }
+
 	@Override
 	public ConditionLine clone() {
-		ConditionLine cl = new ConditionLine();
-		cl.fieldName = this.fieldName;
-		cl.operator = this.operator;
-		cl.value = this.value;
-		cl.numberValue = this.numberValue;
-		cl.unit = this.unit;
-		cl.value2 = this.value2;
-		cl.numberValue2 = this.numberValue2;
-		return cl;
+    ConditionLine cl = new ConditionLine();
+    cl.fieldName = this.fieldName;
+    cl.operator = this.operator;
+    cl.value = this.value;
+    cl.numberValue = this.numberValue;
+    cl.unit = this.unit;
+    cl.value2 = this.value2;
+    cl.numberValue2 = this.numberValue2;
+    return cl;
 	}
 }

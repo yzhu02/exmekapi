@@ -91,7 +91,7 @@ implements ProductService<M>, Scheduleable {
 		List<FieldMetaCriterion> fieldMetaCriteria = 
 				fieldMetaCriteriaMap.computeIfAbsent(criteriaKey, this::createFieldMetaCriteria);
 		List<FieldMetaCriterion> resultCriteria = fieldMetaCriteria.stream()
-				.filter(c -> filterCriterion(c))
+				.filter(this::filterCriterion)
 				.collect(Collectors.toList());
 		return SearchMetaCriteriaResponse.builder()
 				.domain(getEntityClass().getSimpleName())
@@ -196,7 +196,7 @@ implements ProductService<M>, Scheduleable {
 	}
 
 	protected PageableListDataResponse<M> searchWith(ConditionClause conditionClause,
-			List<Pair<String, Object>> additionalFieldMatching,
+			List<ConditionLine> additionalFieldMatching,
 			Integer pageNumber, Integer pageSize,
 			Map<String, Set<Object>> dataAvailableUnitsOfFieldNames) {
 		return searchBy(conditionClause, (root, builder) -> {
@@ -205,12 +205,11 @@ implements ProductService<M>, Scheduleable {
 	}
 	
 	static <X extends AbstractProductEntity> Pair<Predicate, LogicalOperator> toPredicateWithOperator(
-			List<Pair<String, Object>> additionalFieldMatching, Root<X> root, CriteriaBuilder builder) {
+			List<ConditionLine> additionalFieldMatching, Root<X> root, CriteriaBuilder builder) {
 
 		if (!ObjectUtils.isEmpty(additionalFieldMatching)) {
 			List<Predicate> predicates = additionalFieldMatching.stream()
-					.filter(p -> !ObjectUtils.isEmpty(p.getLeft()) && !ObjectUtils.isEmpty(p.getRight()))
-					.map(p -> builder.equal(root.get(p.getLeft()), p.getRight()))
+          .map(cl -> JPAUtils.buildPredicate(builder, fn -> root, cl, null))
 					.collect(Collectors.toList());
 			Predicate combinedPredicate = JPAUtils.buildConjunctPredicate(builder, predicates, LogicalOperator.AND);
 			return Pair.of(combinedPredicate, LogicalOperator.AND);

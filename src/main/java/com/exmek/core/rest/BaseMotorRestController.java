@@ -10,6 +10,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import com.exmek.commons.expr.RelationalOperator;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -170,17 +171,17 @@ extends BaseProductRestController<T, L, M, SE, MotorSeries> {
 			String category, String series,
 			Integer pageNumber, Integer pageSize) {
 
-		List<Pair<String, Object>> additionalFieldMatchings = asFieldMatchings(category, series);
+		List<ConditionLine> additionalFieldMatchings = asFieldMatchings(category, series);
 		return searchWith(conditionClause, additionalFieldMatchings, pageNumber, pageSize, getCachedUnitsOfFieldNames(null, category, series));
 	}
 
-	protected List<Pair<String, Object>> asFieldMatchings(String category, String series) {
-		List<Pair<String, Object>> fieldMatchings = new ArrayList<>();
+	protected List<ConditionLine> asFieldMatchings(String category, String series) {
+		List<ConditionLine> fieldMatchings = new ArrayList<>();
 		if (category != null) {
-			fieldMatchings.add(Pair.of(AbstractMotorEntity.FIELD_NAME_CATEGORY, category));
+			fieldMatchings.add(ConditionLine.of(AbstractMotorEntity.FIELD_NAME_CATEGORY, RelationalOperator.EQ, category));
 		}
 		if (!ObjectUtils.isEmpty(series)) {
-			fieldMatchings.add(Pair.of(AbstractMotorEntity.FIELD_NAME_SERIES, series));
+			fieldMatchings.add(ConditionLine.of(AbstractMotorEntity.FIELD_NAME_SERIES, RelationalOperator.EQ, series));
 		}
 		return fieldMatchings;
 	}

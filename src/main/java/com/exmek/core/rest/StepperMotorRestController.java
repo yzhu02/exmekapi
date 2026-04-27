@@ -1,13 +1,17 @@
 package com.exmek.core.rest;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.BiFunction;
 
+import com.exmek.commons.expr.RelationalOperator;
+import com.exmek.core.persistence.entity.AbstractMotorEntity;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
@@ -55,6 +59,12 @@ public class StepperMotorRestController
 extends BaseMotorRestController<StepperMotorEntity, LightweightStepperMotorEntity, StepperMotor, StepperMotorSeriesEntity, StepperMotorCategoryEntity> 
 implements ProductService<StepperMotor> {
 
+	/// STEPPER_INTEGRATED and STEPPER_LINEAR are displayed as separate independent categories (no longer under STEPPER type) in the frontend right now///
+	private static final String[] DISPLAY_AS_SEPARATE_CATEGORIES = {
+			MotorCategory.STEPPER_INTEGRATED,
+			MotorCategory.STEPPER_LINEAR
+	};
+	
 	@Autowired
 	protected StepperMotorCategoryRepository motorCategoryRepository;
 
@@ -115,7 +125,10 @@ implements ProductService<StepperMotor> {
 	
 	@GetMapping("/stepper/categories")
 	public List<MotorCategory> getMotorCategories() {
-		return super.getMotorCategories(null);
+    List<MotorCategory> categories = super.getMotorCategories(null);
+    return categories.stream()
+        .filter(cat -> !ArrayUtils.contains(DISPLAY_AS_SEPARATE_CATEGORIES, cat.getCategory()))
+        .toList();
 	}
 	
 	@Override
@@ -173,12 +186,18 @@ implements ProductService<StepperMotor> {
 			@RequestParam(value = QRY_PARAM_NAME_FETCH_ALL, required = false) Boolean fetchAll) {
 		
 		validateSearchRequest(conditionClause, pageNumber, pageSize, fetchAll);
-		
-		if (BooleanUtils.isTrue(appConfigProvider.getLinearStepperMotorModelFlattenWithLeadCodeEnabled())) {
-			return searchWithLeadFlattenStepperMotors(conditionClause, null, pageNumber, pageSize, getCachedDataAvailableUnitsOfFieldNames());
-		}
-		
-		return searchWith(conditionClause, null, pageNumber, pageSize, getCachedDataAvailableUnitsOfFieldNames());
+
+    List<ConditionLine> additionalFilters = Arrays.stream(DISPLAY_AS_SEPARATE_CATEGORIES)
+        .map(category -> ConditionLine.of(AbstractMotorEntity.FIELD_NAME_CATEGORY, RelationalOperator.NE, category))
+        .toList();
+    if (BooleanUtils.isTrue(appConfigProvider.getLinearStepperMotorModelFlattenWithLeadCodeEnabled())
+        && !ArrayUtils.contains(DISPLAY_AS_SEPARATE_CATEGORIES, MotorCategory.STEPPER_LINEAR)) {
+      // Specially handle linear stepper motors only when the switch is enabled and linear stepper motors are not displayed as separate categories but as a part of stepper motors
+      return searchWithLeadFlattenStepperMotors(conditionClause, additionalFilters, pageNumber, pageSize, getCachedDataAvailableUnitsOfFieldNames());
+    }
+
+    // Excluding DISPLAY_AS_SEPARATE_CATEGORIES: STEPPER_INTEGRATED and STEPPER_LINEAR
+    return searchWith(conditionClause, additionalFilters, pageNumber, pageSize, getCachedDataAvailableUnitsOfFieldNames());
 	}
 
 	@PostMapping("/stepper/{" + PARAM_NAME_CATEGORY + "}/search")
@@ -206,8 +225,7 @@ implements ProductService<StepperMotor> {
 		
 	@GetMapping("/stepper/criteria")
 	public SearchMetaCriteriaResponse getSearchMetaCriteriaByNone() {
-		MetaCriteriaKey key = MetaCriteriaKey.builder()
-				.build();
+		MetaCriteriaKey key = MetaCriteriaKey.builder().build();
 		return super.getSearchMetaCriteria(key);
 	}
 
@@ -259,9 +277,9 @@ implements ProductService<StepperMotor> {
 			String category, String series,
 			Integer pageNumber, Integer pageSize) {
 
-		if ((StringUtils.equals(MotorCategory.STEPPER_LINEAR, category) || MotorUtils.isLinearStepperMotorSeries(series)) 
+		if ((StringUtils.equals(MotorCategory.STEPPER_LINEAR, category) || StringUtils.isEmpty(category) && MotorUtils.isLinearStepperMotorSeries(series))
 				&& BooleanUtils.isTrue(appConfigProvider.getLinearStepperMotorModelFlattenWithLeadCodeEnabled())) {
-			List<Pair<String, Object>> additionalFieldMatchings = asFieldMatchings(category, series);
+			List<ConditionLine> additionalFieldMatchings = asFieldMatchings(category, series);
 			return searchWithLeadFlattenStepperMotors(conditionClause, additionalFieldMatchings, pageNumber, pageSize, getCachedUnitsOfFieldNames(null, category, series));
 		}
 		
@@ -270,7 +288,7 @@ implements ProductService<StepperMotor> {
 		
 	// Search for any StepperMotor but in case of LinearStepperMotor then flatten it with lead codes
 	private PageableListDataResponse<StepperMotor> searchWithLeadFlattenStepperMotors(ConditionClause conditionClause,
-			List<Pair<String, Object>> additionalFieldMatching, Integer pageNumber, Integer pageSize,
+			List<ConditionLine> additionalFieldMatching, Integer pageNumber, Integer pageSize,
 			Map<String, Set<Object>> dataAvailableUnitsOfFieldNames) {
 		
 		resolveLeadFlattenModelAndLeadCode(conditionClause.getConditions());
