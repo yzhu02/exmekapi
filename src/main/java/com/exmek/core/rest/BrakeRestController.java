@@ -90,7 +90,7 @@ implements ProductService<Brake> {
 	
 	@Override
 	protected List<String> getSearchMetaCriteriaFields() {
-		return appConfigProvider.getSearchBrakeMetaCriteriaFields();
+		return appConfigProvider.getSearchBrakeMetaCriteriaFieldsDefault();
 	}
 
 	@Override

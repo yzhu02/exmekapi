@@ -37,16 +37,16 @@ VALUES
 	'server.allowUrlEncodedSlash', 'false' 
 ),
 (
-	'search.dcMotor.metaCriteria.fields', '["frameSize", "length", "ratedVoltage", "ratedCurrent", "ratedPower", "ratedTorque", "ratedRotatingSpeed", "ratedLinearSpeed", "peakCurrent", "peakTorque", "maxSortingWeight", "noloadCurrent", "noloadRotatingSpeed", "weight", "model"]'
+	'search.dcMotor.metaCriteria.fields', '{"default": ["frameSize", "length", "ratedVoltage", "ratedCurrent", "ratedPower", "ratedTorque", "ratedRotatingSpeed", "ratedLinearSpeed", "peakCurrent", "peakTorque", "maxSortingWeight", "noloadCurrent", "noloadRotatingSpeed", "weight", "model"]}'
 ),
 (
-	'search.stepperMotor.metaCriteria.fields', '["frameSize", "length", "maxThrust", "ratedVoltage", "phaseCurrent", "phaseResistance", "holdingTorque", "detentTorque", "stepAngle", "weight", "model"]'
+	'search.stepperMotor.metaCriteria.fields', '{"default": ["frameSize", "length", "maxThrust", "ratedVoltage", "phaseCurrent", "phaseResistance", "holdingTorque", "detentTorque", "stepAngle", "weight", "model"], "STEPPER_INTEGRATED": ["frameSize", "nemaSize", "length", "peakCurrent", "holdingTorque"]}'
 ),
 (
-	'search.planetaryGearbox.metaCriteria.fields', '["frameSize", "length", "numOfStages", "efficiency", "ratedContinuousTorque", "maxMomentaryTorque", "maxRadialLoad", "maxAxialLoad", "maxShaftPress", "weight", "model"]'
+	'search.planetaryGearbox.metaCriteria.fields', '{"default": ["frameSize", "length", "numOfStages", "efficiency", "ratedContinuousTorque", "maxMomentaryTorque", "maxRadialLoad", "maxAxialLoad", "maxShaftPress", "weight", "model"]}'
 ),
 (
-	'search.brake.metaCriteria.fields', '["frameSize", "length", "ratedVoltage", "resistance", "current", "staticTorque", "ratedPower", "startVoltage", "weight", "model"]'
+	'search.brake.metaCriteria.fields', '{"default": ["frameSize", "length", "ratedVoltage", "resistance", "current", "staticTorque", "ratedPower", "startVoltage", "weight", "model"]}'
 ),
 (
 	'meta.fieldDisplayNameMappings', '{"model": "Article", "ratedRotatingSpeed": "Rated Speed", "noloadCurrent": "No load Current", "noloadRotatingSpeed": "No load Speed"}'

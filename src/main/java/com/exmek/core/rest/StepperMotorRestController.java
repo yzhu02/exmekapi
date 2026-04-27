@@ -120,7 +120,7 @@ implements ProductService<StepperMotor> {
 
 	@Override
 	protected List<String> getSearchMetaCriteriaFields() {
-		return appConfigProvider.getSearchStepperMotorMetaCriteriaFields();
+		return appConfigProvider.getSearchStepperMotorMetaCriteriaFieldsDefault();
 	}
 	
 	@GetMapping("/stepper/categories")

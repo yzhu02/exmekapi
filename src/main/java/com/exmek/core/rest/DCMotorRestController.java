@@ -100,7 +100,7 @@ implements ProductService<DCMotor> {
 	
 	@Override
 	protected List<String> getSearchMetaCriteriaFields() {
-		return appConfigProvider.getSearchDCMotorMetaCriteriaFields();
+		return appConfigProvider.getSearchDCMotorMetaCriteriaFieldsDefault();
 	}
 	
 	@Override

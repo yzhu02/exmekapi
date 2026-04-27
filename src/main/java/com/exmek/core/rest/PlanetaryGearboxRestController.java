@@ -90,7 +90,7 @@ implements ProductService<PlanetaryGearbox> {
 
 	@Override
 	protected List<String> getSearchMetaCriteriaFields() {
-		return appConfigProvider.getSearchPlanetaryGearboxMetaCriteriaFields();
+		return appConfigProvider.getSearchPlanetaryGearboxMetaCriteriaFieldsDefault();
 	}
 	
 	@Override

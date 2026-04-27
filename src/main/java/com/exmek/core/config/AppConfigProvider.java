@@ -68,7 +68,9 @@ public class AppConfigProvider implements Scheduleable {
 	private static final String DEFAULT_VALUE_MEASURABLE_CONVERSION_RATIOS				= "{\"Torque(oz-in):Torque(Ncm)\": \"1:0.7061\"}";
 
 	private static final String DEFAULT_VALUE_NEW_PRODUCT_AGING_DAYS					= "180";
-	
+
+  public static final String DEFAULT = "default";
+
 	@Autowired
 	private ConfigRepository configRepository;
 
@@ -132,26 +134,46 @@ public class AppConfigProvider implements Scheduleable {
 		String confStr = getConfigValue(CONFIG_NAME_SERVER_ALLOW_URL_ENCODE_SLASH, null);
 		return BooleanUtils.toBooleanObject(confStr);
 	}
-	
-	public List<String> getSearchDCMotorMetaCriteriaFields() {
+
+	public Map<String, List<String>> getSearchDCMotorMetaCriteriaFields() {
 		String confStr = getConfigValue(CONFIG_NAME_SEARCH_DC_MOTOR_METACRITERIA_FIELDS, null);
-		return JsonMapperUtils.readValue(confStr, new TypeReference<List<String>>() {});
+		return JsonMapperUtils.readValue(confStr, new TypeReference<Map<String, List<String>>>() {});
 	}
-	
-	public List<String> getSearchStepperMotorMetaCriteriaFields() {
+
+  public List<String> getSearchDCMotorMetaCriteriaFieldsDefault() {
+    Map<String, List<String>> metaCriteriaFields = getSearchDCMotorMetaCriteriaFields();
+    return metaCriteriaFields.get(DEFAULT);
+  }
+
+  public Map<String, List<String>> getSearchStepperMotorMetaCriteriaFields() {
 		String confStr = getConfigValue(CONFIG_NAME_SEARCH_STEPPER_MOTOR_METACRITERIA_FIELDS, null);
-		return JsonMapperUtils.readValue(confStr, new TypeReference<List<String>>() {});
+		return JsonMapperUtils.readValue(confStr, new TypeReference<Map<String, List<String>>>() {});
 	}
-	
-	public List<String> getSearchPlanetaryGearboxMetaCriteriaFields() {
+
+  public List<String> getSearchStepperMotorMetaCriteriaFieldsDefault() {
+    Map<String, List<String>> metaCriteriaFields = getSearchStepperMotorMetaCriteriaFields();
+    return metaCriteriaFields.get(DEFAULT);
+  }
+
+	public Map<String, List<String>> getSearchPlanetaryGearboxMetaCriteriaFields() {
 		String confStr = getConfigValue(CONFIG_NAME_SEARCH_PLANETARY_GEARBOX_METACRITERIA_FIELDS, null);
-		return JsonMapperUtils.readValue(confStr, new TypeReference<List<String>>() {});
+		return JsonMapperUtils.readValue(confStr, new TypeReference<Map<String, List<String>>>() {});
 	}
+
+  public List<String> getSearchPlanetaryGearboxMetaCriteriaFieldsDefault() {
+    Map<String, List<String>> metaCriteriaFields = getSearchPlanetaryGearboxMetaCriteriaFields();
+    return metaCriteriaFields.get(DEFAULT);
+  }
 	
-	public List<String> getSearchBrakeMetaCriteriaFields() {
+	public Map<String, List<String>> getSearchBrakeMetaCriteriaFields() {
 		String confStr = getConfigValue(CONFIG_NAME_SEARCH_BRAKE_METACRITERIA_FIELDS, null);
-		return JsonMapperUtils.readValue(confStr, new TypeReference<List<String>>() {});
+		return JsonMapperUtils.readValue(confStr, new TypeReference<Map<String, List<String>>>() {});
 	}
+
+  public List<String> getSearchBrakeMetaCriteriaFieldsDefault() {
+    Map<String, List<String>> metaCriteriaFields = getSearchBrakeMetaCriteriaFields();
+    return metaCriteriaFields.get(DEFAULT);
+  }
 
 	public Map<String, String> getMetaFieldDisplayNameMappings() {
 		String confStr = getConfigValue(CONFIG_NAME_META_FIELD_DISPLAY_NAME_MAPPINGS, null);

@@ -95,7 +95,7 @@ public class MotorMapper extends AbstractProductMapper {
 		
 		motor.setMotorCategory(MotorCategoryMapper.mapEntityToCategory(entity.getMotorCategory(), false));
 		motor.setProductSeries(AbstractSeriesMapper.mapEntityToSeries(entity.getProductSeries(), MotorSeries::new, false));
-		motor.setAllSpecs(mapAllCombinedSpecs(entity, entity.getSpecs(), appConfigProvider.getSearchDCMotorMetaCriteriaFields(), DC_MOTOR_EXCLUDED_FIELDS_TO_SPECS));
+		motor.setAllSpecs(mapAllCombinedSpecs(entity, entity.getSpecs(), appConfigProvider.getSearchDCMotorMetaCriteriaFieldsDefault(), DC_MOTOR_EXCLUDED_FIELDS_TO_SPECS));
 		motor.setPerfCurves(motorPerfCurveMapper.mapToPerfCurveModels(entity.getPerfMeasurements(), entity.getModel()));
 		
 		performResourceMapping(motor, entity);
@@ -190,7 +190,7 @@ public class MotorMapper extends AbstractProductMapper {
 		
 		motor.setMotorCategory(MotorCategoryMapper.mapEntityToCategory(entity.getMotorCategory(), false));
 		motor.setProductSeries(AbstractSeriesMapper.mapEntityToSeries(entity.getProductSeries(), MotorSeries::new, false));
-		motor.setAllSpecs(mapAllCombinedSpecs(entity, entity.getSpecs(), appConfigProvider.getSearchStepperMotorMetaCriteriaFields(), STEPPER_MOTOR_EXCLUDED_FIELDS_TO_SPECS));
+		motor.setAllSpecs(mapAllCombinedSpecs(entity, entity.getSpecs(), appConfigProvider.getSearchStepperMotorMetaCriteriaFieldsDefault(), STEPPER_MOTOR_EXCLUDED_FIELDS_TO_SPECS));
 		if (motor instanceof LinearStepperMotor) {
 			motor.setPerfCurves(motorPerfCurveMapper.mapToLinearStepperMotorPerfCurveModels(entity.getPerfMeasurements(), entity.getModel()));
 		} else {
@@ -234,7 +234,7 @@ public class MotorMapper extends AbstractProductMapper {
 		performBasicStepperMotorMapping(linearStepperMotor, entity);
 		linearStepperMotor.setMotorCategory(MotorCategoryMapper.mapEntityToCategory(entity.getMotorCategory(), false));
 		linearStepperMotor.setProductSeries(AbstractSeriesMapper.mapEntityToSeries(entity.getProductSeries(), MotorSeries::new, false));
-		linearStepperMotor.setAllSpecs(mapAllCombinedSpecs(entity, entity.getSpecs(), appConfigProvider.getSearchStepperMotorMetaCriteriaFields(), STEPPER_MOTOR_EXCLUDED_FIELDS_TO_SPECS));
+		linearStepperMotor.setAllSpecs(mapAllCombinedSpecs(entity, entity.getSpecs(), appConfigProvider.getSearchStepperMotorMetaCriteriaFieldsDefault(), STEPPER_MOTOR_EXCLUDED_FIELDS_TO_SPECS));
 		linearStepperMotor.setPerfCurves(motorPerfCurveMapper.mapToLinearStepperMotorPerfCurveModels(entity.getPerfMeasurements(), entity.getModel()));
 		performResourceMapping(linearStepperMotor, entity);
 		
@@ -325,7 +325,7 @@ public class MotorMapper extends AbstractProductMapper {
 		
 		linearStepperMotor.setMotorCategory(MotorCategoryMapper.mapEntityToCategory(source.getMotorCategory(), false));
 		linearStepperMotor.setProductSeries(AbstractSeriesMapper.mapEntityToSeries(source.getProductSeries(), MotorSeries::new, false));
-		linearStepperMotor.setAllSpecs(mapAllCombinedSpecs(source, source.getSpecs(), appConfigProvider.getSearchStepperMotorMetaCriteriaFields(), STEPPER_MOTOR_EXCLUDED_FIELDS_TO_SPECS));
+		linearStepperMotor.setAllSpecs(mapAllCombinedSpecs(source, source.getSpecs(), appConfigProvider.getSearchStepperMotorMetaCriteriaFieldsDefault(), STEPPER_MOTOR_EXCLUDED_FIELDS_TO_SPECS));
 		linearStepperMotor.setPerfCurves(motorPerfCurveMapper.mapToLinearStepperMotorPerfCurveModels(source.getPerfMeasurements(), source.getModel()));
 		
 		performResourceMapping(linearStepperMotor, source);
