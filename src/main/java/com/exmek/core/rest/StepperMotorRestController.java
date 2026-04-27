@@ -8,7 +8,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.BiFunction;
 
-import com.exmek.commons.expr.RelationalOperator;
+import com.exmek.commons.expr.ComparisonOperator;
 import com.exmek.core.persistence.entity.AbstractMotorEntity;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.ArrayUtils;
@@ -188,7 +188,7 @@ implements ProductService<StepperMotor> {
 		validateSearchRequest(conditionClause, pageNumber, pageSize, fetchAll);
 
     List<ConditionLine> additionalFilters = Arrays.stream(DISPLAY_AS_SEPARATE_CATEGORIES)
-        .map(category -> ConditionLine.of(AbstractMotorEntity.FIELD_NAME_CATEGORY, RelationalOperator.NE, category))
+        .map(category -> ConditionLine.of(AbstractMotorEntity.FIELD_NAME_CATEGORY, ComparisonOperator.NE, category))
         .toList();
     if (BooleanUtils.isTrue(appConfigProvider.getLinearStepperMotorModelFlattenWithLeadCodeEnabled())
         && !ArrayUtils.contains(DISPLAY_AS_SEPARATE_CATEGORIES, MotorCategory.STEPPER_LINEAR)) {

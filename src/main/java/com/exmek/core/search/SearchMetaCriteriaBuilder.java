@@ -18,7 +18,7 @@ import com.exmek.core.config.AppConfigProvider;
 import com.exmek.core.helper.MetaCriteriaKey;
 import com.exmek.core.persistence.entity.AbstractProductEntity;
 import com.exmek.core.rest.FieldMetaCriterion;
-import com.exmek.core.utils.RelationalOperatorUtils;
+import com.exmek.core.utils.ComparisonOperatorUtils;
 
 @Component
 public class SearchMetaCriteriaBuilder {
@@ -93,7 +93,7 @@ public class SearchMetaCriteriaBuilder {
 		c.setIsNumber(isNumber);
 		if (isNumber) {
 			c.setMinMaxByUnits(minMaxByUnitsLoader.apply(fieldName, criteriaKey));
-			c.setSupportedOperators(RelationalOperatorUtils.getNumberSupportedRelationalOperators());
+			c.setSupportedOperators(ComparisonOperatorUtils.getNumberSupportedComparisonOperators());
 		}
 		return c;
 	}

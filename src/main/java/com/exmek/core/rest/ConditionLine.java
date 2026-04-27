@@ -3,11 +3,10 @@ package com.exmek.core.rest;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import lombok.Builder;
 import org.apache.commons.lang3.StringUtils;
 
 import com.exmek.commons.expr.LogicalOperator;
-import com.exmek.commons.expr.RelationalOperator;
+import com.exmek.commons.expr.ComparisonOperator;
 import com.exmek.commons.utils.MiscUtils;
 
 import lombok.Data;
@@ -35,7 +34,7 @@ public class ConditionLine implements Cloneable {
 	 * LIKE
 	 * IS
 	 */
-	private RelationalOperator operator;
+	private ComparisonOperator operator;
 	
 	private String value;
 	private String numberValue;
@@ -57,13 +56,13 @@ public class ConditionLine implements Cloneable {
 			String value = m.group(3);
 			ConditionLine c = new ConditionLine();
 			c.setFieldName(fieldName);
-			c.setOperator(RelationalOperator.fromSymbol(op.trim()));
+			c.setOperator(ComparisonOperator.fromSymbol(op.trim()));
 			c.setValue(value);
 			c.setNumberValue(m.group(4));
-			if (StringUtils.isNotEmpty(c.getNumberValue()) && !StringUtils.equals(c.getValue(), c.getNumberValue()) && RelationalOperator.BETWEEN != c.getOperator()) {
+			if (StringUtils.isNotEmpty(c.getNumberValue()) && !StringUtils.equals(c.getValue(), c.getNumberValue()) && ComparisonOperator.BETWEEN != c.getOperator()) {
 				c.setUnit(m.group(5));
 			}
-			if (RelationalOperator.BETWEEN == c.getOperator()) {
+			if (ComparisonOperator.BETWEEN == c.getOperator()) {
 				int inx = value.indexOf(LogicalOperator.AND.name());
 				if (inx > 1) {
 					c.setValue(value.substring(0, inx - 1).trim());
@@ -83,7 +82,7 @@ public class ConditionLine implements Cloneable {
 		return null;
 	}
 
-  public static ConditionLine of(String fieldName, RelationalOperator operator, String value) {
+  public static ConditionLine of(String fieldName, ComparisonOperator operator, String value) {
     ConditionLine cl = new ConditionLine();
     cl.setFieldName(fieldName);
     cl.setOperator(operator);

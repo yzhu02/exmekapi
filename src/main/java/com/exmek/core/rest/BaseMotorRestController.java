@@ -10,7 +10,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import com.exmek.commons.expr.RelationalOperator;
+import com.exmek.commons.expr.ComparisonOperator;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -178,10 +178,10 @@ extends BaseProductRestController<T, L, M, SE, MotorSeries> {
 	protected List<ConditionLine> asFieldMatchings(String category, String series) {
 		List<ConditionLine> fieldMatchings = new ArrayList<>();
 		if (category != null) {
-			fieldMatchings.add(ConditionLine.of(AbstractMotorEntity.FIELD_NAME_CATEGORY, RelationalOperator.EQ, category));
+			fieldMatchings.add(ConditionLine.of(AbstractMotorEntity.FIELD_NAME_CATEGORY, ComparisonOperator.EQ, category));
 		}
 		if (!ObjectUtils.isEmpty(series)) {
-			fieldMatchings.add(ConditionLine.of(AbstractMotorEntity.FIELD_NAME_SERIES, RelationalOperator.EQ, series));
+			fieldMatchings.add(ConditionLine.of(AbstractMotorEntity.FIELD_NAME_SERIES, ComparisonOperator.EQ, series));
 		}
 		return fieldMatchings;
 	}

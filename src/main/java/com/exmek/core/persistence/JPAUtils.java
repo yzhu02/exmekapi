@@ -17,7 +17,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.util.NumberUtils;
 
 import com.exmek.commons.expr.LogicalOperator;
-import com.exmek.commons.expr.RelationalOperator;
+import com.exmek.commons.expr.ComparisonOperator;
 import com.exmek.commons.function.HexaFunction;
 import com.exmek.commons.function.QuadFunction;
 import com.exmek.commons.utils.ReflectionUtils;
@@ -103,7 +103,7 @@ public class JPAUtils {
         predicate = JPAUtils.buildPredicateForNumber(builder, root.get(cl.getFieldName()), (Class<? extends Number>) fieldType, cl);
       }
     } else if (Boolean.class == fieldType) {
-      if (cl.getOperator() == RelationalOperator.EQ || cl.getOperator() == RelationalOperator.IS) {
+      if (cl.getOperator() == ComparisonOperator.EQ || cl.getOperator() == ComparisonOperator.IS) {
         boolean isTrue = BooleanUtils.toBoolean(cl.getValue());
         if (isTrue) {
           predicate = builder.isTrue(root.get(cl.getFieldName()));
@@ -224,19 +224,19 @@ public class JPAUtils {
 	static <N extends Number> Predicate buildPredicateForNumber(CriteriaBuilder builder,
 			Path<N> attrPath, Class<? extends Number> fieldType, ConditionLine cl) {
 		Number nValue = NumberUtils.parseNumber(cl.getNumberValue(), fieldType);
-		if (RelationalOperator.EQ == cl.getOperator()) {
+		if (ComparisonOperator.EQ == cl.getOperator()) {
 			return builder.equal(attrPath, nValue);
-		} else if (RelationalOperator.GT == cl.getOperator()) {
+		} else if (ComparisonOperator.GT == cl.getOperator()) {
 			return builder.gt(attrPath, nValue);
-		} else if (RelationalOperator.GTE == cl.getOperator()) {
+		} else if (ComparisonOperator.GTE == cl.getOperator()) {
 			return builder.ge(attrPath, nValue);
-		} else if (RelationalOperator.LT == cl.getOperator()) {
+		} else if (ComparisonOperator.LT == cl.getOperator()) {
 			return builder.lt(attrPath, nValue);
-		} else if (RelationalOperator.LTE == cl.getOperator()) {
+		} else if (ComparisonOperator.LTE == cl.getOperator()) {
 			return builder.le(attrPath, nValue);
-		} else if (RelationalOperator.NE == cl.getOperator()) {
+		} else if (ComparisonOperator.NE == cl.getOperator()) {
 			return builder.notEqual(attrPath, nValue);
-		} else if (RelationalOperator.BETWEEN == cl.getOperator()) {
+		} else if (ComparisonOperator.BETWEEN == cl.getOperator()) {
 			return buildNumberBetween(builder, attrPath, fieldType, nValue, NumberUtils.parseNumber(cl.getNumberValue2(), fieldType));
 		}
 		return null;
@@ -264,31 +264,31 @@ public class JPAUtils {
 	}
 
 	static Predicate buildPredicateForString(CriteriaBuilder builder, Path<String> attrPath, ConditionLine cl) {
-		if (RelationalOperator.EQ == cl.getOperator()) {
+		if (ComparisonOperator.EQ == cl.getOperator()) {
 			return builder.equal(attrPath, cl.getValue());
-		} else if (RelationalOperator.GT == cl.getOperator()) {
+		} else if (ComparisonOperator.GT == cl.getOperator()) {
 			return builder.greaterThan(attrPath, cl.getValue());
-		} else if (RelationalOperator.GTE == cl.getOperator()) {
+		} else if (ComparisonOperator.GTE == cl.getOperator()) {
 			return builder.greaterThanOrEqualTo(attrPath, cl.getValue());
-		} else if (RelationalOperator.LT == cl.getOperator()) {
+		} else if (ComparisonOperator.LT == cl.getOperator()) {
 			return builder.lessThan(attrPath, cl.getValue());
-		} else if (RelationalOperator.LTE == cl.getOperator()) {
+		} else if (ComparisonOperator.LTE == cl.getOperator()) {
 			return builder.lessThanOrEqualTo(attrPath, cl.getValue());
-		} else if (RelationalOperator.NE == cl.getOperator()) {
+		} else if (ComparisonOperator.NE == cl.getOperator()) {
 			return builder.notEqual(attrPath, cl.getValue());
-		} else if (RelationalOperator.LIKE == cl.getOperator()) {
+		} else if (ComparisonOperator.LIKE == cl.getOperator()) {
 			String likeValue = cl.getValue();
 			if (likeValue != null) {
 				likeValue = likeValue.replace('*', '%');
 			}
 			return builder.like(attrPath, likeValue);
-		} else if (RelationalOperator.CONTAINS == cl.getOperator()) {
+		} else if (ComparisonOperator.CONTAINS == cl.getOperator()) {
 			return builder.like(attrPath, "%" + cl.getValue() + "%");
-		} else if (RelationalOperator.STARTWITH == cl.getOperator()) {
+		} else if (ComparisonOperator.STARTWITH == cl.getOperator()) {
 			return builder.like(attrPath, cl.getValue() + "%");
-		} else if (RelationalOperator.ENDWITH == cl.getOperator()) {
+		} else if (ComparisonOperator.ENDWITH == cl.getOperator()) {
 			return builder.like(attrPath, "%" + cl.getValue());
-		} else if (RelationalOperator.BETWEEN == cl.getOperator()) {
+		} else if (ComparisonOperator.BETWEEN == cl.getOperator()) {
 			return builder.between(attrPath, cl.getValue(), cl.getValue2());
 		}
 		return null;

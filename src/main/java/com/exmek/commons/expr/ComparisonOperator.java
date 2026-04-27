@@ -2,7 +2,7 @@ package com.exmek.commons.expr;
 
 import com.fasterxml.jackson.annotation.JsonValue;
 
-public enum RelationalOperator {
+public enum ComparisonOperator {
 
 	EQ("=="),
 	GTE(">="),
@@ -36,7 +36,7 @@ public enum RelationalOperator {
    
     private final String symbol;
 
-    RelationalOperator(String symbol) {
+    ComparisonOperator(String symbol) {
         this.symbol = symbol;
     }
 
@@ -50,15 +50,15 @@ public enum RelationalOperator {
     	return symbol;
     }
 
-    public static RelationalOperator fromSymbol(String symbol) {
+    public static ComparisonOperator fromSymbol(String symbol) {
     	if ("=".equals(symbol)) {
     		return EQ;
     	}
-    	for (RelationalOperator operator : RelationalOperator.values()) { 
+    	for (ComparisonOperator operator : ComparisonOperator.values()) {
     		if (operator.symbol.equals(symbol)) {
     			return operator;
     		}
     	}
-    	throw new IllegalArgumentException("Failed to parse RelationalOperator " + symbol);
+    	throw new IllegalArgumentException("Failed to parse ComparisonOperator " + symbol);
     }
 }

@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import com.exmek.commons.expr.RelationalOperator;
+import com.exmek.commons.expr.ComparisonOperator;
 import com.exmek.core.commons.model.MeasuredOptionsValue;
 import com.exmek.core.commons.model.Range;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -22,18 +22,18 @@ public class FieldMetaCriterion {
 	private String unitFieldName;
 	private Map<?, Range<? extends Number>> minMaxByUnits;
 
-	private List<RelationalOperator> supportedOperators;
+	private List<ComparisonOperator> supportedOperators;
 	
 	private MeasuredOptionsValue<? super Object, ? super Object> availableOptionsValue;
 	
-	public void addSupportedOperator(RelationalOperator... operators) {
+	public void addSupportedOperator(ComparisonOperator... operators) {
 		if (operators == null) {
 			return;
 		}
 		if (this.supportedOperators == null) {
 			this.supportedOperators = new ArrayList<>();
 		}
-		for (RelationalOperator op : supportedOperators) {
+		for (ComparisonOperator op : supportedOperators) {
 			this.supportedOperators.add(op);
 		}
 	}
