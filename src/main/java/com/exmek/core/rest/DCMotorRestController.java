@@ -43,9 +43,10 @@ implements ProductService<DCMotor> {
 	public static final String QRY_PARAM_VALUE_TYPE_BLDC	= "BLDC";
 	public static final String QRY_PARAM_VALUE_TYPE_BRUSH	= "Brush";
 
-  /// BLDC_INTEGRATED is displayed as separate independent category (no longer under BLDC type) in the frontend right now///
+  /// BLDC_INTEGRATED and BLDC_WITH_GEARBOX are displayed as separate independent categories (no longer under BLDC type) in the frontend right now///
   private static final String[] CATEGORIES_DISPLAY_AS_SEPARATE = {
-      MotorCategory.BLDC_INTEGRATED
+      MotorCategory.BLDC_INTEGRATED,
+      MotorCategory.BLDC_WITH_GEARBOX
   };
 
 	@Autowired
