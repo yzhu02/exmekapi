@@ -1,5 +1,6 @@
 package com.exmek.core.rest;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -121,31 +122,36 @@ implements ProductService<M>, Scheduleable {
     if (metaCriteriaFields == null) {
       return null;
     }
+    List<String> priorityKeys = new ArrayList<>();
     StringBuilder sb = new StringBuilder();
-    boolean keySpecified = false;
     if (criteriaKey.getType() != null) {
       sb.append(criteriaKey.getType().name());
-      keySpecified = true;
+      priorityKeys.add(sb.toString());
     }
     if (StringUtils.isNotEmpty(criteriaKey.getCategory())) {
-      if (keySpecified) {
+      if (!priorityKeys.isEmpty()) {
         sb.append(".");
       }
       sb.append(criteriaKey.getCategory());
-      keySpecified = true;
+      priorityKeys.add(sb.toString());
     }
     if (StringUtils.isNotEmpty(criteriaKey.getSeries())) {
-      if (keySpecified) {
+      if (!priorityKeys.isEmpty()) {
         sb.append(".");
       }
       sb.append(criteriaKey.getSeries());
-      keySpecified = true;
+      priorityKeys.add(sb.toString());
     }
-    if (keySpecified) {
-      return metaCriteriaFields.get(sb.toString());
-    } else {
-      return metaCriteriaFields.get(AppConfigProvider.DEFAULT);
+    if (!priorityKeys.isEmpty()) {
+      for (int i = priorityKeys.size() - 1; i >= 0; i--) {
+        String key = priorityKeys.get(i);
+        List<String> fields = metaCriteriaFields.get(key);
+        if (fields != null) {
+          return fields;
+        }
+      }
     }
+    return metaCriteriaFields.get(AppConfigProvider.DEFAULT);
   }
 
 	protected Map<String, Set<Object>> getCachedDataAvailableUnitsOfFieldNames() {
