@@ -53,7 +53,7 @@ implements ProductService<PlanetaryGearbox> {
 	private GearboxSeriesMapper seriesMapper;
 	
 	@Override
-	protected Class<PlanetaryGearboxEntity> getEntityClass() {
+	protected Class<PlanetaryGearboxEntity> getEntityClass(MetaCriteriaKey criteriaKey) {
 		return PlanetaryGearboxEntity.class;
 	}
 	
@@ -89,8 +89,8 @@ implements ProductService<PlanetaryGearbox> {
 	}
 
 	@Override
-	protected List<String> getSearchMetaCriteriaFields() {
-		return appConfigProvider.getSearchPlanetaryGearboxMetaCriteriaFieldsDefault();
+	protected List<String> getSearchMetaCriteriaFields(MetaCriteriaKey criteriaKey) {
+		return resolveSearchMetaCriteriaFields(appConfigProvider.getSearchPlanetaryGearboxMetaCriteriaFields(), criteriaKey);
 	}
 	
 	@Override

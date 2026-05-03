@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.ObjectUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -63,7 +64,7 @@ implements ProductService<M>, Scheduleable {
 	
 	protected Map<MetaCriteriaKey, List<FieldMetaCriterion>> fieldMetaCriteriaMap = new ConcurrentHashMap<>();
 	
-	protected abstract Class<T> getEntityClass();
+	protected abstract Class<T> getEntityClass(MetaCriteriaKey criteriaKey);
 
 	protected abstract BaseSeriesRepository<SE> getSeriesRepository();
 	
@@ -77,7 +78,7 @@ implements ProductService<M>, Scheduleable {
 
 	protected abstract M mapLightweightEntityToModel(L entity);
 	
-	protected abstract List<String> getSearchMetaCriteriaFields();
+	protected abstract List<String> getSearchMetaCriteriaFields(MetaCriteriaKey criteriaKey);
 
 	protected abstract Map<?, Range<? extends Number>> getMinMaxRangeByUnit(String fieldName, MetaCriteriaKey criteriaKey);
 
@@ -94,7 +95,7 @@ implements ProductService<M>, Scheduleable {
 				.filter(this::filterCriterion)
 				.collect(Collectors.toList());
 		return SearchMetaCriteriaResponse.builder()
-				.domain(getEntityClass().getSimpleName())
+				.domain(getEntityClass(criteriaKey).getSimpleName())
 				.fieldMetaCriteria(resultCriteria)
 				.defaultPageSize(appConfigProvider.getSearchDefaultPageSize())
 				.build();
@@ -113,8 +114,39 @@ implements ProductService<M>, Scheduleable {
 
 	protected List<FieldMetaCriterion> createFieldMetaCriteria(MetaCriteriaKey criteriaKey) {
 		return searchMetaCriteriaBuilder.createFieldMetaCriteria(criteriaKey, 
-				getSearchMetaCriteriaFields(), getEntityClass(), this::getMinMaxRangeByUnit);
+				getSearchMetaCriteriaFields(criteriaKey), getEntityClass(criteriaKey), this::getMinMaxRangeByUnit);
 	}
+
+  protected List<String> resolveSearchMetaCriteriaFields(Map<String, List<String>> metaCriteriaFields, MetaCriteriaKey criteriaKey) {
+    if (metaCriteriaFields == null) {
+      return null;
+    }
+    StringBuilder sb = new StringBuilder();
+    boolean keySpecified = false;
+    if (criteriaKey.getType() != null) {
+      sb.append(criteriaKey.getType().name());
+      keySpecified = true;
+    }
+    if (StringUtils.isNotEmpty(criteriaKey.getCategory())) {
+      if (keySpecified) {
+        sb.append(".");
+      }
+      sb.append(criteriaKey.getCategory());
+      keySpecified = true;
+    }
+    if (StringUtils.isNotEmpty(criteriaKey.getSeries())) {
+      if (keySpecified) {
+        sb.append(".");
+      }
+      sb.append(criteriaKey.getSeries());
+      keySpecified = true;
+    }
+    if (keySpecified) {
+      return metaCriteriaFields.get(sb.toString());
+    } else {
+      return metaCriteriaFields.get(AppConfigProvider.DEFAULT);
+    }
+  }
 
 	protected Map<String, Set<Object>> getCachedDataAvailableUnitsOfFieldNames() {
 		return getCachedUnitsOfFieldNames(null, null, null);
@@ -196,12 +228,13 @@ implements ProductService<M>, Scheduleable {
 	}
 
 	protected PageableListDataResponse<M> searchWith(ConditionClause conditionClause,
-			List<ConditionLine> additionalFieldMatching,
+			List<ConditionLine> additionalFieldMatchings,
 			Integer pageNumber, Integer pageSize,
 			Map<String, Set<Object>> dataAvailableUnitsOfFieldNames) {
-		return searchBy(conditionClause, (root, builder) -> {
-			return toPredicateWithOperator(additionalFieldMatching, root, builder);
-		}, pageNumber, pageSize, dataAvailableUnitsOfFieldNames);
+		return searchBy(conditionClause,
+        (root, builder) -> toPredicateWithOperator(additionalFieldMatchings, root, builder),
+        pageNumber, pageSize, dataAvailableUnitsOfFieldNames
+    );
 	}
 	
 	static <X extends AbstractProductEntity> Pair<Predicate, LogicalOperator> toPredicateWithOperator(
@@ -251,7 +284,7 @@ implements ProductService<M>, Scheduleable {
 			return null;
 		}
 		return entities.stream()
-				.map(entity -> mapLightweightEntityToModel(entity))
+				.map(this::mapLightweightEntityToModel)
 				.collect(Collectors.toList());
 	}
 

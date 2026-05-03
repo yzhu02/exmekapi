@@ -40,7 +40,7 @@ VALUES
 	'search.dcMotor.metaCriteria.fields', '{"default": ["frameSize", "length", "ratedVoltage", "ratedCurrent", "ratedPower", "ratedTorque", "ratedRotatingSpeed", "ratedLinearSpeed", "peakCurrent", "peakTorque", "maxSortingWeight", "noloadCurrent", "noloadRotatingSpeed", "weight", "model"]}'
 ),
 (
-	'search.stepperMotor.metaCriteria.fields', '{"default": ["frameSize", "length", "maxThrust", "ratedVoltage", "phaseCurrent", "phaseResistance", "holdingTorque", "detentTorque", "stepAngle", "weight", "model"], "STEPPER_INTEGRATED": ["frameSize", "nemaSize", "length", "peakCurrent", "holdingTorque"]}'
+	'search.stepperMotor.metaCriteria.fields', '{"default": ["frameSize", "length", "phaseCurrent", "phaseResistance", "holdingTorque", "detentTorque", "stepAngle", "weight", "model"], "STEPPER_LINEAR": ["frameSize", "length", "maxThrust", "ratedVoltage", "phaseCurrent", "phaseResistance", "holdingTorque", "detentTorque", "stepAngle", "weight", "model"], "STEPPER_INTEGRATED": ["frameSize", "length", "ratedCurrent", "peakCurrent", "holdingTorque", "operatingVoltage", "logicVoltage", "fieldbus", "encoderResolution"]}'
 ),
 (
 	'search.planetaryGearbox.metaCriteria.fields', '{"default": ["frameSize", "length", "numOfStages", "efficiency", "ratedContinuousTorque", "maxMomentaryTorque", "maxRadialLoad", "maxAxialLoad", "maxShaftPress", "weight", "model"]}'

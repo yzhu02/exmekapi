@@ -53,7 +53,7 @@ implements ProductService<Brake> {
 	private BrakeSeriesMapper brakeSeriesMapper;
 
 	@Override
-	protected Class<BrakeEntity> getEntityClass() {
+	protected Class<BrakeEntity> getEntityClass(MetaCriteriaKey criteriaKey) {
 		return BrakeEntity.class;
 	}
 	
@@ -89,8 +89,8 @@ implements ProductService<Brake> {
 	}
 	
 	@Override
-	protected List<String> getSearchMetaCriteriaFields() {
-		return appConfigProvider.getSearchBrakeMetaCriteriaFieldsDefault();
+	protected List<String> getSearchMetaCriteriaFields(MetaCriteriaKey criteriaKey) {
+		return resolveSearchMetaCriteriaFields(appConfigProvider.getSearchBrakeMetaCriteriaFields(), criteriaKey);
 	}
 
 	@Override

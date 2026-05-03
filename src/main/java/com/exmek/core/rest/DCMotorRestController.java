@@ -69,7 +69,7 @@ implements ProductService<DCMotor> {
 	private MotorMapper motorMapper;
 
 	@Override
-	protected Class<DCMotorEntity> getEntityClass() {
+	protected Class<DCMotorEntity> getEntityClass(MetaCriteriaKey criteriaKey) {
 		return DCMotorEntity.class;
 	}
 
@@ -104,8 +104,8 @@ implements ProductService<DCMotor> {
 	}
 	
 	@Override
-	protected List<String> getSearchMetaCriteriaFields() {
-		return appConfigProvider.getSearchDCMotorMetaCriteriaFieldsDefault();
+	protected List<String> getSearchMetaCriteriaFields(MetaCriteriaKey criteriaKey) {
+		return resolveSearchMetaCriteriaFields(appConfigProvider.getSearchDCMotorMetaCriteriaFields(), criteriaKey);
 	}
 	
 	@Override
