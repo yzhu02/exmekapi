@@ -1,8 +1,11 @@
 package com.exmek.core.rest;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import com.exmek.commons.expr.ComparisonOperator;
+import com.exmek.core.persistence.entity.AbstractMotorEntity;
 import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
@@ -46,7 +49,8 @@ implements ProductService<DCMotor> {
   /// BLDC_INTEGRATED and BLDC_WITH_GEARBOX are displayed as separate independent categories (no longer under BLDC type) in the frontend right now///
   private static final String[] CATEGORIES_DISPLAY_AS_SEPARATE = {
       MotorCategory.BLDC_INTEGRATED,
-      MotorCategory.BLDC_WITH_GEARBOX
+      MotorCategory.BLDC_WITH_GEARBOX,
+      MotorCategory.BRUSH_WITH_GEARBOX
   };
 
 	@Autowired
@@ -159,7 +163,11 @@ implements ProductService<DCMotor> {
 			@RequestParam(value = QRY_PARAM_NAME_FETCH_ALL, required = false) Boolean fetchAll) {
 
 		validateSearchRequest(conditionClause, pageNumber, pageSize, fetchAll);
-		return super.searchMotorsByCategoryType(conditionClause, type, pageNumber, pageSize);
+
+    List<ConditionLine> additionalFilters = Arrays.stream(CATEGORIES_DISPLAY_AS_SEPARATE)
+        .map(category -> ConditionLine.of(AbstractMotorEntity.FIELD_NAME_CATEGORY, ComparisonOperator.NE, category))
+        .toList();
+		return super.searchMotorsByCategoryType(conditionClause, type, additionalFilters, pageNumber, pageSize);
 	}
 
 	/**

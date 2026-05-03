@@ -11,6 +11,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import com.exmek.commons.expr.ComparisonOperator;
+import com.exmek.core.persistence.JPAUtils;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -154,7 +156,9 @@ extends BaseProductRestController<T, L, M, SE, MotorSeries> {
 	}
 
 	protected PageableListDataResponse<M> searchMotorsByCategoryType(ConditionClause conditionClause,
-			String type, Integer pageNumber, Integer pageSize) {
+			String type,
+      List<ConditionLine> additionalFieldMatching,
+      Integer pageNumber, Integer pageSize) {
 		
 		if (ObjectUtils.isEmpty(type)) {
 			return searchBy(conditionClause, null, pageNumber, pageSize, null);
@@ -163,7 +167,17 @@ extends BaseProductRestController<T, L, M, SE, MotorSeries> {
 		return searchBy(conditionClause, (root, builder) -> {
 			Join<T, CE> categoryJoin = root.join(AbstractMotorEntity.FIELD_NAME_MOTOR_CATEGORY);
 			Predicate pType = builder.equal(categoryJoin.get(AbstractMotorCategoryEntity.FIELD_NAME_TYPE), Type.valueOf(type.toUpperCase()));
-			return Pair.of(pType, LogicalOperator.AND);
+
+      if (CollectionUtils.isNotEmpty(additionalFieldMatching)) {
+        List<Predicate> predicates = additionalFieldMatching.stream()
+            .map(cl -> JPAUtils.buildPredicate(builder, fn -> root, cl, null))
+            .collect(Collectors.toList());
+        Predicate combinedAdditionalPredicate = JPAUtils.buildConjunctPredicate(builder, predicates, LogicalOperator.AND);
+        Predicate resultPredicate = JPAUtils.buildConjunctPredicate(builder, List.of(pType, combinedAdditionalPredicate), LogicalOperator.AND);
+        return Pair.of(resultPredicate, LogicalOperator.AND);
+      } else {
+        return Pair.of(pType, LogicalOperator.AND);
+      }
 		}, pageNumber, pageSize, dataAvailableUnitsOfFieldNames);
 	}
 	
