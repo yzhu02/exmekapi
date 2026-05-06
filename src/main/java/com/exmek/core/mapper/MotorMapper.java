@@ -340,6 +340,8 @@ public class MotorMapper extends AbstractProductMapper {
           integratedStepperMotor.setFieldbus(specEntity.getValue());
         } else if (IntegratedStepperMotor.SPEC_NAME_OPERATING_VOLTAGE.equalsIgnoreCase(specEntity.getName())) {
           integratedStepperMotor.setOperatingVoltage(specEntity.getValue() + " " + specEntity.getUnit());
+        } else if (IntegratedStepperMotor.SPEC_NAME_LOGIC_VOLTAGE.equalsIgnoreCase(specEntity.getName())) {
+          integratedStepperMotor.setLogicVoltage(specEntity.getValue() + " " + specEntity.getUnit());
         } else if (IntegratedStepperMotor.SPEC_NAME_ENCODER_RESOLUTION.equalsIgnoreCase(specEntity.getName())) {
           integratedStepperMotor.setEncoderResolution(specEntity.getValue() + " " + specEntity.getUnit());
         }
