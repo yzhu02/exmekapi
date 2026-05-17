@@ -1,12 +1,12 @@
 [
     {
-        "category": "BRUSH_WITH_GEARBOX",
-        "displayName": "Brush motor with gearbox",
+        "category": "PMDC_WITH_GEARBOX",
+        "displayName": "PMDC Gear Motor",
         "description": ""
     },
     {
-        "category": "PERMANENT_MAGNET_BRUSH",
-        "displayName": "Permanent Magnet Brush motor",
+        "category": "PMDC_BRUSH",
+        "displayName": "PMDC Brush Motor",
         "description": ""
     }
 ]

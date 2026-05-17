@@ -50,7 +50,7 @@ implements ProductService<DCMotor> {
   private static final String[] CATEGORIES_DISPLAY_AS_SEPARATE = {
       MotorCategory.BLDC_INTEGRATED,
       MotorCategory.BLDC_WITH_GEARBOX,
-      MotorCategory.BRUSH_WITH_GEARBOX
+      MotorCategory.PMDC_WITH_GEARBOX
   };
 
 	@Autowired

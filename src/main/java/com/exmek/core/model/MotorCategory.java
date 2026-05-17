@@ -23,8 +23,8 @@ public class MotorCategory extends AbstractModel {
 	public static final String BLDC_SERVO					= "BLDC_SERVO";
 	public static final String BLDC_WITH_GEARBOX			= "BLDC_WITH_GEARBOX";
 	public static final String BLDC_INTEGRATED				= "BLDC_INTEGRATED";
-	public static final String PERMANENT_MAGNET_BRUSH		= "PERMANENT_MAGNET_BRUSH";
-	public static final String BRUSH_WITH_GEARBOX			= "BRUSH_WITH_GEARBOX";
+	public static final String PMDC_BRUSH = "PMDC_BRUSH";
+	public static final String PMDC_WITH_GEARBOX = "PMDC_WITH_GEARBOX";
 	public static final String SOLAR_TRACKING_APPLICATION	= "SOLAR_TRACKING_APPLICATION";
 	public static final String MATERIAL_HANDLING_SOLUTION	= "MATERIAL_HANDLING_SOLUTION";
 	
