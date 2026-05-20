@@ -1667,5 +1667,8 @@ UPDATE DC_MOTOR_CATEGORY SET TYPE = 'GEAR' WHERE CATEGORY = 'PMDC_WITH_GEARBOX' 
 
 UPDATE STEPPER_MOTOR_CATEGORY SET TYPE = 'STEPPER';
 UPDATE STEPPER_MOTOR_CATEGORY SET TYPE = 'INTEGRATED' WHERE CATEGORY = 'STEPPER_INTEGRATED';
+
+UPDATE CONFIG SET VALUE = '{"name": "Wuxi Junhong Automation Technology Co.,Ltd.", "description": "Exmek Electric boasts over 20 years of expertise in designing and manufacturing high-performance fractional horsepower DC motor solutions. Serving global OEMs and industrial leaders, our diversified product portfolio is engineered to meet the most precise motion control requirements. From solar tracking and medical devices to robotics and industrial automation, we provide end-to-end technical support—from initial concept to high-volume production.", "mission": "Since establishment, Exmek strives to provide the best possible experience we can for our loyal customers and work alongside them to find the best solution to their individual situation.  We work together and grow together!", "phoneNumber": "0086 510 83079076", "email": "Lydia@junhongmotor.com", "address": "No. 28-94 Huibei Road, Liangxi District, Wuxi, JiangSu, China", "youtubeLink": "https://www.youtube.com/user/jack973209", "facebookLink": "https://www.facebook.com/ExmekElectric", "linkedinLink": "https://www.linkedin.com/company/exmekelectric", "twitterLink": "https://twitter.com/ExmekElectric"}'
+WHERE NAME = 'company.exmek'
 -- 20260519 Patch End --
 
