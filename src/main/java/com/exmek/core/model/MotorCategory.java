@@ -13,7 +13,7 @@ import lombok.EqualsAndHashCode;
 public class MotorCategory extends AbstractModel {
 		
 	public static enum Type {
-		BLDC, BRUSH
+		BLDC, BRUSH, INTEGRATED, GEAR, STEPPER
 	}
 
 	public static final String BLDC_INTERNAL_ROTOR			= "BLDC_INTERNAL_ROTOR"; 
