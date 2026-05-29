@@ -15,4 +15,5 @@ public class News {
 	private String content;
 	private String publishTime;
 	private List<String> picturePaths;
+  private List<String> videoURLs;
 }
