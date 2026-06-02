@@ -1672,3 +1672,7 @@ UPDATE CONFIG SET VALUE = '{"name": "Wuxi Junhong Automation Technology Co.,Ltd.
 WHERE NAME = 'company.exmek'
 -- 20260519 Patch End --
 
+
+-- 20260601 Patch Begin --
+DELETE FROM DC_MOTOR_SERIES WHERE SERIES = 'ME130AS';
+-- 20260601 Patch Begin --
