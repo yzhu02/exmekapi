@@ -25,13 +25,13 @@ class InquiryProcessorTest {
 		inquiry.setClientCountryOrRegion("USA");
 		String resolvedContent = inquiryProcessor.resolveInquiryContent(inquiry);
 		assertTrue(resolvedContent.contains("You have received an inquiry message from [[http://www.exmek.com/dc-motors/MB057GA100]] as following:"));
-		assertTrue(resolvedContent.contains("<td th:text=\"John Smith\">Contact Name</td>"));
-		assertTrue(resolvedContent.contains("<td th:text=\"john.smith@gmail.com\">Contact Email</td>"));
-		assertTrue(resolvedContent.contains("<td th:text=\"4081112345\">Contact Phone</td>"));
-		assertTrue(resolvedContent.contains("<td th:text=\"MB057GA100\">Inquired Product Model</td>"));
-		assertTrue(resolvedContent.contains("<td th:text=\"Hello, I'm looking for a DC motor\">Inquiry Message</td>"));
-		assertTrue(resolvedContent.contains("<td th:text=\"10.120.13.14\">Client IP Address</td>"));
-		assertTrue(resolvedContent.contains("<td th:text=\"USA\">Client IP Address Country/Region</td>"));
+		assertTrue(resolvedContent.contains("<td th:text=\"John Smith\">John Smith</td>"));
+		assertTrue(resolvedContent.contains("<td th:text=\"john.smith@gmail.com\">john.smith@gmail.com</td>"));
+		assertTrue(resolvedContent.contains("<td th:text=\"4081112345\">4081112345</td>"));
+		assertTrue(resolvedContent.contains("<td th:text=\"MB057GA100\">MB057GA100</td>"));
+		assertTrue(resolvedContent.contains("<td th:text=\"Hello, I'm looking for a DC motor\">Hello, I'm looking for a DC motor</td>"));
+		assertTrue(resolvedContent.contains("<td th:text=\"10.120.13.14\">10.120.13.14</td>"));
+		assertTrue(resolvedContent.contains("<td th:text=\"USA\">USA</td>"));
 	}
 
 	@Test
@@ -48,13 +48,13 @@ class InquiryProcessorTest {
 		String resolvedContent = inquiryProcessor.resolveInquiryContent(inquiry);
 
 		assertTrue(resolvedContent.contains("You have received an inquiry message from [[?]] as following:"));
-		assertTrue(resolvedContent.contains("<td th:text=\"John Smith\">Contact Name</td>"));
-		assertTrue(resolvedContent.contains("<td th:text=\"john.smith@gmail.com\">Contact Email</td>"));
-		assertTrue(resolvedContent.contains("<td th:text=\"4081112345\">Contact Phone</td>"));
-		assertTrue(resolvedContent.contains("<td th:text=\"?\">Inquired Product Model</td>"));
-		assertTrue(resolvedContent.contains("<td th:text=\"Hello, I'm looking for a DC motor\">Inquiry Message</td>"));
-		assertTrue(resolvedContent.contains("<td th:text=\"10.120.13.14\">Client IP Address</td>"));
-		assertTrue(resolvedContent.contains("<td th:text=\"USA\">Client IP Address Country/Region</td>"));
+		assertTrue(resolvedContent.contains("<td th:text=\"John Smith\">John Smith</td>"));
+		assertTrue(resolvedContent.contains("<td th:text=\"john.smith@gmail.com\">john.smith@gmail.com</td>"));
+		assertTrue(resolvedContent.contains("<td th:text=\"4081112345\">4081112345</td>"));
+		assertTrue(resolvedContent.contains("<td th:text=\"?\">?</td>"));
+		assertTrue(resolvedContent.contains("<td th:text=\"Hello, I'm looking for a DC motor\">Hello, I'm looking for a DC motor</td>"));
+		assertTrue(resolvedContent.contains("<td th:text=\"10.120.13.14\">10.120.13.14</td>"));
+		assertTrue(resolvedContent.contains("<td th:text=\"USA\">USA</td>"));
 	}
 
 }
