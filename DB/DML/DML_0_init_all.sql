@@ -31,7 +31,7 @@ VALUES
 	'consumers', '[{"id": "exmekweb@2411"}, {"id": "exmektest@2411"}]' 
 ),
 (
-	'cors.allowedOrigins', '["http://localhost:3000", "http://localhost:80", "https://localhost:443"]' 
+	'cors.allowedOrigins', '["https://exmek.com", "https://www.exmek.com", "https://localhost"]' 
 ),
 (
 	'server.allowUrlEncodedSlash', 'false' 

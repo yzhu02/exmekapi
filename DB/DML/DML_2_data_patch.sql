@@ -1678,7 +1678,7 @@ DELETE FROM DC_MOTOR_SERIES WHERE SERIES = 'ME130AS';
 -- 20260601 Patch Begin --
 
 
----- 20260606 Patch Begin --
+-- 20260606 Patch Begin --
 UPDATE DC_MOTOR_PERF_MEASUREMENT 
 SET `VALUES` = 
 '0.00,0.21,4113
@@ -1927,5 +1927,4 @@ UPDATE STEPPER_MOTOR_SERIES
 SET DESCRIPTION = 'Size 34 (86mm) stepper lead screw linear actuator provides high performance, can provide up to 2270N of continuous thrust.' 
 WHERE SERIES = 'LS086NB';
 
-
--- 20260606 Patch Begin --
+-- 20260606 Patch End --
