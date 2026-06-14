@@ -5,12 +5,15 @@ import org.springframework.stereotype.Component;
 import com.exmek.core.persistence.entity.DownloadTrackingEntity;
 import com.exmek.core.rest.DownloadTrackingRequest;
 
+import java.util.Date;
+
 @Component
 public class DownloadTrackingMapper {
 
 
 	public DownloadTrackingEntity mapDownloadTrackingRequestToEntity(DownloadTrackingRequest request) {
 		DownloadTrackingEntity entity = new DownloadTrackingEntity();
+		entity.setCreatedTimestamp(new Date());
 		entity.setDownloadLink(request.getDownloadLink());
 		entity.setContactEmail(request.getContactEmail());
 		entity.setContactName(request.getContactName());

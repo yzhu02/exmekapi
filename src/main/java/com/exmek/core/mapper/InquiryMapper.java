@@ -6,12 +6,15 @@ import com.exmek.core.model.Inquiry;
 import com.exmek.core.persistence.entity.InquiryEntity;
 import com.exmek.core.rest.InquiryRequest;
 
+import java.util.Date;
+
 @Component
 public class InquiryMapper {
 
 
 	public InquiryEntity mapInquiryToEntity(InquiryRequest.Inquiry inquiry) {
 		InquiryEntity entity = new InquiryEntity();
+		entity.setCreatedTimestamp(new Date());
 		entity.setContactName(inquiry.getContactName());
 		entity.setContactEmail(inquiry.getContactEmail());
 		entity.setContactPhone(inquiry.getContactPhone());
