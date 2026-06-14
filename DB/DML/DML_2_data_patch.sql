@@ -1950,53 +1950,52 @@ WHERE SERIES = 'LS086NB';
 -- 20260606 Patch End --
 
 
-
 -- 20260608 Patch Begin --
 UPDATE DC_MOTOR_SPEC SET NAME = 'Feedback Device (Optical encoder)' WHERE NAME LIKE 'Feedback Device%（Optical encoder)';
 UPDATE DC_MOTOR_SPEC SET NAME = 'Feedback Device (Magnetic / Absolute encoder)' WHERE NAME LIKE 'Feedback Device%（Magnetic /Absolute encoder)';
 
 UPDATE DC_MOTOR_SERIES SET DESCRIPTION = 
-'10 Poles with 3 Phases<br>
-compact design<br>
-Low Cogging<br>
-High Power Density<br>
-High Efficiency<br>
-IP 65<br>
-Absolute and magnetic encoder optional<br>
+'10 Poles with 3 Phases
+compact design
+Low Cogging
+High Power Density
+High Efficiency
+IP 65
+Absolute and magnetic encoder optional
 Brake available'
 WHERE SERIES = 'SE060AS';
 
 UPDATE DC_MOTOR SET DESCRIPTION = 
-'10 Poles with 3 Phases<br>
-compact design<br>
-Low Cogging<br>
-High Power Density<br>
-High Efficiency<br>
-IP 65<br>
-Absolute and magnetic encoder optional<br>
+'10 Poles with 3 Phases
+compact design
+Low Cogging
+High Power Density
+High Efficiency
+IP 65
+Absolute and magnetic encoder optional
 Brake available'
 WHERE SERIES = 'SE060AS';
 
 UPDATE DC_MOTOR_SERIES SET DESCRIPTION = 
-'10 Poles with 3 Phases<br>
-compact design<br>
-Low Cogging<br>
-High Power Density<br>
-High Efficiency<br>
-IP 65<br>
-Absolute and magnetic encoder optional<br>
-Brake available<br>'
+'10 Poles with 3 Phases
+compact design
+Low Cogging
+High Power Density
+High Efficiency
+IP 65
+Absolute and magnetic encoder optional
+Brake available'
 WHERE SERIES = 'SE080AS';
 
 UPDATE DC_MOTOR SET DESCRIPTION = 
-'10 Poles with 3 Phases<br>
-compact design<br>
-Low Cogging<br>
-High Power Density<br>
-High Efficiency<br>
-IP 65<br>
-Absolute and magnetic encoder optional<br>
-Brake available<br>'
+'10 Poles with 3 Phases
+compact design
+Low Cogging
+High Power Density
+High Efficiency
+IP 65
+Absolute and magnetic encoder optional
+Brake available'
 WHERE SERIES = 'SE080AS';
 
 -- SE060AS100 --
