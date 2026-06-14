@@ -1955,6 +1955,17 @@ WHERE SERIES = 'LS086NB';
 UPDATE DC_MOTOR_SPEC SET NAME = 'Feedback Device (Optical encoder)' WHERE NAME LIKE 'Feedback Device%（Optical encoder)';
 UPDATE DC_MOTOR_SPEC SET NAME = 'Feedback Device (Magnetic / Absolute encoder)' WHERE NAME LIKE 'Feedback Device%（Magnetic /Absolute encoder)';
 
+UPDATE DC_MOTOR_SERIES SET DESCRIPTION = 
+'10 Poles with 3 Phases<br>
+compact design<br>
+Low Cogging<br>
+High Power Density<br>
+High Efficiency<br>
+IP 65<br>
+Absolute and magnetic encoder optional<br>
+Brake available'
+WHERE SERIES = 'SE060AS';
+
 UPDATE DC_MOTOR SET DESCRIPTION = 
 '10 Poles with 3 Phases<br>
 compact design<br>
@@ -1965,6 +1976,17 @@ IP 65<br>
 Absolute and magnetic encoder optional<br>
 Brake available'
 WHERE SERIES = 'SE060AS';
+
+UPDATE DC_MOTOR_SERIES SET DESCRIPTION = 
+'10 Poles with 3 Phases<br>
+compact design<br>
+Low Cogging<br>
+High Power Density<br>
+High Efficiency<br>
+IP 65<br>
+Absolute and magnetic encoder optional<br>
+Brake available<br>'
+WHERE SERIES = 'SE080AS';
 
 UPDATE DC_MOTOR SET DESCRIPTION = 
 '10 Poles with 3 Phases<br>
