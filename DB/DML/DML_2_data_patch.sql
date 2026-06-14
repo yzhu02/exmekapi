@@ -2155,6 +2155,318 @@ WHERE MOTOR_ID = (SELECT ID FROM DC_MOTOR dm WHERE dm.MODEL = 'SE080AS300') AND 
 
 UPDATE DC_MOTOR_SPEC SET VALUE = '2500/17', UNIT = 'PPR/BIT'
 WHERE MOTOR_ID = (SELECT ID FROM DC_MOTOR dm WHERE dm.MODEL = 'SE080AS300') AND (NAME = 'Feedback Device (Optical encoder)' OR NAME = 'Feedback Device (Magnetic / Absolute encoder)');
-
-
 -- 20260608 Patch End --
+
+
+-- 20260609 Patch Begin --
+UPDATE BRAKE_SERIES 
+SET DESCRIPTION = 
+'Insulation Class F 
+Electrophoresis Plating Treatment 
+Special application on Request 
+Easy Mounting 
+NEMA 24 Mounting Configuration'
+WHERE SERIES = 'MAB23X';
+
+UPDATE BRAKE 
+SET DESCRIPTION = 
+'Insulation Class F 
+Electrophoresis Plating Treatment 
+Special application on Request 
+Easy Mounting 
+NEMA 24 Mounting Configuration'
+WHERE SERIES = 'MAB23X';
+
+
+UPDATE BRAKE_SERIES 
+SET DESCRIPTION = 
+'Insulation Class B
+Electrophoresis Plating Treatment 
+NEMA 23 Mounting Configuration
+Special application on Request'
+WHERE SERIES = 'MPC023';
+
+UPDATE BRAKE 
+SET DESCRIPTION = 
+'Insulation Class B
+Electrophoresis Plating Treatment 
+NEMA 23 Mounting Configuration
+Special application on Request'
+WHERE SERIES = 'MPC023';
+
+
+UPDATE BRAKE_SERIES 
+SET DESCRIPTION = 
+'Insulation Class F 
+Electrophoresis Plating Treatment 
+Special application on Request 
+Easy Mounting 
+NEMA 24 Mounting Configuration'
+WHERE SERIES = 'MPC024';
+
+UPDATE BRAKE 
+SET DESCRIPTION = 
+'Insulation Class F 
+Electrophoresis Plating Treatment 
+Special application on Request 
+Easy Mounting 
+NEMA 24 Mounting Configuration'
+WHERE SERIES = 'MPC024';
+
+
+UPDATE BRAKE_SERIES 
+SET DESCRIPTION = 
+'Insulation Class B
+Electrophoresis Plating Treatment 
+NEMA 34 Mounting Configuration
+Special application on Request'
+WHERE SERIES = 'MPC034';
+
+UPDATE BRAKE 
+SET DESCRIPTION = 
+'Insulation Class B
+Electrophoresis Plating Treatment 
+NEMA 34 Mounting Configuration
+Special application on Request'
+WHERE SERIES = 'MPC034';
+
+
+UPDATE BRAKE_SERIES 
+SET DESCRIPTION = 
+'Insulation Class B 
+Long life
+Zinc plating housing 
+Special application on request'
+WHERE SERIES = 'MSRA061';
+
+UPDATE BRAKE 
+SET DESCRIPTION = 
+'Insulation Class B 
+Long life
+Zinc plating housing 
+Special application on request'
+WHERE SERIES = 'MSRA061';
+-- 20260609 Patch End --
+
+-- 20260610 Patch Begin --
+UPDATE GEARBOX_SERIES 
+SET DESCRIPTION = 
+'Ring material: Metal
+Max. Backlash at no-load: ≤2.5°
+Radial paly of shaft: ≤0.07mm
+Axial play of shaft: ≤0.3mm
+Permissible Load Range: 0.3Nm~3.0Nm
+Standard output shaft OD 6mm, OD 8mm optional'
+WHERE SERIES = 'PL030GE';
+
+UPDATE PLANETARY_GEARBOX 
+SET DESCRIPTION = 
+'Ring material: Metal
+Max. Backlash at no-load: ≤2.5°
+Radial paly of shaft: ≤0.07mm
+Axial play of shaft: ≤0.3mm
+Permissible Load Range: 0.3Nm~3.0Nm
+Standard output shaft OD 6mm, OD 8mm optional'
+WHERE SERIES = 'PL030GE';
+
+
+UPDATE GEARBOX_SERIES 
+SET DESCRIPTION = 
+'Ring material: Metal
+Max. Backlash at no-load: ≤2.5°
+Radial paly of shaft: ≤0.07mm
+Axial play of shaft: ≤0.3mm
+Permissible Load Range: 0.5Nm~5.0Nm'
+WHERE SERIES = 'PL032GE';
+
+UPDATE PLANETARY_GEARBOX 
+SET DESCRIPTION = 
+'Ring material: Metal
+Max. Backlash at no-load: ≤2.5°
+Radial paly of shaft: ≤0.07mm
+Axial play of shaft: ≤0.3mm
+Permissible Load Range: 0.5Nm~5.0Nm'
+WHERE SERIES = 'PL032GE';
+
+
+UPDATE GEARBOX_SERIES 
+SET DESCRIPTION = 
+'Ring material: Powder metal
+Max. Backlash at no-load: ≤2.5°
+Radial paly of shaft: ≤0.07mm
+Axial play of shaft: ≤0.3mm
+Permissible Load Range: 0.3Nm~5.0Nm'
+WHERE SERIES = 'PL036GF';
+
+UPDATE PLANETARY_GEARBOX 
+SET DESCRIPTION = 
+'Ring material: Powder metal
+Max. Backlash at no-load: ≤2.5°
+Radial paly of shaft: ≤0.07mm
+Axial play of shaft: ≤0.3mm
+Permissible Load Range: 0.3Nm~5.0Nm'
+WHERE SERIES = 'PL036GF';
+
+
+UPDATE GEARBOX_SERIES 
+SET DESCRIPTION = 
+'Ring material: Powder metal
+Max. Backlash at no-load: ≤2.5°
+Radial paly of shaft: ≤0.06mm
+Axial play of shaft: ≤0.3mm
+Permissible Load Range: 1.5Nm~15.0Nm'
+WHERE SERIES = 'PL042GF';
+
+UPDATE PLANETARY_GEARBOX 
+SET DESCRIPTION = 
+'Ring material: Powder metal
+Max. Backlash at no-load: ≤2.5°
+Radial paly of shaft: ≤0.06mm
+Axial play of shaft: ≤0.3mm
+Permissible Load Range: 1.5Nm~15.0Nm'
+WHERE SERIES = 'PL042GF';
+
+
+UPDATE GEARBOX_SERIES 
+SET DESCRIPTION = 
+'Ring material: Metal
+Max. Backlash at no-load: ≤2.5°
+Radial paly of shaft: ≤0.06mm
+Axial play of shaft: ≤0.3mm
+Permissible Load Range: 2.0Nm~20.0Nm'
+WHERE SERIES = 'PL042GE';
+
+UPDATE PLANETARY_GEARBOX 
+SET DESCRIPTION = 
+'Ring material: Metal
+Max. Backlash at no-load: ≤2.5°
+Radial paly of shaft: ≤0.06mm
+Axial play of shaft: ≤0.3mm
+Permissible Load Range: 2.0Nm~20.0Nm'
+WHERE SERIES = 'PL042GE';
+
+
+UPDATE GEARBOX_SERIES 
+SET DESCRIPTION = 
+'Ring material: Metal
+Max. Backlash at no-load: ≤2.5°
+Radial paly of shaft: ≤0.06mm
+Axial play of shaft: ≤0.3mm
+Permissible Load Range: 0.1Nm~10.0Nm'
+WHERE SERIES = 'PL045GE';
+
+UPDATE PLANETARY_GEARBOX 
+SET DESCRIPTION = 
+'Ring material: Metal
+Max. Backlash at no-load: ≤2.5°
+Radial paly of shaft: ≤0.06mm
+Axial play of shaft: ≤0.3mm
+Permissible Load Range: 0.1Nm~10.0Nm'
+WHERE SERIES = 'PL045GE';
+
+
+UPDATE GEARBOX_SERIES 
+SET DESCRIPTION = 
+'Ring material: Metal
+Max. Backlash at no-load: ≤2.5°
+Radial paly of shaft: ≤0.08mm
+Axial play of shaft: ≤0.4mm
+Permissible Load Range: 2.0Nm~30.0Nm'
+WHERE SERIES = 'PL052GE';
+
+UPDATE PLANETARY_GEARBOX 
+SET DESCRIPTION = 
+'Ring material: Metal
+Max. Backlash at no-load: ≤2.5°
+Radial paly of shaft: ≤0.08mm
+Axial play of shaft: ≤0.4mm
+Permissible Load Range: 2.0Nm~30.0Nm'
+WHERE SERIES = 'PL052GE';
+
+
+UPDATE GEARBOX_SERIES 
+SET DESCRIPTION = 
+'Ring material: Metal
+Max. Backlash at no-load: ≤2.0/2.5°
+Radial paly of shaft: ≤0.08mm
+Axial play of shaft: ≤0.4mm
+Permissible Load Range: 3.0Nm~30.0Nm/4.0Nm~45.0Nm'
+WHERE SERIES = 'PL056GE';
+
+UPDATE PLANETARY_GEARBOX 
+SET DESCRIPTION = 
+'Ring material: Metal
+Max. Backlash at no-load: ≤2.0°
+Radial paly of shaft: ≤0.08mm
+Axial play of shaft: ≤0.4mm
+Permissible Load Range: 3.0Nm~30.0Nm'
+WHERE SERIES = 'PL056GE' AND MODEL LIKE 'PL056GE300K-%';
+
+UPDATE PLANETARY_GEARBOX 
+SET DESCRIPTION = 
+'Ring material: Metal
+Max. Backlash at no-load: ≤2.5°
+Radial paly of shaft: ≤0.08mm
+Axial play of shaft: ≤0.4mm
+Permissible Load Range: 4.0Nm~45.0Nm'
+WHERE SERIES = 'PL056GE' AND MODEL LIKE 'PL056GE450K-%';
+
+
+UPDATE GEARBOX_SERIES 
+SET DESCRIPTION = 
+'Ring material: Metal
+Max. Backlash at no-load: ≤2.5°
+Radial paly of shaft: ≤0.08mm
+Axial play of shaft: ≤0.4mm
+Permissible Load Range: 4.0Nm~45.0Nm'
+WHERE SERIES = 'PL060GE';
+
+UPDATE PLANETARY_GEARBOX 
+SET DESCRIPTION = 
+'Ring material: Metal
+Max. Backlash at no-load: ≤2.5°
+Radial paly of shaft: ≤0.08mm
+Axial play of shaft: ≤0.4mm
+Permissible Load Range: 4.0Nm~45.0Nm'
+WHERE SERIES = 'PL060GE';
+
+
+UPDATE GEARBOX_SERIES 
+SET DESCRIPTION = 
+'Ring material: Metal
+Max. Backlash at no-load: ≤2.5°
+Radial paly of shaft: ≤0.08mm
+Axial play of shaft: ≤0.4mm
+Permissible Load Range: 4.0Nm~45.0Nm'
+WHERE SERIES = 'PL062GE';
+
+UPDATE PLANETARY_GEARBOX 
+SET DESCRIPTION = 
+'Ring material: Metal
+Max. Backlash at no-load: ≤2.5°
+Radial paly of shaft: ≤0.08mm
+Axial play of shaft: ≤0.4mm
+Permissible Load Range: 4.0Nm~45.0Nm'
+WHERE SERIES = 'PL062GE';
+
+
+UPDATE GEARBOX_SERIES 
+SET DESCRIPTION = 
+'Ring material: Metal
+Max. Backlash at no-load: ≤2.5°
+Radial paly of shaft: ≤0.08mm
+Axial play of shaft: ≤0.4mm
+Permissible Load Range: 8.0Nm~80.0Nm'
+WHERE SERIES = 'PL080GE';
+
+UPDATE PLANETARY_GEARBOX 
+SET DESCRIPTION = 
+'Ring material: Metal
+Max. Backlash at no-load: ≤2.5°
+Radial paly of shaft: ≤0.08mm
+Axial play of shaft: ≤0.4mm
+Permissible Load Range: 8.0Nm~80.0Nm'
+WHERE SERIES = 'PL080GE';
+
+UPDATE PLANETARY_GEARBOX SET OPERATING_TEMPERATURE = CONCAT(OPERATING_TEMPERATURE, '°C');
+-- 20260610 Patch End --
