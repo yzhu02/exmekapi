@@ -2470,3 +2470,172 @@ WHERE SERIES = 'PL080GE';
 
 UPDATE PLANETARY_GEARBOX SET OPERATING_TEMPERATURE = CONCAT(OPERATING_TEMPERATURE, '°C');
 -- 20260610 Patch End --
+
+
+-- 20260615 Patch Begin --
+UPDATE DC_MOTOR_SERIES 
+SET DESCRIPTION = 
+'Low cogging
+Special Design for Easy Production
+High Reliability'
+WHERE SERIES = 'MB070GA';
+
+UPDATE DC_MOTOR 
+SET DESCRIPTION = 
+'8 poles with three phases
+12 slots design for low cogging
+Insulation class B, higher insulation class on request
+Multiple Lines of encoder available
+Sintered Neo Magnet'
+WHERE MODEL = 'ME070AS100';
+
+UPDATE DC_MOTOR 
+SET DESCRIPTION = 
+'8 poles with three phases
+15 slots distribution winding design for low cogging
+6 slots for automatic winding
+Insulation class B, higher insulation on request
+Multiple Lines of encoder available
+Sintered Neo Magnet
+Lower voltage available'
+WHERE MODEL = 'ME080AS100';
+
+UPDATE DC_MOTOR 
+SET DESCRIPTION = 
+'8 poles with three phases
+Servo application
+Insulation class F
+Multiple Lines of encoder available
+IP 65 class'
+WHERE MODEL = 'ME086AS100';
+
+UPDATE DC_MOTOR 
+SET DESCRIPTION = 
+'4.75 Inch Size
+Continuous Torque from 2.03Nm to 6.1Nm
+Speeds up to 5000 rpm
+Voltage Radial up to 325VDC
+Integrated Hall Effect Commutation
+40Kgf Ratial Load Capacity, 12.7mm from Front face
+Optical Encoders-High Precision, Optional
+NEMA 56 "Bolt On" Precision Gearheads, Optional'
+WHERE SERIES = 'MB120GA';
+
+UPDATE DC_MOTOR_CATEGORY 
+SET DESCRIPTION = 'The outer rotor brushless DC motor uses a housing fitted with permanent magnets as its rotor, which rotates around a centrally mounted stator. Thanks to the large outer diameter (OD) of the rotor, more magnetic poles can be configured. This design delivers high rotational inertia and low torque ripple, enabling smooth low-speed operation. The motor can also be fitted with encoders and gearboxes for diverse application requirements.'
+WHERE CATEGORY = 'BLDC_EXTERNAL_ROTOR';
+
+UPDATE DC_MOTOR_CATEGORY 
+SET DESCRIPTION = 'The frameless torque BLDC motor is supplied as separate stator and rotor assemblies. It can be directly integrated into equipment frames to minimize installation space, delivering an optimal solution for compact drive systems. Featuring high torque output, low torque ripple and superior torque density, these motors are widely adopted in robotics and medical equipment.
+Outer diameter: 36–130 mm
+Rated speed range: 100–10,000 RPM
+Peak torque: up to 6.5 Nm'
+WHERE CATEGORY = 'BLDC_FRAMELESS';
+
+UPDATE DC_MOTOR_CATEGORY 
+SET DESCRIPTION = 'The coreless brushless BLDC motor features an iron-core-free stator constructed from self-supporting copper coil structures. With zero cogging torque, the motor delivers ultra-smooth operation with low vibration, low noise and high efficiency. Free from eddy current losses, it is capable of ultra-high rotational speeds up to 150,000 RPM. These motors are widely adopted for medical surgical robots, dental handpieces, high-speed centrifuges, ventilator pumps and other precision equipment.
+Dimension: 12 mm ~ 41 mm
+Rated Speed: up to 30,000 RPM
+Peak Torque: up to 0.09 Nm'
+WHERE CATEGORY = 'BLDC_CORELESS';
+
+UPDATE DC_MOTOR_CATEGORY 
+SET DESCRIPTION = 'A BLDC servo motor is a high-performance BLDC unit integrated with high-precision position feedback devices. Compared with standard BLDC motors, BLDC servo motors deliver higher efficiency, lower torque ripple, reduced cogging torque and faster dynamic response. When paired with a servo controller, the system enables highly accurate closed-loop operation and sophisticated control algorithms. These motors are widely deployed in industrial robots, CNC machine tools, AGVs, medical & lab equipment and various automated systems.
+Outer Diameter: 20 mm ~ 130 mm
+Rated Output Power: up to 3 kW'
+WHERE CATEGORY = 'BLDC_SERVO';
+
+
+UPDATE DC_MOTOR 
+SET DESCRIPTION = 
+'Ball bearing/sintered Bronze bearing available
+Ceramic magnet
+7-slot Armature
+Copper-graphite Brush
+Encoder planetary gearbox available'
+WHERE SERIES = 'MB040JS';
+
+
+UPDATE DC_MOTOR 
+SET DESCRIPTION = 
+'Mounting holes to DIN standard
+Graphite-copper brushes
+Encoder Brake and Planetary gearbox available
+Ball bearings'
+WHERE SERIES = 'MB042DK';
+
+
+UPDATE DC_MOTOR 
+SET DESCRIPTION = 
+'Ball bearing
+Ceramic magnet
+11 slot Armature
+Copper-Graphite Brushes
+Encoder. Planetary gearbox available'
+WHERE SERIES = 'MB054TP';
+
+
+UPDATE DC_MOTOR_SERIES 
+SET DESCRIPTION = 
+'Rare-earth permanent magnets fitted on stator are bonded and secured via stainless steel sleeve.'
+WHERE SERIES = 'MB076HG';
+
+UPDATE DC_MOTOR 
+SET DESCRIPTION = 
+'Stator with permanent rare earth magnet stator which are glued and protected by a stainless steel sleeve
+Motor insulation and winding in class F
+High quality front-locked life-lubricated bearings
+Protection class IP44'
+WHERE SERIES = 'MB076HG';
+
+
+UPDATE STEPPER_MOTOR_CATEGORY
+SET DESCRIPTION =
+'EXMEK offers hybrid stepper motor sizes from NEMA 8 (20 mm) to NEMA 42 (110 mm) with various step angles: 0.75°, 0.9°, 1.2°, 1.8°. They are suitable for a wide range of applications.'
+WHERE CATEGORY = 'STEPPER_HYBRID';
+
+
+UPDATE STEPPER_MOTOR_SERIES
+SET DESCRIPTION = REPLACE (DESCRIPTION, '2 Phase', '2-Phase')
+WHERE CATEGORY = 'STEPPER_HYBRID';
+
+
+UPDATE STEPPER_MOTOR_CATEGORY
+SET DESCRIPTION = 'The flat stepper motor features a special structure and fits specific application scenarios.'
+WHERE CATEGORY = 'STEPPER_FLAT';
+
+
+UPDATE STEPPER_MOTOR 
+SET DESCRIPTION = 
+'Step Angle: 1.8±5%
+IP Code：IP30
+Performance customization available'
+WHERE MODEL = 'MPF028NB001';
+
+
+UPDATE STEPPER_MOTOR 
+SET DESCRIPTION = 
+'Step Angle: 1.8±5%
+Ambient Temperature: -24ºC ~ +60ºC
+Performance customization available'
+WHERE MODEL = 'MPF068NB001';
+
+
+UPDATE STEPPER_MOTOR_CATEGORY 
+SET DESCRIPTION = 
+'The linear stepper motor is a type of linear drive component. Exmek offers trapezoidal threads and ball screws. They can be used in diverse application scenarios, enabling precise control of linear positioning and transmission to meet various linear transmission requirements for different output forces.'
+WHERE CATEGORY = 'STEPPER_LINEAR';
+
+
+UPDATE DC_MOTOR_CATEGORY 
+SET DESCRIPTION = 
+'Integrated brushless DC motors deliver excellent dynamic performance and plug-and-play features. They are widely used in medical engineering, automation and robotics.
+• Precise position, speed and torque control
+• Integrated multiple types of magnetic encoders
+• Digital and analog inputs and digital outputs
+• Built-in temperature monitoring for overload protection
+• Smooth running
+• Long service life'
+WHERE CATEGORY = 'BLDC_INTEGRATED';
+
+-- 20260615 Patch End --
