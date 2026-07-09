@@ -2639,3 +2639,61 @@ SET DESCRIPTION =
 WHERE CATEGORY = 'BLDC_INTEGRATED';
 
 -- 20260615 Patch End --
+
+
+-- 20260622 Patch Begin --
+UPDATE DC_MOTOR 
+SET DESCRIPTION = 
+'8 poles with three phases
+12 slots design for low cogging
+Insulation class B, higher insulation class on request
+Multiple Lines of encoder available
+Sintered Neo Magnet'
+WHERE SERIES = 'ME070AS';
+
+UPDATE DC_MOTOR 
+SET DESCRIPTION = 
+'8 poles with three phases
+15 slots distribution winding design for low cogging
+6 slots for automatic winding
+Insulation class B, higher insulation on request
+Multiple Lines of encoder available
+Sintered Neo Magnet
+Lower voltage available'
+WHERE SERIES = 'ME080AS';
+
+UPDATE DC_MOTOR 
+SET DESCRIPTION = 
+'8 poles with three phases
+Servo application
+Insulation class F
+Multiple Lines of encoder available
+IP 65 class'
+WHERE SERIES = 'ME086AS';
+
+
+UPDATE STEPPER_MOTOR 
+SET DESCRIPTION = 
+'Step Angle: 1.8°±5%
+IP Code：IP30
+Performance customization available'
+WHERE MODEL = 'MPF028NB001';
+
+UPDATE STEPPER_MOTOR 
+SET DESCRIPTION = 
+'Step Angle: 1.8°±5%
+Ambient Temperature: -24ºC ~ +60ºC
+Performance customization available'
+WHERE MODEL = 'MPF068NB001';
+
+UPDATE STEPPER_MOTOR_CATEGORY 
+SET DESCRIPTION = 
+'Exmek offers integrated 32-bit DSP controllers for NEMA 17 and NEMA 23 stepper motors. With high torque at low speeds, closed-loop stepper motors are especially well-suited for direct-drive applications. They are widely used in automation systems, 3D printers and instruments.
+Features:
+• Closed-loop and open-loop operation available
+• Magnetic incremental encoder
+• Digital/analog inputs and digital outputs
+• RS485 and CANopen communication protocols'
+WHERE CATEGORY = 'STEPPER_INTEGRATED';
+-- 20260622 Patch End --
+
