@@ -2935,3 +2935,62 @@ UPDATE BRAKE SET `LENGTH` = 36.7, LENGTH_UNIT = 'mm', RATED_POWER = 9.12, RATED_
 UPDATE DC_MOTOR SET NOLOAD_CURRENT = 0.3, NOLOAD_CURRENT_UNIT = 'A' WHERE MODEL = 'EF045AS100' OR MODEL = 'EF045AS200';
 -- 20260730 Patch End --
 
+-- 20260803 Patch Begin --
+UPDATE DC_MOTOR_SERIES 
+SET DESCRIPTION = 
+'10 Poles with 3 Phases
+compact design
+Low Cogging
+High Power Density
+High Efficiency
+Brake available
+UL certified'
+WHERE SERIES = 'SEP040';
+
+UPDATE DC_MOTOR_SERIES 
+SET DESCRIPTION = 
+'10 Poles with 3 Phases
+compact design
+Low Cogging
+High Power Density
+High Efficiency
+IP 54
+Brake available
+UL certified'
+WHERE SERIES = 'SEP060';
+
+UPDATE DC_MOTOR_SERIES 
+SET DESCRIPTION = 
+'10 Poles with 3 Phases
+compact design
+Low Cogging
+High Power Density
+High Efficiency
+IP 54
+Brake available
+UL certified'
+WHERE SERIES = 'SEP080';
+
+UPDATE DC_MOTOR_SERIES 
+SET DESCRIPTION = 
+'10 Poles with 3 Phases
+compact design
+Low Cogging
+High Power Density
+High Efficiency
+Brake available
+IP 54'
+WHERE SERIES = 'SEP110';
+
+UPDATE DC_MOTOR_SERIES 
+SET DESCRIPTION = 
+'10 Poles with 3 Phases
+compact design
+Low Cogging
+High Power Density
+High Efficiency
+Brake available
+IP 54
+UL certified'
+WHERE SERIES = 'SEP130';
+-- 20260803 Patch End --
