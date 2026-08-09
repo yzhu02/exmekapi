@@ -6,6 +6,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
 
+import com.exmek.core.persistence.repository.LinearActuatorRepository;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -43,6 +44,9 @@ public class GeneralSearcher {
 	@Autowired
 	private BrakeRepository brakeRepository;
 
+  @Autowired
+  private LinearActuatorRepository linearActuatorRepository;
+
 	public List<GeneralSearchItem> priorityProductSearch(String keyword) {
 		List<GeneralSearchItem> result = new ArrayList<>();
 		String matchingField = AbstractProductEntity.FIELD_NAME_MODEL;
@@ -71,6 +75,7 @@ public class GeneralSearcher {
 		}
 		findToAdd(keyword, k -> planetaryGearboxRepository.findByModelContaining(k), GeneralSearchItem.Type.PLANETARY_GEARBOX, matchingField, result);
 		findToAdd(keyword, k -> brakeRepository.findByModelContaining(k), GeneralSearchItem.Type.BRAKE, matchingField, result);
+    findToAdd(keyword, k -> linearActuatorRepository.findByModelContaining(k), GeneralSearchItem.Type.LINEAR_ACTUATOR, matchingField, result);
 		return result;
 	}
 
@@ -82,6 +87,7 @@ public class GeneralSearcher {
 		findToAdd(keyword, k -> stepperMotorRepository.findByDescriptionContaining(k), GeneralSearchItem.Type.STEPPER_MOTOR, matchingField, result);
 		findToAdd(keyword, k -> planetaryGearboxRepository.findByDescriptionContaining(k), GeneralSearchItem.Type.PLANETARY_GEARBOX, matchingField, result);
 		findToAdd(keyword, k -> brakeRepository.findByDescriptionContaining(k), GeneralSearchItem.Type.BRAKE, matchingField, result);
+    findToAdd(keyword, k -> linearActuatorRepository.findByDescriptionContaining(k), GeneralSearchItem.Type.LINEAR_ACTUATOR, matchingField, result);
 		return result;
 	}
 

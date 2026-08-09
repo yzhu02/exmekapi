@@ -381,7 +381,12 @@ public class UserResourceManager extends AbstractResourceManager {
 		return getResourcePaths(model, DIR_NAME_MATERIALS, DIR_NAME_BRAKE, DIR_NAME_MICHANICAL, series);
 	}
 
-	
+	@Override
+	public List<String> getActuatorMechanicalImagePaths(String model, String series) {
+		return getResourcePaths(model, DIR_NAME_MATERIALS, DIR_NAME_ACTUATOR, DIR_NAME_MICHANICAL, series);
+	}
+
+
 	@Override
 	public List<String> getMotor3DModelPaths(String model, String series) {
 		return getResourcePaths(model, DIR_NAME_MATERIALS, DIR_NAME_MOTOR, DIR_NAME_3D, series);
@@ -397,7 +402,12 @@ public class UserResourceManager extends AbstractResourceManager {
 		return getResourcePaths(model, DIR_NAME_MATERIALS, DIR_NAME_BRAKE, DIR_NAME_3D, series);
 	}
 
-	
+	@Override
+	public List<String> getActuator3DModelPaths(String model, String series) {
+		return getResourcePaths(model, DIR_NAME_MATERIALS, DIR_NAME_ACTUATOR, DIR_NAME_3D, series);
+	}
+
+
 	@Override
 	public Map<String, List<String>> getMotor3DViewPaths(String model, String series) {
 		return getIndexedResourcePaths(model, DIR_NAME_MATERIALS, DIR_NAME_MOTOR, DIR_NAME_3D_VIEW, series);
@@ -413,7 +423,12 @@ public class UserResourceManager extends AbstractResourceManager {
 		return getIndexedResourcePaths(model, DIR_NAME_MATERIALS, DIR_NAME_BRAKE, DIR_NAME_3D_VIEW, series);
 	}
 
-	
+	@Override
+	public Map<String, List<String>> getActuator3DViewPaths(String model, String series) {
+		return getIndexedResourcePaths(model, DIR_NAME_MATERIALS, DIR_NAME_ACTUATOR, DIR_NAME_3D_VIEW, series);
+	}
+
+
 	@Override
 	public List<String> getMotorTechDocPaths(String model, String series) {
 		return getResourcePaths(model, DIR_NAME_MATERIALS, DIR_NAME_MOTOR, DIR_NAME_TECHDOC, series);
@@ -429,7 +444,12 @@ public class UserResourceManager extends AbstractResourceManager {
 		return getResourcePaths(model, DIR_NAME_MATERIALS, DIR_NAME_BRAKE, DIR_NAME_TECHDOC, series);
 	}
 
-	
+	@Override
+	public List<String> getActuatorTechDocPaths(String model, String series) {
+		return getResourcePaths(model, DIR_NAME_MATERIALS, DIR_NAME_ACTUATOR, DIR_NAME_TECHDOC, series);
+	}
+
+
 	@Override
 	public Map<String, List<String>> getMotorAdditionalImagePaths(String model, String series) {
 		return getIndexedResourcePaths(model, DIR_NAME_MATERIALS, DIR_NAME_MOTOR, DIR_NAME_ADDITIONAL_IMAGES, series);
@@ -444,4 +464,10 @@ public class UserResourceManager extends AbstractResourceManager {
 	public Map<String, List<String>> getBrakeAdditionalImagePaths(String model, String series) {
 		return getIndexedResourcePaths(model, DIR_NAME_MATERIALS, DIR_NAME_BRAKE, DIR_NAME_ADDITIONAL_IMAGES, series);
 	}
+
+  @Override
+	public Map<String, List<String>> getActuatorAdditionalImagePaths(String model, String series) {
+		return getIndexedResourcePaths(model, DIR_NAME_MATERIALS, DIR_NAME_ACTUATOR, DIR_NAME_ADDITIONAL_IMAGES, series);
+	}
+
 }

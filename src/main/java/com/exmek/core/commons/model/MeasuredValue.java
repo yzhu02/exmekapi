@@ -4,7 +4,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 @Data
-public class MeasuredValue<V extends Number, U> {
+public class MeasuredValue<V extends Number, U> implements UnitableValue<V, U> {
 	
 	private V value;
 

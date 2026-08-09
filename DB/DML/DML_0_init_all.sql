@@ -49,6 +49,9 @@ VALUES
 	'search.brake.metaCriteria.fields', '{"default": ["frameSize", "length", "ratedVoltage", "resistance", "current", "staticTorque", "ratedPower", "startVoltage", "weight", "model"]}'
 ),
 (
+	'search.linearActuator.metaCriteria.fields', '{"default": ["frameSize", "length", "inputVoltage", "maxLoad", "maxStroke", "noloadSpeed", "noloadCurrent", "fullLoadSpeed", "fullLoadCurrent", "weight", "model"]}'
+),
+(
 	'meta.fieldDisplayNameMappings', '{"model": "Article", "ratedRotatingSpeed": "Rated Speed", "noloadCurrent": "No load Current", "noloadRotatingSpeed": "No load Speed"}'
 ),
 (

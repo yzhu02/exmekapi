@@ -39,7 +39,13 @@ public class CompositeResourceManager implements ResourceManager {
 				() -> classpathResourceManager.getBrakeMechanicalImagePaths(model, series));
 	}
 
-	
+	@Override
+	public List<String> getActuatorMechanicalImagePaths(String model, String series) {
+		return getOneByOrder(() -> userResourceManager.getActuatorMechanicalImagePaths(model, series),
+				() -> classpathResourceManager.getActuatorMechanicalImagePaths(model, series));
+	}
+
+
 	@Override
 	public List<String> getMotor3DModelPaths(String model, String series) {
 		return getOneByOrder(() -> userResourceManager.getMotor3DModelPaths(model, series), 
@@ -56,6 +62,12 @@ public class CompositeResourceManager implements ResourceManager {
 	public List<String> getBrake3DModelPaths(String model, String series) {
 		return getOneByOrder(() -> userResourceManager.getBrake3DModelPaths(model, series), 
 				() -> classpathResourceManager.getBrake3DModelPaths(model, series));
+	}
+
+	@Override
+	public List<String> getActuator3DModelPaths(String model, String series) {
+		return getOneByOrder(() -> userResourceManager.getActuator3DModelPaths(model, series),
+				() -> classpathResourceManager.getActuator3DModelPaths(model, series));
 	}
 
 
@@ -77,7 +89,13 @@ public class CompositeResourceManager implements ResourceManager {
 				() -> classpathResourceManager.getBrake3DViewPaths(model, series));
 	}
 
-	
+	@Override
+	public Map<String, List<String>> getActuator3DViewPaths(String model, String series) {
+		return getOneByOrder(() -> userResourceManager.getActuator3DViewPaths(model, series),
+				() -> classpathResourceManager.getActuator3DViewPaths(model, series));
+	}
+
+
 	@Override
 	public List<String> getMotorTechDocPaths(String model, String series) {
 		return getOneByOrder(() -> userResourceManager.getMotorTechDocPaths(model, series), 
@@ -96,7 +114,13 @@ public class CompositeResourceManager implements ResourceManager {
 				() -> classpathResourceManager.getBrakeTechDocPaths(model, series));
 	}
 
-	
+	@Override
+	public List<String> getActuatorTechDocPaths(String model, String series) {
+		return getOneByOrder(() -> userResourceManager.getActuatorTechDocPaths(model, series),
+				() -> classpathResourceManager.getActuatorTechDocPaths(model, series));
+	}
+
+
 	@Override
 	public Map<String, List<String>> getMotorAdditionalImagePaths(String model, String series) {
 		return getOneByOrder(() -> userResourceManager.getMotorAdditionalImagePaths(model, series),
@@ -115,6 +139,11 @@ public class CompositeResourceManager implements ResourceManager {
 				() -> classpathResourceManager.getBrakeAdditionalImagePaths(model, series));
 	}
 
+	@Override
+	public Map<String, List<String>> getActuatorAdditionalImagePaths(String model, String series) {
+		return getOneByOrder(() -> userResourceManager.getActuatorAdditionalImagePaths(model, series),
+				() -> classpathResourceManager.getActuatorAdditionalImagePaths(model, series));
+	}
 	
 	private <T> T getOneByOrder(Supplier<T> primary, Supplier<T> secondary) {
 		T result = primary.get();

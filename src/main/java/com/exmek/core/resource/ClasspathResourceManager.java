@@ -37,22 +37,27 @@ public class ClasspathResourceManager extends AbstractResourceManager {
 	public static final String MATERIALS_MOTOR_MECHANICAL_REL_PATH	= UrlUtils.concatURL("/", DIR_NAME_MATERIALS, DIR_NAME_MOTOR, DIR_NAME_MICHANICAL);
 	public static final String MATERIALS_GEARBOX_MECHANICAL_REL_PATH= UrlUtils.concatURL("/", DIR_NAME_MATERIALS, DIR_NAME_GEARBOX, DIR_NAME_MICHANICAL);
 	public static final String MATERIALS_BRAKE_MECHANICAL_REL_PATH	= UrlUtils.concatURL("/", DIR_NAME_MATERIALS, DIR_NAME_BRAKE, DIR_NAME_MICHANICAL);
+  public static final String MATERIALS_ACTUATOR_MECHANICAL_REL_PATH	= UrlUtils.concatURL("/", DIR_NAME_MATERIALS, DIR_NAME_ACTUATOR, DIR_NAME_MICHANICAL);
 
 	public static final String MATERIALS_MOTOR_3D_REL_PATH			= UrlUtils.concatURL("/", DIR_NAME_MATERIALS, DIR_NAME_MOTOR, DIR_NAME_3D);
 	public static final String MATERIALS_GEARBOX_3D_REL_PATH		= UrlUtils.concatURL("/", DIR_NAME_MATERIALS, DIR_NAME_GEARBOX, DIR_NAME_3D);
 	public static final String MATERIALS_BRAKE_3D_REL_PATH			= UrlUtils.concatURL("/", DIR_NAME_MATERIALS, DIR_NAME_BRAKE, DIR_NAME_3D);
+  public static final String MATERIALS_ACTUATOR_3D_REL_PATH		= UrlUtils.concatURL("/", DIR_NAME_MATERIALS, DIR_NAME_ACTUATOR, DIR_NAME_3D);
 	
 	public static final String MATERIALS_MOTOR_3D_VIEW_REL_PATH		= UrlUtils.concatURL("/", DIR_NAME_MATERIALS, DIR_NAME_MOTOR, DIR_NAME_3D_VIEW);
 	public static final String MATERIALS_GEARBOX_3D_VIEW_REL_PATH	= UrlUtils.concatURL("/", DIR_NAME_MATERIALS, DIR_NAME_GEARBOX, DIR_NAME_3D_VIEW);
 	public static final String MATERIALS_BRAKE_3D_VIEW_REL_PATH		= UrlUtils.concatURL("/", DIR_NAME_MATERIALS, DIR_NAME_BRAKE, DIR_NAME_3D_VIEW);
+  public static final String MATERIALS_ACTUATOR_3D_VIEW_REL_PATH	= UrlUtils.concatURL("/", DIR_NAME_MATERIALS, DIR_NAME_ACTUATOR, DIR_NAME_3D_VIEW);
 	
 	public static final String MATERIALS_MOTOR_TECHDOC_REL_PATH		= UrlUtils.concatURL("/", DIR_NAME_MATERIALS, DIR_NAME_MOTOR, DIR_NAME_TECHDOC);
 	public static final String MATERIALS_GEARBOX_TECHDOC_REL_PATH	= UrlUtils.concatURL("/", DIR_NAME_MATERIALS, DIR_NAME_GEARBOX, DIR_NAME_TECHDOC);
 	public static final String MATERIALS_BRAKE_TECHDOC_REL_PATH		= UrlUtils.concatURL("/", DIR_NAME_MATERIALS, DIR_NAME_BRAKE, DIR_NAME_TECHDOC);
+  public static final String MATERIALS_ACTUATOR_TECHDOC_REL_PATH	= UrlUtils.concatURL("/", DIR_NAME_MATERIALS, DIR_NAME_ACTUATOR, DIR_NAME_TECHDOC);
 	
 	public static final String MATERIALS_MOTOR_ADDITIONAL_IMAGES_REL_PATH	= UrlUtils.concatURL("/", DIR_NAME_MATERIALS, DIR_NAME_MOTOR, DIR_NAME_ADDITIONAL_IMAGES);
 	public static final String MATERIALS_GEARBOX_ADDITIONAL_IMAGES_REL_PATH	= UrlUtils.concatURL("/", DIR_NAME_MATERIALS, DIR_NAME_GEARBOX, DIR_NAME_ADDITIONAL_IMAGES);
 	public static final String MATERIALS_BRAKE_ADDITIONAL_IMAGES_REL_PATH	= UrlUtils.concatURL("/", DIR_NAME_MATERIALS, DIR_NAME_BRAKE, DIR_NAME_ADDITIONAL_IMAGES);
+  public static final String MATERIALS_ACTUATOR_ADDITIONAL_IMAGES_REL_PATH	= UrlUtils.concatURL("/", DIR_NAME_MATERIALS, DIR_NAME_ACTUATOR, DIR_NAME_ADDITIONAL_IMAGES);
 	////Exposed relative paths END
 	
 	////Internal directory locations BEGIN
@@ -64,7 +69,10 @@ public class ClasspathResourceManager extends AbstractResourceManager {
 	
 	private static final String MATERIALS_BRAKE_MECHANICAL_FULL_LOCATION = UrlUtils.concatURL(
 			ResourcePatternResolver.CLASSPATH_ALL_URL_PREFIX, DIR_NAME_STATIC, MATERIALS_BRAKE_MECHANICAL_REL_PATH);
-	
+
+	private static final String MATERIALS_ACTUATOR_MECHANICAL_FULL_LOCATION = UrlUtils.concatURL(
+			ResourcePatternResolver.CLASSPATH_ALL_URL_PREFIX, DIR_NAME_STATIC, MATERIALS_ACTUATOR_MECHANICAL_REL_PATH);
+
 
 	private static final String MATERIALS_MOTOR_3D_FULL_LOCATION = UrlUtils.concatURL(
 			ResourcePatternResolver.CLASSPATH_ALL_URL_PREFIX, DIR_NAME_STATIC, MATERIALS_MOTOR_3D_REL_PATH);
@@ -75,6 +83,9 @@ public class ClasspathResourceManager extends AbstractResourceManager {
 	private static final String MATERIALS_BRAKE_3D_FULL_LOCATION = UrlUtils.concatURL(
 			ResourcePatternResolver.CLASSPATH_ALL_URL_PREFIX, DIR_NAME_STATIC, MATERIALS_BRAKE_3D_REL_PATH);
 
+	private static final String MATERIALS_ACTUATOR_3D_FULL_LOCATION = UrlUtils.concatURL(
+			ResourcePatternResolver.CLASSPATH_ALL_URL_PREFIX, DIR_NAME_STATIC, MATERIALS_ACTUATOR_3D_REL_PATH);
+
 
 	private static final String MATERIALS_MOTOR_3D_VIEW_FULL_LOCATION = UrlUtils.concatURL(
 			ResourcePatternResolver.CLASSPATH_ALL_URL_PREFIX, DIR_NAME_STATIC, MATERIALS_MOTOR_3D_VIEW_REL_PATH);
@@ -84,7 +95,10 @@ public class ClasspathResourceManager extends AbstractResourceManager {
 	
 	private static final String MATERIALS_BRAKE_3D_VIEW_FULL_LOCATION = UrlUtils.concatURL(
 			ResourcePatternResolver.CLASSPATH_ALL_URL_PREFIX, DIR_NAME_STATIC, MATERIALS_BRAKE_3D_VIEW_REL_PATH);
-	
+
+	private static final String MATERIALS_ACTUATOR_3D_VIEW_FULL_LOCATION = UrlUtils.concatURL(
+			ResourcePatternResolver.CLASSPATH_ALL_URL_PREFIX, DIR_NAME_STATIC, MATERIALS_ACTUATOR_3D_VIEW_REL_PATH);
+
 
 	private static final String MATERIALS_MOTOR_TECHDOC_FULL_LOCATION = UrlUtils.concatURL(
 			ResourcePatternResolver.CLASSPATH_ALL_URL_PREFIX, DIR_NAME_STATIC, MATERIALS_MOTOR_TECHDOC_REL_PATH);
@@ -95,8 +109,10 @@ public class ClasspathResourceManager extends AbstractResourceManager {
 	private static final String MATERIALS_BRAKE_TECHDOC_FULL_LOCATION = UrlUtils.concatURL(
 			ResourcePatternResolver.CLASSPATH_ALL_URL_PREFIX, DIR_NAME_STATIC, MATERIALS_BRAKE_TECHDOC_REL_PATH);
 	
-	
-	
+	private static final String MATERIALS_ACTUATOR_TECHDOC_FULL_LOCATION = UrlUtils.concatURL(
+			ResourcePatternResolver.CLASSPATH_ALL_URL_PREFIX, DIR_NAME_STATIC, MATERIALS_ACTUATOR_TECHDOC_REL_PATH);
+
+
 	private static final String MATERIALS_MOTOR_ADDITIONAL_IMAGES_FULL_LOCATION = UrlUtils.concatURL(
 			ResourcePatternResolver.CLASSPATH_ALL_URL_PREFIX, DIR_NAME_STATIC, MATERIALS_MOTOR_ADDITIONAL_IMAGES_REL_PATH);
 	
@@ -105,7 +121,10 @@ public class ClasspathResourceManager extends AbstractResourceManager {
 	
 	private static final String MATERIALS_BRAKE_ADDITIONAL_IMAGES_FULL_LOCATION = UrlUtils.concatURL(
 			ResourcePatternResolver.CLASSPATH_ALL_URL_PREFIX, DIR_NAME_STATIC, MATERIALS_BRAKE_ADDITIONAL_IMAGES_REL_PATH);
-	
+
+	private static final String MATERIALS_ACTUATOR_ADDITIONAL_IMAGES_FULL_LOCATION = UrlUtils.concatURL(
+			ResourcePatternResolver.CLASSPATH_ALL_URL_PREFIX, DIR_NAME_STATIC, MATERIALS_ACTUATOR_ADDITIONAL_IMAGES_REL_PATH);
+
 	////Internal directory locations END
 	
 	@Autowired
@@ -117,22 +136,27 @@ public class ClasspathResourceManager extends AbstractResourceManager {
 	private Map<String, List<String>> motorMechanicalImagePathsMap = new HashMap<>();
 	private Map<String, List<String>> gearboxMechanicalImagePathsMap = new HashMap<>();
 	private Map<String, List<String>> brakeMechanicalImagePathsMap = new HashMap<>();
+  private Map<String, List<String>> actuatorMechanicalImagePathsMap = new HashMap<>();
 	
 	private Map<String, List<String>> motor3DModelPathsMap = new HashMap<>();
 	private Map<String, List<String>> gearbox3DModelPathsMap = new HashMap<>();
 	private Map<String, List<String>> brake3DModelPathsMap = new HashMap<>();
+  private Map<String, List<String>> actuator3DModelPathsMap = new HashMap<>();
 	
 	private Map<String, Map<String, List<String>>> motor3DViewPathsMap = new HashMap<>();
 	private Map<String, Map<String, List<String>>> gearbox3DViewPathsMap = new HashMap<>();
 	private Map<String, Map<String, List<String>>> brake3DViewPathsMap = new HashMap<>();
+  private Map<String, Map<String, List<String>>> actuator3DViewPathsMap = new HashMap<>();
 	
 	private Map<String, List<String>> motorTechDocPathsMap = new HashMap<>();
 	private Map<String, List<String>> gearboxTechDocPathsMap = new HashMap<>();
 	private Map<String, List<String>> brakeTechDocPathsMap = new HashMap<>();
+  private Map<String, List<String>> actuatorTechDocPathsMap = new HashMap<>();
 	
 	private Map<String, Map<String, List<String>>> motorAdditionalImagePathsMap = new HashMap<>();
 	private Map<String, Map<String, List<String>>> gearboxAdditionalImagePathsMap = new HashMap<>();
 	private Map<String, Map<String, List<String>>> brakeAdditionalImagePathsMap = new HashMap<>();
+  private Map<String, Map<String, List<String>>> actuatorAdditionalImagePathsMap = new HashMap<>();
 
 	@PostConstruct
 	protected void initialize() {
@@ -147,6 +171,9 @@ public class ClasspathResourceManager extends AbstractResourceManager {
 		this.brakeMechanicalImagePathsMap = initResourcePathMap(
 				UrlUtils.concatURL(MATERIALS_BRAKE_MECHANICAL_FULL_LOCATION, resFileMatch),
 				MATERIALS_BRAKE_MECHANICAL_REL_PATH);
+    this.actuatorMechanicalImagePathsMap = initResourcePathMap(
+				UrlUtils.concatURL(MATERIALS_ACTUATOR_MECHANICAL_FULL_LOCATION, resFileMatch),
+				MATERIALS_ACTUATOR_MECHANICAL_REL_PATH);
 		
 		this.motor3DModelPathsMap = initResourcePathMap(
 				UrlUtils.concatURL(MATERIALS_MOTOR_3D_FULL_LOCATION, resFileMatch),
@@ -157,6 +184,9 @@ public class ClasspathResourceManager extends AbstractResourceManager {
 		this.brake3DModelPathsMap = initResourcePathMap(
 				UrlUtils.concatURL(MATERIALS_BRAKE_3D_FULL_LOCATION, resFileMatch),
 				MATERIALS_BRAKE_3D_REL_PATH);
+    this.actuator3DModelPathsMap = initResourcePathMap(
+				UrlUtils.concatURL(MATERIALS_ACTUATOR_3D_FULL_LOCATION, resFileMatch),
+				MATERIALS_ACTUATOR_3D_REL_PATH);
 
 		this.motor3DViewPathsMap = initIndexedResourcePathMap(
 				UrlUtils.concatURL(MATERIALS_MOTOR_3D_VIEW_FULL_LOCATION, resFileMatch),
@@ -167,6 +197,9 @@ public class ClasspathResourceManager extends AbstractResourceManager {
 		this.brake3DViewPathsMap = initIndexedResourcePathMap(
 				UrlUtils.concatURL(MATERIALS_BRAKE_3D_VIEW_FULL_LOCATION, resFileMatch),
 				MATERIALS_BRAKE_3D_VIEW_REL_PATH);
+    this.actuator3DViewPathsMap = initIndexedResourcePathMap(
+				UrlUtils.concatURL(MATERIALS_ACTUATOR_3D_VIEW_FULL_LOCATION, resFileMatch),
+				MATERIALS_ACTUATOR_3D_VIEW_REL_PATH);
 		
 		this.motorTechDocPathsMap = initResourcePathMap(
 				UrlUtils.concatURL(MATERIALS_MOTOR_TECHDOC_FULL_LOCATION, resFileMatch),
@@ -177,6 +210,9 @@ public class ClasspathResourceManager extends AbstractResourceManager {
 		this.brakeTechDocPathsMap = initResourcePathMap(
 				UrlUtils.concatURL(MATERIALS_BRAKE_TECHDOC_FULL_LOCATION, resFileMatch),
 				MATERIALS_BRAKE_TECHDOC_REL_PATH);
+    this.actuatorTechDocPathsMap = initResourcePathMap(
+				UrlUtils.concatURL(MATERIALS_ACTUATOR_TECHDOC_FULL_LOCATION, resFileMatch),
+				MATERIALS_ACTUATOR_TECHDOC_REL_PATH);
 		
 		
 		this.motorAdditionalImagePathsMap = initIndexedResourcePathMap(
@@ -190,6 +226,10 @@ public class ClasspathResourceManager extends AbstractResourceManager {
 		this.brakeAdditionalImagePathsMap = initIndexedResourcePathMap(
 				UrlUtils.concatURL(MATERIALS_BRAKE_ADDITIONAL_IMAGES_FULL_LOCATION, resFileMatch),
 				MATERIALS_BRAKE_ADDITIONAL_IMAGES_REL_PATH);
+
+    this.actuatorAdditionalImagePathsMap = initIndexedResourcePathMap(
+				UrlUtils.concatURL(MATERIALS_ACTUATOR_ADDITIONAL_IMAGES_FULL_LOCATION, resFileMatch),
+				MATERIALS_ACTUATOR_ADDITIONAL_IMAGES_REL_PATH);
 	}
 	
 	private Map<String, List<String>> initResourcePathMap(String resourceFullLocation, String resourceRelPath) {
@@ -417,7 +457,12 @@ public class ClasspathResourceManager extends AbstractResourceManager {
 		return getResourcePaths(model, DIR_NAME_MATERIALS, DIR_NAME_BRAKE, DIR_NAME_MICHANICAL, this.brakeMechanicalImagePathsMap, series);
 	}
 
-	
+  @Override
+	public List<String> getActuatorMechanicalImagePaths(String model, String series) {
+		return getResourcePaths(model, DIR_NAME_MATERIALS, DIR_NAME_ACTUATOR, DIR_NAME_MICHANICAL, this.actuatorMechanicalImagePathsMap, series);
+	}
+
+
 	@Override
 	public List<String> getMotor3DModelPaths(String model, String series) {
 		return getResourcePaths(model, DIR_NAME_MATERIALS, DIR_NAME_MOTOR, DIR_NAME_3D, this.motor3DModelPathsMap, series);
@@ -433,7 +478,12 @@ public class ClasspathResourceManager extends AbstractResourceManager {
 		return getResourcePaths(model, DIR_NAME_MATERIALS, DIR_NAME_BRAKE, DIR_NAME_3D, this.brake3DModelPathsMap, series);
 	}
 
-	
+	@Override
+	public List<String> getActuator3DModelPaths(String model, String series) {
+		return getResourcePaths(model, DIR_NAME_MATERIALS, DIR_NAME_ACTUATOR, DIR_NAME_3D, this.actuator3DModelPathsMap, series);
+	}
+
+
 	@Override
 	public Map<String, List<String>> getMotor3DViewPaths(String model, String series) {
 		return getIndexedResourcePaths(model, DIR_NAME_MATERIALS, DIR_NAME_MOTOR, DIR_NAME_3D_VIEW, this.motor3DViewPathsMap, series);
@@ -449,7 +499,12 @@ public class ClasspathResourceManager extends AbstractResourceManager {
 		return getIndexedResourcePaths(model, DIR_NAME_MATERIALS, DIR_NAME_BRAKE, DIR_NAME_3D_VIEW, this.brake3DViewPathsMap, series);
 	}
 
-	
+	@Override
+	public Map<String, List<String>> getActuator3DViewPaths(String model, String series) {
+		return getIndexedResourcePaths(model, DIR_NAME_MATERIALS, DIR_NAME_ACTUATOR, DIR_NAME_3D_VIEW, this.actuator3DViewPathsMap, series);
+	}
+
+
 	@Override
 	public List<String> getMotorTechDocPaths(String model, String series) {
 		return getResourcePaths(model, DIR_NAME_MATERIALS, DIR_NAME_MOTOR, DIR_NAME_TECHDOC, this.motorTechDocPathsMap, series);
@@ -465,7 +520,12 @@ public class ClasspathResourceManager extends AbstractResourceManager {
 		return getResourcePaths(model, DIR_NAME_MATERIALS, DIR_NAME_BRAKE, DIR_NAME_TECHDOC, this.brakeTechDocPathsMap, series);
 	}
 
-	
+	@Override
+	public List<String> getActuatorTechDocPaths(String model, String series) {
+		return getResourcePaths(model, DIR_NAME_MATERIALS, DIR_NAME_ACTUATOR, DIR_NAME_TECHDOC, this.actuatorTechDocPathsMap, series);
+	}
+
+
 	@Override
 	public Map<String, List<String>> getMotorAdditionalImagePaths(String model, String series) {
 		return getIndexedResourcePaths(model, DIR_NAME_MATERIALS, DIR_NAME_MOTOR, DIR_NAME_ADDITIONAL_IMAGES, this.motorAdditionalImagePathsMap, series);
@@ -481,7 +541,11 @@ public class ClasspathResourceManager extends AbstractResourceManager {
 		return getIndexedResourcePaths(model, DIR_NAME_MATERIALS, DIR_NAME_BRAKE, DIR_NAME_ADDITIONAL_IMAGES, this.brakeAdditionalImagePathsMap, series);
 	}
 
-	
+	@Override
+	public Map<String, List<String>> getActuatorAdditionalImagePaths(String model, String series) {
+		return getIndexedResourcePaths(model, DIR_NAME_MATERIALS, DIR_NAME_ACTUATOR, DIR_NAME_ADDITIONAL_IMAGES, this.actuatorAdditionalImagePathsMap, series);
+	}
+
 //	@Override
 //	public List<ResourceInfo> getTechDocInfos() {
 //		String techDocPathPattern = UrlUtils.concatURL(ResourcePatternResolver.CLASSPATH_ALL_URL_PREFIX, 

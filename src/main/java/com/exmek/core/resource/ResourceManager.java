@@ -12,6 +12,7 @@ public interface ResourceManager {
 	String DIR_NAME_MOTOR					= "motor";
 	String DIR_NAME_GEARBOX					= "gearbox";
 	String DIR_NAME_BRAKE					= "brake";
+  String DIR_NAME_ACTUATOR					= "actuator";
 
 	String DIR_NAME_MICHANICAL					= "mechanical";
 	String DIR_NAME_3D							= "3d";
@@ -24,6 +25,8 @@ public interface ResourceManager {
 	List<String> getGearboxMechanicalImagePaths(String model, String series);
 
 	List<String> getBrakeMechanicalImagePaths(String model, String series);
+
+  List<String> getActuatorMechanicalImagePaths(String model, String series);
 	
 
 	List<String> getMotor3DModelPaths(String model, String series);
@@ -32,12 +35,16 @@ public interface ResourceManager {
 	
 	List<String> getBrake3DModelPaths(String model, String series);
 
+  List<String> getActuator3DModelPaths(String model, String series);
+
 	
 	Map<String, List<String>> getMotor3DViewPaths(String model, String series);
 
 	Map<String, List<String>> getGearbox3DViewPaths(String model, String series);
 	
 	Map<String, List<String>> getBrake3DViewPaths(String model, String series);
+
+  Map<String, List<String>> getActuator3DViewPaths(String model, String series);
 
 	
 	List<String> getMotorTechDocPaths(String model, String series);
@@ -46,12 +53,17 @@ public interface ResourceManager {
 	
 	List<String> getBrakeTechDocPaths(String model, String series);
 
+  List<String> getActuatorTechDocPaths(String model, String series);
+
 	
 	Map<String, List<String>> getMotorAdditionalImagePaths(String model, String series);
 	
 	Map<String, List<String>> getGearboxAdditionalImagePaths(String model, String series);
 	
 	Map<String, List<String>> getBrakeAdditionalImagePaths(String model, String series);
+
+  Map<String, List<String>> getActuatorAdditionalImagePaths(String model, String series);
+
 
 //	List<ResourceInfo> getTechDocInfos();
 }

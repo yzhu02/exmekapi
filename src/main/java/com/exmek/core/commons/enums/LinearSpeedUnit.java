@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonValue;
 
 public enum LinearSpeedUnit implements Symbolizable {
 
-	mps("m/s");
+	mps("m/s"), mmps("mm/s");
 	
 	private final String symbol;
 	

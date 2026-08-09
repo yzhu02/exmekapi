@@ -42,7 +42,11 @@ public abstract class AbstractProductMapper {
 		model.setDescription(entity.getDescription());
 		model.setLength(toMeasuredValue(entity.getLength(), entity.getLengthUnit()));
 		model.setWeight(toMeasuredValue(entity.getWeight(), entity.getWeightUnit()));
-		model.setFrameSize(MeasuredValue.Typed.of(formatBigDecimalValue(entity.getFrameSize()), entity.getFrameSizeUnit(), entity.getFrameSizeType()));
+    if (entity.getFrameSize() != null) {
+      model.setFrameSize(MeasuredValue.Typed.of(
+          formatBigDecimalValue(entity.getFrameSize()), entity.getFrameSizeUnit(), entity.getFrameSizeType())
+      );
+    }
 		model.setNemaSize(entity.getNemaSize());
 		model.setIsNew(MapperUtils.determineIsNew(entity, appConfigProvider));
 		return model;

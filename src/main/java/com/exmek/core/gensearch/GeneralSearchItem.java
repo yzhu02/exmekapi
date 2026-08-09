@@ -11,7 +11,7 @@ import lombok.Data;
 public class GeneralSearchItem {
 
 	public static enum Type {
-		DC_MOTOR, STEPPER_MOTOR, PLANETARY_GEARBOX, BRAKE
+		DC_MOTOR, STEPPER_MOTOR, PLANETARY_GEARBOX, BRAKE, LINEAR_ACTUATOR
 	}
 
 	private Type type;

@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.BiFunction;
 import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import org.apache.commons.beanutils.PropertyUtils;
@@ -294,7 +295,22 @@ public class JPAUtils {
 		return null;
 	}
 
-	
+
+  private static int determineIgnore(Object str) {
+    return ObjectUtils.isEmpty(str) ? 1 : 0;
+  }
+
+  @SuppressWarnings("unchecked")
+  private static <N extends Number> Range<N> buildMinMaxRange(Object min, Object max) {
+    return Range.<N>builder().min((N) min).max((N) max).build();
+  }
+
+  /**
+   * Applicable to findXXXMinMaxByUnits methods with 6 parameters of
+   * "ignoreType: Type", "type: MotorCategory.Type", "ignoreCategory: Integer", "category: String", "ignoreSeries: Integer", "series: String"
+   * in repositories.
+   * For example: DCMotorRepository.findRatedVoltageMinMaxByUnits(ignoreType, type, ignoreCategory, category, ignoreSeries, series)
+   */
 	@SuppressWarnings("unchecked")
 	public static <U, N extends Number> Map<U, Range<N>> findMinMaxByUnits(MotorCategory.Type type, String category, String series,
 			HexaFunction<Integer, MotorCategory.Type, Integer, String, Integer, String, List<Object[]>> delegate) {
@@ -308,6 +324,12 @@ public class JPAUtils {
 				);
 	}
 
+  /**
+   * Applicable to findXXXMinMaxByUnits methods with 4 parameters of
+   * "ignoreCategory: Integer", "category: String", "ignoreSeries: Integer", "series: String"
+   * in repositories.
+   * For example: StepperMotorRepository.findRatedVoltageMinMaxByUnits(ignoreCategory, category, ignoreSeries, series)
+   */
 	@SuppressWarnings("unchecked")
 	public static <U, N extends Number> Map<U, Range<N>> findMinMaxByUnits(String category, String series,
 			QuadFunction<Integer, String, Integer, String, List<Object[]>> delegate) {
@@ -319,7 +341,15 @@ public class JPAUtils {
 						oo -> buildMinMaxRange(oo[0], oo[1]))
 				);
 	}
-	
+
+  /**
+   * Applicable to findXXXMinMaxByUnits methods with 2 parameters of
+   * "ignoreSeries: Integer", "series: String"
+   * in repositories.
+   * For example:
+   * PlanetaryGearboxRepository.findLengthMinMaxByUnits(ignoreSeries, series)
+   * BrakeRepository.findLengthMinMaxByUnits(ignoreSeries, series)
+   */
 	@SuppressWarnings("unchecked")
 	public static <U, N extends Number> Map<U, Range<N>> findMinMaxByUnits(String series,
 			BiFunction<Integer, String, List<Object[]>> delegate) {
@@ -330,13 +360,16 @@ public class JPAUtils {
 						oo -> buildMinMaxRange(oo[0], oo[1]))
 				);
 	}
-	
-	private static int determineIgnore(Object str) {
-		return ObjectUtils.isEmpty(str) ? 1 : 0;
-	}
 
-	@SuppressWarnings("unchecked")
-	private static <N extends Number> Range<N> buildMinMaxRange(Object min, Object max) {
-		return Range.<N>builder().min((N) min).max((N) max).build();
-	}
+  /**
+   * Applicable to findXXXMinMaxByUnits methods with no parameters in repositories.
+   * For example: LinearActuatorRepository.findLengthMinMaxByUnits()
+   */
+  public static <U, N extends Number> Map<U, Range<N>> findMinMaxByUnits(Supplier<List<Object[]>> delegate) {
+    return delegate.get().stream()
+        .collect(Collectors.toMap(
+            oo -> (U) oo[2],
+            oo -> buildMinMaxRange(oo[0], oo[1]))
+        );
+  }
 }

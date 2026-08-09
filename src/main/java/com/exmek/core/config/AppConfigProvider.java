@@ -46,6 +46,8 @@ public class AppConfigProvider implements Scheduleable {
 	
 	public static final String CONFIG_NAME_SEARCH_BRAKE_METACRITERIA_FIELDS				= "search.brake.metaCriteria.fields";
 
+  public static final String CONFIG_NAME_SEARCH_LINEAR_ACTUATOR_METACRITERIA_FIELDS				= "search.linearActuator.metaCriteria.fields";
+
 	public static final String CONFIG_NAME_SEARCH_DEFAULT_PAGESIZE						= "search.defaultPageSize";
 	
 	public static final String CONFIG_NAME_META_FIELD_DISPLAY_NAME_MAPPINGS				= "meta.fieldDisplayNameMappings";
@@ -172,6 +174,16 @@ public class AppConfigProvider implements Scheduleable {
 
   public List<String> getSearchBrakeMetaCriteriaFieldsDefault() {
     Map<String, List<String>> metaCriteriaFields = getSearchBrakeMetaCriteriaFields();
+    return metaCriteriaFields.get(DEFAULT);
+  }
+
+  public Map<String, List<String>> getSearchLinearActuatorMetaCriteriaFields() {
+    String confStr = getConfigValue(CONFIG_NAME_SEARCH_LINEAR_ACTUATOR_METACRITERIA_FIELDS, null);
+    return JsonMapperUtils.readValue(confStr, new TypeReference<Map<String, List<String>>>() {});
+  }
+
+  public List<String> getSearchLinearActuatorMetaCriteriaFieldsDefault() {
+    Map<String, List<String>> metaCriteriaFields = getSearchLinearActuatorMetaCriteriaFields();
     return metaCriteriaFields.get(DEFAULT);
   }
 
