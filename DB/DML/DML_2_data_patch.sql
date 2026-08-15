@@ -3088,3 +3088,55 @@ UPDATE DC_MOTOR_SPEC SET VALUE = '27' WHERE NAME = 'Ke(RMS)' AND MOTOR_ID = (SEL
 UPDATE DC_MOTOR_SPEC SET VALUE = '0.45' WHERE NAME = 'Line to Line Resistance' AND MOTOR_ID = (SELECT ID FROM DC_MOTOR WHERE MODEL = 'MB120GA400');
 UPDATE DC_MOTOR_SPEC SET VALUE = '2.77' WHERE NAME = 'Line to Line Inductance' AND MOTOR_ID = (SELECT ID FROM DC_MOTOR WHERE MODEL = 'MB120GA400');
 -- 20260809 Patch End --
+
+-- 20260813 Patch Begin --
+UPDATE CONFIG SET VALUE = '{"model": "Article", "ratedRotatingSpeed": "Rated Speed", "noloadCurrent": "No-load Current", "noloadRotatingSpeed": "No-load Speed", "noloadSpeed": "No-load Speed"}'
+WHERE NAME = 'meta.fieldDisplayNameMappings';
+
+UPDATE DC_MOTOR SET PEAK_CURRENT_UNIT = NULL WHERE PEAK_CURRENT IS NULL AND PEAK_CURRENT_UNIT IS NOT NULL;
+
+UPDATE DC_MOTOR_SERIES SET DESCRIPTION = 
+'DC18-36V input voltage range
+50, 100W continuous power output
+0.3° position resolution for control
+RS485 interface and PULSE/DIR interface 
+Position, speed and torque control 
+Operating temperature: 0℃~ +70℃
+Selectable position, speed, and torque mode' 
+WHERE CATEGORY = 'BLDC_INTEGRATED' AND SERIES = 'MDS040';
+
+UPDATE DC_MOTOR_SERIES SET DESCRIPTION = 
+'DC18-70V input voltage range
+94-188W continuous power output
+0.3° position resolution
+RS485 interface and PULSE/DIR interface 
+Position, speed and torque control
+Operating temperature: 0℃- +70℃
+Selectable position, speed, and torque mode' 
+WHERE CATEGORY = 'BLDC_INTEGRATED' AND SERIES = 'MDS057';
+
+UPDATE DC_MOTOR_SERIES SET DESCRIPTION = 
+'DC18-70V input voltage range
+100-400W continuous power output
+0.3° position resolution
+RS485 interface and PULSE/DIR interface 
+Position, speed and torque control 
+Operating temperature: 0℃- +70℃
+Selectable position, speed, and torque mode' 
+WHERE CATEGORY = 'BLDC_INTEGRATED' AND SERIES = 'MDS060';
+
+
+UPDATE STEPPER_MOTOR_SERIES SET DESCRIPTION = 
+'Step Angle: 1.8°±5%
+IP Code：IP30
+Performance customization available' 
+WHERE CATEGORY = 'STEPPER_FLAT' AND SERIES = 'MPF028NB';
+
+UPDATE STEPPER_MOTOR_SERIES SET DESCRIPTION = 
+'Step angle: 1.8°±5%
+Ambient temperature: -24ºC ~ +60ºC
+Performance customization available' 
+WHERE CATEGORY = 'STEPPER_FLAT' AND SERIES = 'MPF068NB';
+
+-- 20260813 Patch End --
+

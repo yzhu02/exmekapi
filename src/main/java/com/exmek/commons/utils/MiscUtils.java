@@ -237,4 +237,16 @@ public class MiscUtils {
 			return null;
 		}
 	}
+
+  public static String extractFirstNumberInString(String s) {
+    if (s == null) {
+      return null;
+    }
+    Matcher m = DIGITS_REGEX.matcher(s);
+    if (m.find()) {
+      return m.group();
+    } else {
+      return null;
+    }
+  }
 }
