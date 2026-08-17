@@ -11,6 +11,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
+import com.exmek.commons.ref.Holder;
+import com.exmek.commons.ref.Ref;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Triple;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -434,39 +436,19 @@ public class MotorPerfCurveMapper {
 		String thrustEnclosingCols = collapsedVarsStr.substring(thrustFromInx + thrustPrefix.length(), thrustEndInx);
 		collapsedVarsStr = collapsedVarsStr.substring(0, thrustFromInx) + thrustPrefix + thrustEnclosingPlaceholder + collapsedVarsStr.substring(thrustEndInx);
 		
-		String linearSpeedUnit = "";
-		String thrustUnit = "";
+		Ref<String> linearSpeedUnitRef = Holder.of("");
+		Ref<String> thrustUnitRef = Holder.of("");
 		String[] columnSegments = collapsedVarsStr.split(",");
-		int colIndex = 0;
+		Ref<Integer> colIndexRef = Holder.of(0);
 		for (String columnSegment : columnSegments) {
 			columnSegment = columnSegment.trim();
 			if (columnSegment.startsWith(linearSpeedPrefix)) {
-				String[] cols = linearSpeedEnclosingCols.split(",");
-				for (String col : cols) {
-					col = col.trim();
-					columnNames.add(col);
-					linearSpeedColIndexMap.put(col, colIndex++);
-				}
-				int unitEndInx = columnSegment.lastIndexOf(')');
-				int unitFromInx = columnSegment.lastIndexOf("(", unitEndInx - 1);
-				if (unitFromInx > 0 && unitEndInx > unitFromInx) {
-					linearSpeedUnit = columnSegment.substring(unitFromInx + 1, unitEndInx);
-				}
+        collectEnclosingCols(linearSpeedEnclosingCols, columnSegment, colIndexRef, columnNames, linearSpeedColIndexMap, linearSpeedUnitRef);
 			} else if (columnSegment.startsWith(thrustPrefix)) {
-				String[] cols = thrustEnclosingCols.split(",");
-				for (String col : cols) {
-					col = col.trim();
-					columnNames.add(col);
-					thrustColIndexMap.put(col, colIndex++);
-				}
-				int unitEndInx = columnSegment.lastIndexOf(')');
-				int unitFromInx = columnSegment.lastIndexOf("(", unitEndInx - 1);
-				if (unitFromInx > 0 && unitEndInx > unitFromInx) {
-					thrustUnit = columnSegment.substring(unitFromInx + 1, unitEndInx);
-				}
+        collectEnclosingCols(thrustEnclosingCols, columnSegment, colIndexRef, columnNames, thrustColIndexMap, thrustUnitRef);
 			} else {
 				columnNames.add(columnSegment);
-				colIndex++;
+        colIndexRef.set(colIndexRef.get() + 1);
 			}
 		}
 		
@@ -480,8 +462,8 @@ public class MotorPerfCurveMapper {
 			Integer thrustColIndex = entry.getValue();
 			CurveLine cLine = new CurveLine();
 			cLine.setName(colName.replace(':', '(') + ")");
-//			cLine.setXAxisName(linearSpeedUnit);
-			cLine.setYAxisName(thrustUnit);
+//			cLine.setXAxisName(linearSpeedUnitRef.get());
+			cLine.setYAxisName(thrustUnitRef.get());
 			int xColInx = linearSpeedColIndexMap.get(colName);
 			int yColInx = thrustColIndex;
 			if (xColInx >= 0 && yColInx >= 0) {
@@ -500,12 +482,12 @@ public class MotorPerfCurveMapper {
 		BigDecimal[][] speedValues = new BigDecimal[mValues.length][speedUnits.length];
 		speedUnits[0] = "pps";
 		speedUnits[1] = "r/min";
-		colIndex = 2;
+		int colIndex = 2;
 		for (Map.Entry<String, Integer> entry : linearSpeedColIndexMap.entrySet()) {
 			String colName = entry.getKey();
 			String[] colNameParts = colName.split(":");
 			String speedSymbol = colNameParts[1];
-			speedUnits[colIndex++] = speedSymbol + "(" + linearSpeedUnit + ")";
+			speedUnits[colIndex++] = speedSymbol + "(" + linearSpeedUnitRef.get() + ")";
 			int linearSpeedColIndex = entry.getValue();
 			for (int r=0; r<mValues.length; r++) {
 				speedValues[r][linearSpeedColIndex] = mValues[r][linearSpeedColIndex];
@@ -528,4 +510,21 @@ public class MotorPerfCurveMapper {
 		return perfCurve;
 	}
 
+  private void collectEnclosingCols(
+      String enclosingColsStr, String columnSegment,
+      Ref<Integer> colIndexRef, List<String> resultColNames, Map<String, Integer> resultColIndexMap, Ref<String> resultUnitRef) {
+
+    String[] cols = enclosingColsStr.split(",");
+    for (String col : cols) {
+      col = col.trim();
+      resultColNames.add(col);
+      resultColIndexMap.put(col, colIndexRef.get());
+      colIndexRef.set(colIndexRef.get() + 1);
+    }
+    int unitEndInx = columnSegment.lastIndexOf(')');
+    int unitFromInx = columnSegment.lastIndexOf("(", unitEndInx - 1);
+    if (unitFromInx > 0 && unitEndInx > unitFromInx) {
+      resultUnitRef.set(columnSegment.substring(unitFromInx + 1, unitEndInx));
+    }
+  }
 }
