@@ -48,7 +48,7 @@ public abstract class AbstractProductMapper {
       );
     }
 		model.setNemaSize(entity.getNemaSize());
-		model.setIsNew(MapperUtils.determineIsNew(entity, appConfigProvider));
+		model.setIsNew(MapperUtils.determineIsNew(entity.getCreatedTimestamp(), appConfigProvider));
 		return model;
 	}
 

@@ -2,9 +2,9 @@ package com.exmek.core.persistence.projection;
 
 import java.util.Date;
 
-public interface LastUpdatedTimestampPerSeries {
+public interface TimestampOfSeries {
 
 	String getSeries();
 
-	Date getLastUpdated();
+	Date getTimestamp();
 }

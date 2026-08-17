@@ -2,9 +2,9 @@ package com.exmek.core.persistence.projection;
 
 import java.util.Date;
 
-public interface LastUpdatedTimestampPerCategory {
+public interface TimestampOfCategory {
 
 	String getCategory();
 
-	Date getLastUpdated();
+	Date getTimestamp();
 }

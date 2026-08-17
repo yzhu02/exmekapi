@@ -9,7 +9,7 @@ import com.exmek.core.commons.enums.WeightUnit;
 import com.exmek.core.commons.model.Range;
 import com.exmek.core.persistence.JPAUtils;
 import com.exmek.core.persistence.entity.LinearActuatorEntity;
-import com.exmek.core.persistence.projection.LastUpdatedTimestampPerSeries;
+import com.exmek.core.persistence.projection.TimestampOfSeries;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
@@ -24,13 +24,13 @@ public interface LinearActuatorRepository extends BaseNonCategoryRepository<Line
 
   // TODO Currently linear actuator doesn't have series
   @Override
-  default List<LastUpdatedTimestampPerSeries> findLastUpdatedPerSeries() {
+  default List<TimestampOfSeries> findLastCreatedPerSeries() {
     throw new UnsupportedOperationException("Linear actuator doesn't have series");
   }
 
   // TODO Currently linear actuator doesn't have series
   @Override
-  default Date findLastUpdatedBySeries(@Param("series") String series) {
+  default Date findLastCreatedBySeries(@Param("series") String series) {
     throw new UnsupportedOperationException("Linear actuator doesn't have series");
   }
 

@@ -17,29 +17,28 @@ import com.exmek.core.commons.enums.WeightUnit;
 import com.exmek.core.commons.model.Range;
 import com.exmek.core.persistence.JPAUtils;
 import com.exmek.core.persistence.entity.PlanetaryGearboxEntity;
-import com.exmek.core.persistence.projection.LastUpdatedTimestampPerSeries;
+import com.exmek.core.persistence.projection.TimestampOfSeries;
 
 public interface PlanetaryGearboxRepository extends BaseNonCategoryRepository<PlanetaryGearboxEntity>, JpaRepository<PlanetaryGearboxEntity, Long>, JpaSpecificationExecutor<PlanetaryGearboxEntity> {
 
 	@Override
 	@Query(value = """
-			SELECT SERIES, 
-			       MAX(COALESCE(UPDATED_TIMESTAMP, CREATED_TIMESTAMP)) AS lastUpdated
+			SELECT SERIES, MAX(CREATED_TIMESTAMP) AS timestamp
 			FROM PLANETARY_GEARBOX
 			GROUP BY SERIES
-			ORDER BY lastUpdated DESC
+			ORDER BY timestamp DESC
 			""",
 			nativeQuery = true)
-	List<LastUpdatedTimestampPerSeries> findLastUpdatedPerSeries();
+	List<TimestampOfSeries> findLastCreatedPerSeries();
 
 	@Override
 	@Query(value = """
-			SELECT MAX(COALESCE(UPDATED_TIMESTAMP, CREATED_TIMESTAMP)) AS lastUpdated
+			SELECT MAX(CREATED_TIMESTAMP) AS timestamp
 			FROM PLANETARY_GEARBOX
 			WHERE SERIES = :series
 			""",
 			nativeQuery = true)
-	Date findLastUpdatedBySeries(@Param("series") String series);
+	Date findLastCreatedBySeries(@Param("series") String series);
 
 	//length
 	@Query("""

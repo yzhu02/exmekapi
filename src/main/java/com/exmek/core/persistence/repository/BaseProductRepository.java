@@ -26,5 +26,5 @@ public interface BaseProductRepository<T extends AbstractProductEntity> {
 	
 	List<T> findByDescriptionContaining(String keyword);
 
-	Date findLastUpdatedBySeries(String series);
+	Date findLastCreatedBySeries(String series);
 }

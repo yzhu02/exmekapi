@@ -3,12 +3,12 @@ package com.exmek.core.persistence.repository;
 import java.util.List;
 
 import com.exmek.core.persistence.entity.AbstractMotorEntity;
-import com.exmek.core.persistence.projection.LastUpdatedTimestampPerCategory;
-import com.exmek.core.persistence.projection.LastUpdatedTimestampPerSeries;
+import com.exmek.core.persistence.projection.TimestampOfCategory;
+import com.exmek.core.persistence.projection.TimestampOfSeries;
 
 public interface BaseMotorRepository<T extends AbstractMotorEntity> extends BaseProductRepository<T> {
 
-	List<LastUpdatedTimestampPerSeries> findLastUpdatedPerSeriesByCategory(String category);
+	List<TimestampOfSeries> findLastCreatedPerSeriesByCategory(String category);
 	
-	List<LastUpdatedTimestampPerCategory> findLastUpdatedPerCategory();
+	List<TimestampOfCategory> findLastCreatedPerCategory();
 }

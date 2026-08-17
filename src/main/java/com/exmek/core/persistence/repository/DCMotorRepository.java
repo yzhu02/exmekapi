@@ -22,42 +22,40 @@ import com.exmek.core.commons.model.Range;
 import com.exmek.core.model.MotorCategory;
 import com.exmek.core.persistence.JPAUtils;
 import com.exmek.core.persistence.entity.DCMotorEntity;
-import com.exmek.core.persistence.projection.LastUpdatedTimestampPerCategory;
-import com.exmek.core.persistence.projection.LastUpdatedTimestampPerSeries;
+import com.exmek.core.persistence.projection.TimestampOfCategory;
+import com.exmek.core.persistence.projection.TimestampOfSeries;
 
 public interface DCMotorRepository extends BaseMotorRepository<DCMotorEntity>, JpaRepository<DCMotorEntity, Long>, JpaSpecificationExecutor<DCMotorEntity> {
 
 	@Override
 	@Query(value = """
-			SELECT CATEGORY, 
-			       MAX(COALESCE(UPDATED_TIMESTAMP, CREATED_TIMESTAMP)) AS lastUpdated
+			SELECT CATEGORY, MAX(CREATED_TIMESTAMP) AS timestamp
 			FROM DC_MOTOR
 			GROUP BY CATEGORY
-			ORDER BY lastUpdated DESC
+			ORDER BY timestamp DESC
 			""",
 			nativeQuery = true)
-	List<LastUpdatedTimestampPerCategory> findLastUpdatedPerCategory();
+	List<TimestampOfCategory> findLastCreatedPerCategory();
 
 	@Override
 	@Query(value = """
-			SELECT SERIES, 
-			       MAX(COALESCE(UPDATED_TIMESTAMP, CREATED_TIMESTAMP)) AS lastUpdated
+			SELECT SERIES, MAX(CREATED_TIMESTAMP) AS timestamp
 			FROM DC_MOTOR
 			WHERE CATEGORY = :category
 			GROUP BY SERIES
-			ORDER BY lastUpdated DESC
+			ORDER BY timestamp DESC
 			""",
 			nativeQuery = true)
-	List<LastUpdatedTimestampPerSeries> findLastUpdatedPerSeriesByCategory(@Param("category") String category);
+	List<TimestampOfSeries> findLastCreatedPerSeriesByCategory(@Param("category") String category);
 	
 	@Override
 	@Query(value = """
-			SELECT MAX(COALESCE(UPDATED_TIMESTAMP, CREATED_TIMESTAMP)) AS lastUpdated
+			SELECT MAX(CREATED_TIMESTAMP) AS timestamp
 			FROM DC_MOTOR
 			WHERE SERIES = :series
 			""",
 			nativeQuery = true)
-	Date findLastUpdatedBySeries(@Param("series") String series);
+	Date findLastCreatedBySeries(@Param("series") String series);
 	
 	//length	
 	@Query("""

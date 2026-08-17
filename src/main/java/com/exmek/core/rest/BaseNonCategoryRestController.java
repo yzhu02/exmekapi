@@ -20,7 +20,7 @@ import com.exmek.core.model.AbstractProduct;
 import com.exmek.core.model.AbstractSeries;
 import com.exmek.core.persistence.entity.AbstractProductEntity;
 import com.exmek.core.persistence.entity.AbstractSeriesEntity;
-import com.exmek.core.persistence.projection.LastUpdatedTimestampPerSeries;
+import com.exmek.core.persistence.projection.TimestampOfSeries;
 import com.exmek.core.persistence.repository.BaseNonCategoryRepository;
 import com.exmek.core.utils.ContentUtils;
 
@@ -42,13 +42,13 @@ extends BaseProductRestController<T, L, M, SE, S> {
 			ContentUtils.populatePageableListDataResponse(dataResponse, page);
 		}
 		if (entities != null) {
-			List<LastUpdatedTimestampPerSeries> lastUpdatedPerSeriesList = getProductRepository().findLastUpdatedPerSeries();
-			Map<String, Date> lastUpdatedPerSeriesMap = Optional.ofNullable(lastUpdatedPerSeriesList).stream()
+			List<TimestampOfSeries> lastCreatedPerSeriesList = getProductRepository().findLastCreatedPerSeries();
+			Map<String, Date> lastCreatedPerSeriesMap = Optional.ofNullable(lastCreatedPerSeriesList).stream()
 					.flatMap(List::stream)
-					.filter(lu -> lu.getLastUpdated() != null)
-					.collect(Collectors.toMap(LastUpdatedTimestampPerSeries::getSeries, LastUpdatedTimestampPerSeries::getLastUpdated));
+					.filter(lu -> lu.getTimestamp() != null)
+					.collect(Collectors.toMap(TimestampOfSeries::getSeries, TimestampOfSeries::getTimestamp));
 			List<S> serieses = entities.stream()
-					.map(entity -> mapToSeriesModel(entity, lastUpdatedPerSeriesMap.get(entity.getSeries())))
+					.map(entity -> mapToSeriesModel(entity, lastCreatedPerSeriesMap.get(entity.getSeries())))
 					.collect(Collectors.toList());
 			
 			if (serieses.size() > 1) {

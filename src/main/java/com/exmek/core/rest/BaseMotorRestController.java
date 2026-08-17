@@ -34,8 +34,8 @@ import com.exmek.core.persistence.entity.AbstractMotorCategoryEntity;
 import com.exmek.core.persistence.entity.AbstractMotorEntity;
 import com.exmek.core.persistence.entity.AbstractMotorSeriesEntity;
 import com.exmek.core.persistence.entity.AbstractSeriesEntity;
-import com.exmek.core.persistence.projection.LastUpdatedTimestampPerCategory;
-import com.exmek.core.persistence.projection.LastUpdatedTimestampPerSeries;
+import com.exmek.core.persistence.projection.TimestampOfCategory;
+import com.exmek.core.persistence.projection.TimestampOfSeries;
 import com.exmek.core.persistence.repository.BaseMotorCategoryRepository;
 import com.exmek.core.persistence.repository.BaseMotorRepository;
 import com.exmek.core.persistence.repository.BaseMotorSeriesRepository;
@@ -82,20 +82,20 @@ extends BaseProductRestController<T, L, M, SE, MotorSeries> {
 		if (entities == null) {
 			return new ArrayList<>();
 		}
-		List<LastUpdatedTimestampPerCategory> lastUpdatedPerCategoryList = 
-				getProductRepository().findLastUpdatedPerCategory();
-		Map<String, Date> lastUpdatedPerCategoryMap = Optional.ofNullable(lastUpdatedPerCategoryList).stream()
+		List<TimestampOfCategory> lastCreatedPerCategoryList =
+				getProductRepository().findLastCreatedPerCategory();
+		Map<String, Date> lastCreatedPerCategoryMap = Optional.ofNullable(lastCreatedPerCategoryList).stream()
 				.flatMap(List::stream)
-				.filter(lu -> lu.getLastUpdated() != null)
-				.collect(Collectors.toMap(LastUpdatedTimestampPerCategory::getCategory, LastUpdatedTimestampPerCategory::getLastUpdated));
+				.filter(lu -> lu.getTimestamp() != null)
+				.collect(Collectors.toMap(TimestampOfCategory::getCategory, TimestampOfCategory::getTimestamp));
 		return entities.stream()
-				.map(entity -> mapToCategoryModel(entity, lastUpdatedPerCategoryMap.get(entity.getCategory())))
+				.map(entity -> mapToCategoryModel(entity, lastCreatedPerCategoryMap.get(entity.getCategory())))
 				.collect(Collectors.toList());
 	}
 
-	protected MotorCategory mapToCategoryModel(AbstractMotorCategoryEntity entity, Date lastUpdated) {
+	protected MotorCategory mapToCategoryModel(AbstractMotorCategoryEntity entity, Date lastCreated) {
 		MotorCategory mc = motorCategoryMapper.mapToCategoryModel(entity);
-		mc.setHasNew(MapperUtils.determineIsNew(lastUpdated, appConfigProvider));
+		mc.setHasNew(MapperUtils.determineIsNew(lastCreated, appConfigProvider));
 		return mc;
 	}
 
@@ -122,14 +122,14 @@ extends BaseProductRestController<T, L, M, SE, MotorSeries> {
 			ContentUtils.populatePageableListDataResponse(dataResponse, page);
 		}
 		if (entities != null) {
-			List<LastUpdatedTimestampPerSeries> lastUpdatedPerSeriesList = 
-					getProductRepository().findLastUpdatedPerSeriesByCategory(category);
-			Map<String, Date> lastUpdatedPerSeriesMap = Optional.ofNullable(lastUpdatedPerSeriesList).stream()
+			List<TimestampOfSeries> lastCreatedPerSeriesList =
+					getProductRepository().findLastCreatedPerSeriesByCategory(category);
+			Map<String, Date> lastCreatedPerSeriesMap = Optional.ofNullable(lastCreatedPerSeriesList).stream()
 					.flatMap(List::stream)
-					.filter(lu -> lu.getLastUpdated() != null)
-					.collect(Collectors.toMap(LastUpdatedTimestampPerSeries::getSeries, LastUpdatedTimestampPerSeries::getLastUpdated));
+					.filter(lu -> lu.getTimestamp() != null)
+					.collect(Collectors.toMap(TimestampOfSeries::getSeries, TimestampOfSeries::getTimestamp));
 			List<MotorSeries> serieses = entities.stream()
-					.map(entity -> mapToSeriesModel(entity, lastUpdatedPerSeriesMap.get(entity.getSeries())))
+					.map(entity -> mapToSeriesModel(entity, lastCreatedPerSeriesMap.get(entity.getSeries())))
 					.collect(Collectors.toCollection(ArrayList::new));
 			
 			if (serieses.size() > 1) {

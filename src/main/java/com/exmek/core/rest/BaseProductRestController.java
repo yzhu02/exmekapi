@@ -315,17 +315,17 @@ implements ProductService<M>, Scheduleable {
 		}
 	}
 
-	protected S mapToSeriesModel(SE entity, Date lastUpdated) {
+	protected S mapToSeriesModel(SE entity, Date lastCreated) {
 		S series = getSeriesMapper().mapToSeriesModel(entity);
-		series.setHasNew(MapperUtils.determineIsNew(lastUpdated, appConfigProvider));
+		series.setHasNew(MapperUtils.determineIsNew(lastCreated, appConfigProvider));
 		return series;
 	}
 
 	protected S getSeries(String series) {
 		Optional<SE> opSeries = getSeriesRepository().findBySeries(series);
 		if (opSeries.isPresent()) {
-			Date lastUpdated = getProductRepository().findLastUpdatedBySeries(series);
-			return mapToSeriesModel(opSeries.get(), lastUpdated);
+			Date lastCreated = getProductRepository().findLastCreatedBySeries(series);
+			return mapToSeriesModel(opSeries.get(), lastCreated);
 		} else {
 			return null;
 		}
