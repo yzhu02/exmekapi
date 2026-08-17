@@ -65,18 +65,17 @@ public class MiscUtils {
 		return splittArray;
 	}
 
-	public static <T> T[][] parseCSVLikeValues(String content,
+	public static <T> T[][] parseCSVLikeValues(String[] rawValueLines, int rawValueLineIndexOffset, // The rawValueLines may contain the first line as column names
 			Function<Integer, T[][]> rowsArrayCreator, Function<Integer, T[]> rowOfCellsArrayCreator, Function<String, T> valueCreator) {
-		if (content == null || content.isBlank()) {
-			return null;
-		}
-		String[] valueLines = content.split("\n");
-		T[][] parsedValues = rowsArrayCreator.apply(valueLines.length);
-		for (int r = 0; r < valueLines.length; r++) {
-			String[] rowValues = valueLines[r].split(",");
-			parsedValues[r] = rowOfCellsArrayCreator.apply(rowValues.length);
+    if (rawValueLines == null || rawValueLines.length < rawValueLineIndexOffset) {
+      return null;
+    }
+		T[][] parsedValues = rowsArrayCreator.apply(rawValueLines.length - rawValueLineIndexOffset);
+		for (int r = rawValueLineIndexOffset; r < rawValueLines.length; r++) {
+			String[] rowValues = rawValueLines[r].split(",");
+			parsedValues[r - rawValueLineIndexOffset] = rowOfCellsArrayCreator.apply(rowValues.length);
 			for (int c = 0; c < rowValues.length; c++) {
-				parsedValues[r][c] = valueCreator.apply(rowValues[c]);
+				parsedValues[r - rawValueLineIndexOffset][c] = valueCreator.apply(rowValues[c]);
 			}
 		}
 		return parsedValues;

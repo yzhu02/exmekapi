@@ -8,12 +8,9 @@ public abstract class AbstractMotorPerfMeasurementEntity extends AbstractEntity 
 	
 	@Column(name = "TITLE")
 	private String title;
-		
-	@Column(name = "VARIABLES")
-	private String variables;
-		
-	@Column(name = "VALUES")
-	private String values;
+
+	@Column(name = "VALUES_TABLE")
+	private String valuesTable;
 
 	@Column(name = "CONDITIONS")
 	private String conditions;
@@ -29,20 +26,12 @@ public abstract class AbstractMotorPerfMeasurementEntity extends AbstractEntity 
 		this.title = title;
 	}
 
-	public String getVariables() {
-		return variables;
+	public String getValuesTable() {
+		return valuesTable;
 	}
 
-	public void setVariables(String variables) {
-		this.variables = variables;
-	}
-
-	public String getValues() {
-		return values;
-	}
-
-	public void setValues(String values) {
-		this.values = values;
+	public void setValuesTable(String valuesTable) {
+		this.valuesTable = valuesTable;
 	}
 
 	public String getConditions() {

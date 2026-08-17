@@ -68,14 +68,19 @@ public class MotorPerfCurveMapper {
 		perfCurve.setTitle(entity.getTitle());
 		List<CurveCoordinate> dcMotorCurveCoordinates = motorConfigProvider.getMotorCurveCoordinates(model);
 		if (!CollectionUtils.isEmpty(dcMotorCurveCoordinates)) {
-			String[] columnNames = MiscUtils.split(entity.getVariables(), ",");
-			String[] mConditions = MiscUtils.split(entity.getConditions(), ",");
-			BigDecimal[][] mValues = MiscUtils.parseCSVLikeValues(entity.getValues(),
-					rows -> new BigDecimal[rows][], cells -> new BigDecimal[cells], s -> MiscUtils.parseBigDecimalValue(s));
-			String[][] safeThresholdOriginStrs = MiscUtils.parseCSVLikeValues(entity.getSafeThreshold(),
+      String[] mConditions = MiscUtils.split(entity.getConditions(), ",");
+
+      String[] valuesTableLines = MiscUtils.split(entity.getValuesTable(), "\n");
+      String[] columnNames = MiscUtils.split(valuesTableLines[0], ","); // The first line is column names
+			BigDecimal[][] mValues = MiscUtils.parseCSVLikeValues(valuesTableLines, 1, // The first line is column names, rest are values
+					rows -> new BigDecimal[rows][], cells -> new BigDecimal[cells], MiscUtils::parseBigDecimalValue);
+
+      String[] rawSafeThresholdLines = MiscUtils.split(entity.getSafeThreshold(), "\n");
+			String[][] safeThresholdOriginStrs = MiscUtils.parseCSVLikeValues(rawSafeThresholdLines, 0,
 					rows -> new String[rows][], cells -> new String[cells], s -> s);
-			BigDecimal[][] safeThresholds = MiscUtils.parseCSVLikeValues(entity.getSafeThreshold(),
-					rows -> new BigDecimal[rows][], cells -> new BigDecimal[cells], s -> MiscUtils.parseBigDecimalValue(s));
+			BigDecimal[][] safeThresholds = MiscUtils.parseCSVLikeValues(rawSafeThresholdLines, 0,
+					rows -> new BigDecimal[rows][], cells -> new BigDecimal[cells], MiscUtils::parseBigDecimalValue);
+
 			List<CurveLine> curveLines = new ArrayList<>();
 			List<Range<BigDecimal>> yAxisEquivalentBoundaries = new ArrayList<>();
 			boolean isYAxisSameMeasurementAndHasDifferentUnit = false;
@@ -196,8 +201,8 @@ public class MotorPerfCurveMapper {
 	 * Returns true when given two y-axis represent same measurement without comparing the units enclosing with (), like "Torque(oz-in) vs Torque(Ncm)",
 	 * otherwise returns false;
 	 * 
-	 * @param yAxisName0
-	 * @param yAxisName1
+	 * @param axisName0
+	 * @param axisName1
 	 * @return
 	 */
 	private boolean isSameMeasurement(String axisName0, String axisName1) {
@@ -219,8 +224,8 @@ public class MotorPerfCurveMapper {
 	 * Returns true if given two y-axis has unit enclosing with () and the units are different like "Torque(oz-in) vs Torque(Ncm)", 
 	 * otherwise returns false;
 	 * 
-	 * @param yAxisName0
-	 * @param yAxisName1
+	 * @param axisName0
+	 * @param axisName1
 	 * @return
 	 */
 	private boolean hasDifferentUnit(String axisName0, String axisName1) {
@@ -355,12 +360,9 @@ public class MotorPerfCurveMapper {
 
 	/**
 	 * <pre>
-	 * Example of VARIABLES column from DB:
+	 * Example of nested VALUES_TABLE column from DB (for LS020NB201):
 	 * <b>
-	 * 	"pps, r/min, LinearSpeed[0.3048:AF, 0.6096:AA, 1.2192:B, 2:G, 4:M, 8:T](mm/s), Thrust[0.3048:AF, 0.6096:AA, 1.2192:B, 2:G, 4:M, 8:T](kg)"
-	 * </b>
-	 * Example of VALUES column from DB (for LS020NB201):
-	 * <b>
+   *  pps, r/min, LinearSpeed[0.3048:AF, 0.6096:AA, 1.2192:B, 2:G, 4:M, 8:T](mm/s), Thrust[0.3048:AF, 0.6096:AA, 1.2192:B, 2:G, 4:M, 8:T](kg)
 	 * 	200,60,0.3,0.6096,1.2192,2,4,8,7,6.8,4.6,3.5,3.1,2
 	 * 	600,180,0.9,1.8288,3.6576,6,12,24,6.9,6.7,4.5,3.4,3,1.8
 	 * 	1000,300,1.5,3.048,6.096,10,20,40,6.8,6.5,4.4,3.3,2.9,1.5
@@ -368,7 +370,8 @@ public class MotorPerfCurveMapper {
 	 * 	2000,600,3,6.096,12.192,20,40,80,6.5,6.2,4.1,3.1,2.8,1.3
 	 * 	2500,750,3.75,7.62,15.24,25,50,100,6.4,5.7,4,2.9,2.4,1.2
 	 * </b>
-	 * In this case, 
+	 * In this case,
+   *  The first line is column names, rest are values.
 	 * 	the LinearSpeed and Thrust both contain following columns: 0.3048:AF, 0.6096:AA, 1.2192:B, 2:G, 4:M, 8:T
 	 * 	the columns of LinearSpeed and Thrust must match
 	 *	the column name is in form of COEFFICIENT:LINEAR_SPEED_SYMBOL
@@ -397,11 +400,13 @@ public class MotorPerfCurveMapper {
 		}
 		LinearStepperMotorPerfCurve perfCurve = new LinearStepperMotorPerfCurve();
 		perfCurve.setTitle(entity.getTitle());
-		
-		String variablesStr = entity.getVariables();
-		if (ObjectUtils.isEmpty(variablesStr)) {
+
+    String[] rawValuesTableLines = MiscUtils.split(entity.getValuesTable(), "\n");
+		if (ObjectUtils.isEmpty(rawValuesTableLines)) {
 			return perfCurve;
 		}
+    String variablesStr = rawValuesTableLines[0]; // The first line is variable/column names
+
 		String linearSpeedPrefix = "LinearSpeed[";
 		String thrustPrefix = "Thrust[";
 		List<String> columnNames = new ArrayList<>();
@@ -465,8 +470,8 @@ public class MotorPerfCurveMapper {
 			}
 		}
 		
-		BigDecimal[][] mValues = MiscUtils.parseCSVLikeValues(entity.getValues(),
-				rows -> new BigDecimal[rows][], cells -> new BigDecimal[cells], s -> MiscUtils.parseBigDecimalValue(s));
+		BigDecimal[][] mValues = MiscUtils.parseCSVLikeValues(rawValuesTableLines, 1, // The first line is variable/column names
+				rows -> new BigDecimal[rows][], cells -> new BigDecimal[cells],  MiscUtils::parseBigDecimalValue);
 		List<CurveLine> curveLines = new ArrayList<>();
 		for (Map.Entry<String, Integer> entry : thrustColIndexMap.entrySet()) {
 			String colName = entry.getKey();
