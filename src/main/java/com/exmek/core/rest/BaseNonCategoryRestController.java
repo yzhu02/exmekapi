@@ -6,7 +6,6 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import com.exmek.commons.expr.ComparisonOperator;
@@ -20,7 +19,6 @@ import com.exmek.core.model.AbstractProduct;
 import com.exmek.core.model.AbstractSeries;
 import com.exmek.core.persistence.entity.AbstractProductEntity;
 import com.exmek.core.persistence.entity.AbstractSeriesEntity;
-import com.exmek.core.persistence.projection.TimestampOfSeries;
 import com.exmek.core.persistence.repository.BaseNonCategoryRepository;
 import com.exmek.core.utils.ContentUtils;
 
@@ -42,11 +40,7 @@ extends BaseProductRestController<T, L, M, SE, S> {
 			ContentUtils.populatePageableListDataResponse(dataResponse, page);
 		}
 		if (entities != null) {
-			List<TimestampOfSeries> lastCreatedPerSeriesList = getProductRepository().findLastCreatedPerSeries();
-			Map<String, Date> lastCreatedPerSeriesMap = Optional.ofNullable(lastCreatedPerSeriesList).stream()
-					.flatMap(List::stream)
-					.filter(lu -> lu.getTimestamp() != null)
-					.collect(Collectors.toMap(TimestampOfSeries::getSeries, TimestampOfSeries::getTimestamp));
+      Map<String, Date> lastCreatedPerSeriesMap = timestampCache.getLastCreatedPerSeriesMap(getEntityClass(), getProductRepository());
 			List<S> serieses = entities.stream()
 					.map(entity -> mapToSeriesModel(entity, lastCreatedPerSeriesMap.get(entity.getSeries())))
 					.collect(Collectors.toList());

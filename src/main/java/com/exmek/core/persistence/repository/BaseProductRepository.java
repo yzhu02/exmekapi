@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
+import com.exmek.core.persistence.projection.TimestampOfSeries;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -26,5 +27,11 @@ public interface BaseProductRepository<T extends AbstractProductEntity> {
 	
 	List<T> findByDescriptionContaining(String keyword);
 
-	Date findLastCreatedBySeries(String series);
+  default List<TimestampOfSeries> findLastCreatedPerSeries() {
+    // Should be implemented by the sub interface.
+    // Have the default implementation to avoid generating queries for LightweightXXXRepository
+    return null;
+  }
+
+  Date findLastCreatedBySeries(String series);
 }

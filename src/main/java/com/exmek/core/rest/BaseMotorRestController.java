@@ -34,8 +34,6 @@ import com.exmek.core.persistence.entity.AbstractMotorCategoryEntity;
 import com.exmek.core.persistence.entity.AbstractMotorEntity;
 import com.exmek.core.persistence.entity.AbstractMotorSeriesEntity;
 import com.exmek.core.persistence.entity.AbstractSeriesEntity;
-import com.exmek.core.persistence.projection.TimestampOfCategory;
-import com.exmek.core.persistence.projection.TimestampOfSeries;
 import com.exmek.core.persistence.repository.BaseMotorCategoryRepository;
 import com.exmek.core.persistence.repository.BaseMotorRepository;
 import com.exmek.core.persistence.repository.BaseMotorSeriesRepository;
@@ -57,14 +55,14 @@ extends BaseProductRestController<T, L, M, SE, MotorSeries> {
 	@Autowired
 	protected MotorSeriesMapper motorSeriesMapper;
 
-	protected abstract BaseMotorCategoryRepository<CE> getMotorCategoryRepository();
+  protected abstract BaseMotorCategoryRepository<CE> getMotorCategoryRepository();
 	
 	@Override
 	protected abstract BaseMotorSeriesRepository<SE> getSeriesRepository();
 	
 	@Override
 	protected abstract BaseMotorRepository<T> getProductRepository();
-	
+
 	@SuppressWarnings("unchecked")
 	@Override
 	protected MotorSeriesMapper getSeriesMapper() {
@@ -82,12 +80,7 @@ extends BaseProductRestController<T, L, M, SE, MotorSeries> {
 		if (entities == null) {
 			return new ArrayList<>();
 		}
-		List<TimestampOfCategory> lastCreatedPerCategoryList =
-				getProductRepository().findLastCreatedPerCategory();
-		Map<String, Date> lastCreatedPerCategoryMap = Optional.ofNullable(lastCreatedPerCategoryList).stream()
-				.flatMap(List::stream)
-				.filter(lu -> lu.getTimestamp() != null)
-				.collect(Collectors.toMap(TimestampOfCategory::getCategory, TimestampOfCategory::getTimestamp));
+		Map<String, Date> lastCreatedPerCategoryMap = timestampCache.getLastCreatedPerCategoryMap(getEntityClass(), getProductRepository());
 		return entities.stream()
 				.map(entity -> mapToCategoryModel(entity, lastCreatedPerCategoryMap.get(entity.getCategory())))
 				.collect(Collectors.toList());
@@ -122,14 +115,9 @@ extends BaseProductRestController<T, L, M, SE, MotorSeries> {
 			ContentUtils.populatePageableListDataResponse(dataResponse, page);
 		}
 		if (entities != null) {
-			List<TimestampOfSeries> lastCreatedPerSeriesList =
-					getProductRepository().findLastCreatedPerSeriesByCategory(category);
-			Map<String, Date> lastCreatedPerSeriesMap = Optional.ofNullable(lastCreatedPerSeriesList).stream()
-					.flatMap(List::stream)
-					.filter(lu -> lu.getTimestamp() != null)
-					.collect(Collectors.toMap(TimestampOfSeries::getSeries, TimestampOfSeries::getTimestamp));
+      Map<String, Date> lastCreatedPerSeriesByCategoryMap = timestampCache.getLastCreatedPerSeriesByCategoryMap(getEntityClass(), getProductRepository(), category);
 			List<MotorSeries> serieses = entities.stream()
-					.map(entity -> mapToSeriesModel(entity, lastCreatedPerSeriesMap.get(entity.getSeries())))
+					.map(entity -> mapToSeriesModel(entity, lastCreatedPerSeriesByCategoryMap.get(entity.getSeries())))
 					.collect(Collectors.toCollection(ArrayList::new));
 			
 			if (serieses.size() > 1) {

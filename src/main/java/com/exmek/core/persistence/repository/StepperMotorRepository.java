@@ -49,12 +49,22 @@ public interface StepperMotorRepository extends BaseMotorRepository<StepperMotor
 
 	@Override
 	@Query(value = """
+			SELECT SERIES, MAX(CREATED_TIMESTAMP) AS timestamp
+			FROM STEPPER_MOTOR
+			GROUP BY SERIES
+			ORDER BY timestamp DESC
+			""",
+			nativeQuery = true)
+  List<TimestampOfSeries> findLastCreatedPerSeries();
+
+  @Override
+  @Query(value = """
 			SELECT MAX(CREATED_TIMESTAMP) AS timestamp
 			FROM STEPPER_MOTOR
 			WHERE SERIES = :series
 			""",
-			nativeQuery = true)
-	Date findLastCreatedBySeries(@Param("series") String series);
+      nativeQuery = true)
+  Date findLastCreatedBySeries(@Param("series") String series);
 
 	//length	
 	@Query("""

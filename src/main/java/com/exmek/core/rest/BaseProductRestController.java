@@ -10,6 +10,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
+import com.exmek.core.cache.TimestampCache;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -64,8 +65,16 @@ implements ProductService<M>, Scheduleable {
 	protected SearchMetaCriteriaBuilder searchMetaCriteriaBuilder;
 	
 	protected Map<MetaCriteriaKey, List<FieldMetaCriterion>> fieldMetaCriteriaMap = new ConcurrentHashMap<>();
-	
-	protected abstract Class<T> getEntityClass(MetaCriteriaKey criteriaKey);
+
+  @Autowired
+  protected TimestampCache timestampCache;
+
+
+  protected Class<T> getEntityClass() {
+    return getEntityClass(null);
+  }
+
+  protected abstract Class<T> getEntityClass(MetaCriteriaKey criteriaKey);
 
 	protected abstract BaseSeriesRepository<SE> getSeriesRepository();
 	

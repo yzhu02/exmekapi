@@ -47,7 +47,17 @@ public interface DCMotorRepository extends BaseMotorRepository<DCMotorEntity>, J
 			""",
 			nativeQuery = true)
 	List<TimestampOfSeries> findLastCreatedPerSeriesByCategory(@Param("category") String category);
-	
+
+  @Override
+  @Query(value = """
+			SELECT SERIES, MAX(CREATED_TIMESTAMP) AS timestamp
+			FROM DC_MOTOR
+			GROUP BY SERIES
+			ORDER BY timestamp DESC
+			""",
+      nativeQuery = true)
+  List<TimestampOfSeries> findLastCreatedPerSeries();
+
 	@Override
 	@Query(value = """
 			SELECT MAX(CREATED_TIMESTAMP) AS timestamp

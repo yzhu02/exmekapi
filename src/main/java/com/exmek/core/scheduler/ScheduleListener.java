@@ -33,7 +33,7 @@ public class ScheduleListener {
 	}
 
 	public void trigger() {
-		log.info("ScheduleListener is trigged...");
+		log.info("ScheduleListener is triggered...");
 		if (scheduleables != null) {
 			scheduleables.forEach(Scheduleable::onSchedule);
 		}
